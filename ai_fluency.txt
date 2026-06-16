@@ -1,0 +1,2927 @@
+By the end of this lesson, you will be able to:
+
+Understand the purpose and structure of the course
+Recognize the importance of AI Fluency in today's world
+Identify key components of your learning journey ahead
+Set clear expectations for what you'll gain from this course
+Introduction to AI Fluency
+(4 minutes)
+
+
+
+Welcome! This video introduces you to this course’s focus: developing meaningful collaboration with AI rather than just learning about AI technology. We explain that this course explores how to build a lasting framework for working with AI systems that goes beyond simple and temporary tips and tricks. We explain what we mean by AI Fluency: it is the ability to collaborate with AI in ways that are effective, efficient, ethical, and safe. We also outline the course structure, which covers each of the AI Fluency core competencies (the 4Ds) as well as key technical and practical concepts. By the end of the course, you'll have a framework for thoughtful AI interaction, confidence in choosing when and how to work with AI effectively, practical collaboration skills, and the ability to evaluate and disseminate AI-assisted work responsibly.
+
+Key takeaways
+This course focuses on human-AI collaboration, not just understanding AI as a technology
+AI Fluency means engaging with AI systems effectively, efficiently, ethically, and safely
+The AI Fluency Framework centers on the "4D" competencies of Delegation, Description, Discernment and Diligence
+The goal is to develop lasting skills that remain relevant as AI technology evolves
+Effective AI collaboration requires both practical skills and a fundamental shift in how we think about working with AI
+Exercises
+Putting things into practice
+You'll need access to a language model (5-10 mins)
+
+Throughout this course, you'll practice what you're learning by working directly with a language model. While our examples feature Claude (Anthropic's AI assistant), you're welcome to work with any language model you prefer. The principles and skills we'll explore apply across different AI systems.
+
+Getting started is simple and free:
+
+Claude: Visit claude.ai to create a free account
+No paid subscriptions required to complete course activities
+You can also use other AI chatbots as you prefer
+New to Claude? No worries! We'll provide clear guidance with each exercise to help you get started.
+
+Reflection
+Before moving on, take a moment to consider your own experiences with AI:
+
+What challenges have you encountered when working with AI to achieve specific outcomes?
+What possibilities for AI collaboration excite you most?
+What do you hope to gain from this course?
+What’s next
+In the next lesson, we'll explore why AI Fluency matters in today's rapidly evolving technological landscape. We’ll introduce three key ways people collaborate with AI (Automation, Augmentation, and Agency) and the core competencies of the AI Fluency Framework: the "4Ds" of Delegation, Description, Discernment, and Diligence.
+
+Feedback on this course
+As you progress through the course, we'd love to hear from you about how you are using concepts from the course in your life, work, or classes and any feedback you may have. Share your feedback here.
+
+Acknowledgments and license
+Copyright 2025 Rick Dakan, Joseph Feller, and Anthropic. Released under the CC BY-NC-SA 4.0 license. This course is based on The AI Fluency Framework by Dakan and Feller. Supported in part by the Higher Education Authority, Ireland, through the National Forum for the Enhancement of Teaching and Learning.
+
+What you’ll learn
+By the end of this lesson, you'll be able to:
+
+Understand what AI Fluency means and why it matters in today's rapidly evolving technological landscape
+Recognize three emerging ways we collaborate with AI: Automation, Augmentation, and Agency
+Why do we need AI Fluency?
+
+
+This video explores what it really means to be "fluent" with AI and why this matters. We discuss how AI Fluency involves developing practical skills, knowledge, insights, and values that help you interact with AI systems in ways that are effective, efficient, ethical, and safe. We also introduce three ways people engage with AI:
+
+Automation: The AI completes specific tasks based on your instructions.
+Augmentation: You and AI collaborate as creative thinking and task execution partners.
+Agency: You configure AI to work independently on your behalf, establishing its knowledge and behavior patterns rather than just giving it specific tasks.
+
+What you’ll learn
+By the end of this lesson you will be able to:
+
+Explain the basic AI Fluency Framework and its core "4Ds": Delegation, Description, Discernment, and Diligence
+The 4D framework
+(5 minutes)
+
+
+
+This video introduces the four core competencies of AI Fluency, or the "4Ds": Delegation, Description, Discernment, and Diligence.
+
+Delegation: Thoughtfully deciding what work to do with AI vs. doing yourself
+Description: Communicating clearly with AI systems
+Discernment: Evaluating AI outputs and behavior with a critical eye
+Diligence: Ensuring you interact with AI responsibly
+We explore how these competencies work together across different ways of engaging with AI, and why developing these skills prepares you for whatever AI evolution brings next.
+
+Key takeaways
+AI Fluency means engaging with AI in ways that are effective, efficient, ethical, and safe
+There are three primary ways we engage with AI:
+Automation: AI executes specific tasks based on your instructions
+Augmentation: You and AI collaborate as creative thinking and task execution partners
+Agency: You guide AI to work independently on your behalf, shaping its knowledge and behavior rather than specific actions
+The AI Fluency Framework consists of four core competencies (the 4Ds):
+Delegation: Deciding what work to do with AI vs. yourself
+Description: Communicating effectively with AI systems
+Discernment: Evaluating AI outputs critically
+Diligence: Ensuring responsible AI collaboration
+These competencies apply across all three ways of working with AI
+Developing these competencies prepares you for evolving AI capabilities
+Exercises
+Exercise 1: Apply the 4D's
+Estimated time: 5 minutes
+
+Pick one of these collaboration scenarios and consider how you might apply the 4D Framework:
+
+Communication project
+You're working with an AI assistant to draft a series of emails for a marketing campaign.
+
+Delegation: What aspects of this project would you handle yourself vs. collaborate on with AI?
+Description: How would you communicate your vision for the campaign's tone, purpose, and success criteria to the AI?
+Discernment: What criteria would help you evaluate whether the AI-drafted emails meet your needs?
+Diligence: What considerations around transparency and responsibility would be important?
+Research project
+You're using AI to help analyze a large dataset for a research paper.
+
+Delegation: How would you divide the analytical work between yourself and the AI?
+Description: What context would the AI need to understand about your research question to do its share of the tasks well?
+Discernment: How would you verify the AI's analysis for accuracy?
+Diligence: What ethical considerations might arise when publishing AI-assisted research?
+Creative project
+You're collaborating with AI to develop character concepts for a story.
+
+Delegation: What creative elements would you want to explore through AI collaboration vs. develop independently?
+Description: How might you guide the AI to generate characters that fit your story's world?
+Discernment: How would you decide which AI-suggested elements to keep, modify, or discard?
+Diligence: How would you acknowledge AI's contribution to your creative work?
+Exercise 2: Explore something you love
+Estimated time: 5-10 minutes
+
+Spend 5-10 minutes chatting with Claude about a topic you're passionate about and know well. We will be using Claude across exercises for the rest of the course, but you can also do these exercises with another AI. In fact, it might be worthwhile for you to try the exercises across this course with several AI assistants to get a feel for how they differ.
+
+Instructions:
+
+Choose a topic you know well and enjoy discussing such as a hobby, professional interest, favorite book series, etc.
+Have a natural conversation with Claude about this topic, like you would with someone who shares your interest.
+Try to notice moments where:
+Claude enhances your thinking
+You need to clarify or correct the Claude's understanding
+Your expertise leads you to evaluate the Claude's responses
+Exercise 3: Learn something new
+Estimated time: 5-10 minutes
+
+Spend 5-10 minutes asking Claude to teach you about a topic you're unfamiliar with but interested in exploring. See how this experience differs from your conversation about something you love and know well.
+
+Instructions:
+
+Choose a topic you'd like to learn more about.
+Engage Claude in a conversation to help you understand the basics of this topic. Don't worry about prompting the "wrong way" or the "right way." Just ask Claude to teach you.
+Try to notice moments where the Claude:
+Offers helpful explanations
+Provides examples that make abstract ideas concrete
+Responds naturally to your questions as they arise
+Explains things where you would want to double check its explanations
+Reflection
+Before moving on, take a moment to consider:
+
+Which of the 4Ds (Delegation, Description, Discernment, Diligence) do you feel most confident in already? Which might need more development?
+Can you recall a recent AI interaction where the framework might have helped?
+What specific skills from the 4D framework would most enhance your work or personal projects?
+What's next
+The next lesson, Deep Dive 1: "What is Generative AI?" is a two-part technical lesson that explains the foundational workings of modern AI, how it differs from previous technologies, and its current capabilities and limitations. This knowledge will provide valuable context for the 4Ds and especially strengthen your Delegation competence.
+
+Feedback
+As you progress through the course, we'd love to hear from you about how you are using concepts from the course in your life, work, or classes and any feedback you may have. Share your feedback here.
+
+Acknowledgments and license
+Copyright 2025 Rick Dakan, Joseph Feller, and Anthropic. Released under the CC BY-NC-SA 4.0 license. This course is based on The AI Fluency Framework by Dakan and Feller.
+
+Supported in part by the Higher Education Authority, Ireland, through the National Forum for the Enhancement of Teaching and Learning.
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Define generative AI and how it differs from other AI types
+Recognize the key characteristics and technological foundations of generative AI
+Generative AI fundamentals
+(6 minutes)
+
+
+
+This video introduces the concept of generative AI, focusing on its ability to create new content rather than just analyzing what already exists. We walk through how large language models (LLMs) like Claude actually work and the technological journey that made them possible, from algorithmic breakthroughs like the transformer architecture to vast training datasets and powerful computing. We also explain how these systems learn through pre-training and fine-tuning and discuss concepts like context windows and emergent capabilities.
+
+0:14
+teacher, programmer, and member of
+0:16
+technical staff at Enthropic. Welcome to
+0:18
+our exploration of generative AI. In
+0:21
+this video, we'll dive into what
+0:22
+generative AI actually is, how it works
+0:25
+under the hood, and the technological
+0:27
+breakthroughs that made these systems
+0:29
+possible. You might interact with
+0:31
+generative AI daily without fully
+0:33
+understanding what's happening behind
+0:35
+the scenes. Let's change that.
+0:37
+Generative AI refers to artificial
+0:40
+intelligence systems that can create new
+0:42
+content rather than just analyzing
+0:44
+existing data. For example, while
+0:47
+traditional AI might classify emails as
+0:49
+spam or not spam based on patterns,
+0:52
+generative AI can write a completely new
+0:54
+email for you. The first approach
+0:56
+analyzes and categorizes. The second
+0:59
+creates something new that didn't exist
+1:01
+before. This represents a fundamental
+1:04
+shift in AI capabilities.
+1:06
+Large language models or LLM like
+1:09
+anthropics cloud models are a prominent
+1:11
+type of generative AI. They're called
+1:14
+language models because they're trained
+1:16
+to predict and generate human language
+1:19
+and large because they contain billions
+1:21
+of parameters, mathematical values that
+1:24
+determine how the model processes
+1:26
+information, somewhat like synaptic
+1:28
+connections in your brain. The path to
+1:31
+today's generative AI wasn't sudden. It
+1:34
+involved three crucial developments
+1:36
+coming together at the right time.
+1:38
+First, there were algorithmic and
+1:40
+architectural breakthroughs that
+1:42
+fundamentally changed how AI systems
+1:44
+learn. While neural networks have been
+1:47
+around conceptually for decades, the
+1:50
+development of the transformer
+1:51
+architecture in 2017 was a gamecher.
+1:54
+This architecture excels at processing
+1:56
+sequences of text while maintaining
+1:58
+relationships between words across long
+2:01
+passages, which is critical for
+2:03
+understanding language in context.
+2:05
+Second, the explosion of digital data
+2:08
+provided the essential raw material for
+2:10
+training. Modern LLMs like Claude learn
+2:12
+from diverse sources such as websites,
+2:15
+code repositories, and other text that
+2:17
+represent human knowledge and
+2:18
+communication.
+2:20
+This vast tapestry of information helps
+2:22
+models develop a broad and nuanced
+2:24
+understanding of both language and
+2:27
+concepts. And third, massive increases
+2:31
+in computational power made it possible
+2:33
+to train these complex models on all
+2:35
+that data. Specialized hardware like
+2:37
+GPUs or graphics processing units and
+2:40
+TPUs or tensor processing units along
+2:43
+with distributed computing networks
+2:45
+often called clusters enable processing
+2:48
+that would have been impossible just a
+2:49
+few years earlier. The combination of
+2:52
+these three factors led to an important
+2:54
+discovery known as the scaling laws.
+2:57
+These empirical findings showed that as
+2:59
+models grew larger and trained on more
+3:01
+data with more computing power, their
+3:04
+performance improved in predictable
+3:05
+ways. More surprisingly, researchers
+3:08
+found that entirely new capabilities
+3:11
+began to emerge as these models grew
+3:13
+larger. Abilities no one explicitly
+3:15
+program, like reasoning through problems
+3:17
+stepby step or adapting to new tasks
+3:20
+with minimal instruction. Let's peek
+3:22
+under the hood at how these systems
+3:24
+actually work. During initial training,
+3:27
+also called pre-training, LLMs like
+3:29
+Claude analyze patterns across billions
+3:32
+of text examples. Imagine reading every
+3:34
+website and piece of text you could
+3:36
+find, not just to absorb information,
+3:38
+but to understand the statistical
+3:40
+relationships between words, phrases,
+3:42
+and concepts. At this stage, the model
+3:44
+essentially builds something like a
+3:45
+complex map of language and knowledge.
+3:48
+This pre-training process involves
+3:50
+showing the model text and asking it to
+3:52
+predict what comes next. Through many
+3:54
+iterations, the model gradually
+3:56
+refineses its predictions, learning the
+3:59
+patterns that make language coherent and
+4:01
+meaningful. After pre-training, models
+4:04
+undergo additional training called
+4:06
+fine-tuning, where they learn to follow
+4:08
+instructions, provide helpful responses,
+4:10
+and importantly, avoid generating
+4:12
+harmful content. This often involves
+4:15
+human feedback to improve the model's
+4:17
+performance, as well as reinforcement
+4:19
+learning, which uses rewards and
+4:21
+penalties to shape the model's behavior
+4:24
+toward being more helpful, honest, and
+4:27
+harmless. In the case of enthropics
+4:28
+models, once models are trained, they
+4:30
+are then deployed for you to interact
+4:32
+with. When you interact with Claude or
+4:34
+another LLM, you're providing a prompt,
+4:37
+which is text that the model reads and
+4:39
+then continues from based on patterns it
+4:41
+learned during training. The model isn't
+4:43
+retrieving pre-written answers from a
+4:45
+database. Instead, it's generating new
+4:47
+text that statistically follows from
+4:49
+what you've written. There's also a
+4:51
+practical limit to how much information
+4:53
+an LLM can consider at once, known as
+4:56
+the context window. Think of this as the
+4:58
+AI's working memory. The context window
+5:01
+includes your prompts, the AI responses,
+5:04
+and any other information you've shared
+5:06
+in your conversation. While AI companies
+5:08
+continue to grow the context window to
+5:11
+allow for longer context documents and
+5:13
+conversations, these limits remind us
+5:15
+that these systems don't have unlimited
+5:17
+access to information and cannot use
+5:20
+content beyond its current context
+5:22
+window without specialized tools like
+5:25
+web search. Bringing this together, the
+5:27
+three characteristics that make modern
+5:29
+generative AI so powerful include,
+5:32
+first, its ability to process vast
+5:34
+amounts of information during training,
+5:37
+allowing it to learn complex and nuanced
+5:39
+patterns in language and knowledge.
+5:41
+Second, its incontext learning ability.
+5:44
+LLMs can adapt to new tasks based on
+5:47
+instructions or examples in your prompt
+5:49
+without requiring additional training.
+5:51
+And third, emerging capabilities that
+5:53
+arise from scale. As these models grow
+5:56
+larger, they develop abilities that
+5:57
+weren't explicitly designed into them,
+6:00
+sometimes surprising even their
+6:01
+creators. In the next video, we'll
+6:03
+explore what these systems can and can't
+6:05
+do well, along with their most common or
+6:08
+valuable applications.
+
+Let's now examine what generative AI can
+0:15
+and cannot do. Focusing on LLM such as
+0:18
+Claude, think of this as getting to know
+0:20
+a new colleague. Understanding their
+0:22
+strengths and limitations help you
+0:23
+collaborate more effectively. To start,
+0:26
+we'll focus on what these systems do
+0:28
+remarkably well. You might be amazed at
+0:31
+how versatile modern language models can
+0:33
+be. They're skilled with language in
+0:36
+ways that seemed impossible just a few
+0:38
+years ago. Crafting emails that capture
+0:41
+your voice, condensing lengthy reports
+0:43
+into clear summaries, translating
+0:46
+between languages, and explaining
+0:49
+complex topics across countless fields
+0:51
+from microbiology to marketing strategy.
+0:54
+What's particularly notable is how these
+0:56
+models can shift between different tasks
+0:59
+without needing additional training. The
+1:02
+very same system that helps you write
+1:04
+poetry or brainstorm ideas for your
+1:06
+birthday party can turn around and help
+1:09
+you understand quantum computing
+1:11
+concepts or analyze quarterly business
+1:15
+trends all through simple conversation.
+1:19
+These models can also maintain the
+1:21
+thread of a
+1:22
+conversation, remembering what you
+1:24
+discussed earlier and building upon it.
+1:28
+If you mention your project deadline in
+1:30
+passing, for example, and refer back to
+1:32
+it later within the conversation, the AI
+1:34
+typically understands what you're
+1:36
+talking about, much like a human
+1:38
+conversation partner would. Many modern
+1:41
+LLMs can now also reach beyond their own
+1:43
+knowledge by connecting to external
+1:45
+tools and information sources, allowing
+1:48
+them to search the web, process files,
+1:51
+or even use other applications to
+1:52
+enhance their
+1:54
+capabilities. This dramatically expands
+1:56
+what they can help with. However, just
+1:59
+like any technology, LLMs as exist today
+2:02
+also have certain
+2:03
+limitations. First, AI models are
+2:06
+bounded by their training data. LLMs
+2:09
+have a knowledge cutoff date based on
+2:11
+when they were trained, the point after
+2:14
+which they have no innate knowledge of
+2:16
+the world. For example, a model with a
+2:19
+cut off date of November 2024 means that
+2:22
+it wasn't trained on any data after
+2:24
+November
+2:25
+2024. Imagine someone who went into a
+2:28
+retreat without internet access at a
+2:30
+specific date. They wouldn't know about
+2:32
+events that happened after they left.
+2:34
+Models need tools like web search to
+2:37
+learn more about recent
+2:39
+developments. Additionally, the training
+2:41
+process doesn't verify every fact in the
+2:43
+training data. This means models can
+2:46
+sometimes learn and reproduce
+2:48
+inaccuracies that were present in their
+2:50
+training data. They can also make
+2:52
+mistakes when trying to piece together
+2:54
+information they've learned. This leads
+2:56
+to what is often called a hallucination.
+3:00
+AI confidently stating something that
+3:02
+sounds plausible but is actually
+3:05
+incorrect. Unlike search engines that
+3:07
+simply retrieve existing
+3:09
+documents, LLMs generate responses based
+3:12
+on statistical patterns, sometimes
+3:15
+producing
+3:16
+hallucinations. Imagine a friend who
+3:18
+tells a story with absolute confidence
+3:20
+only to have the details completely
+3:22
+wrong. AI can sometimes be like that.
+3:25
+Another important constraint is the
+3:27
+context window we mentioned earlier. As
+3:29
+a reminder, that's the amount of
+3:31
+information an AI can process at one
+3:33
+time. Every LLM has a maximum limit to
+3:36
+how much information it can consider
+3:38
+during a single interaction. If this
+3:40
+limit is exceeded, the AI won't be able
+3:42
+to remember information that falls
+3:43
+outside the window, usually on a first
+3:46
+in first out basis. Depending on the
+3:48
+size of the model, this can limit its
+3:50
+ability to process large documents or
+3:52
+remember the entire conversation.
+3:54
+Furthermore, unlike traditional software
+3:57
+that produces identical outputs given
+3:59
+the same inputs, LLM are somewhat
+4:02
+unpredictable by default, also known as
+4:06
+non-deterministic. Ask the same question
+4:08
+twice and you might get slightly
+4:09
+different responses each time. This
+4:12
+variability stems from the nature of how
+4:14
+these models generate text. They're
+4:16
+making probabilistic decisions about
+4:19
+what text should come next based on
+4:21
+patterns in their training data and
+4:23
+certain settings that developers can
+4:25
+tweak. This creative variability can be
+4:28
+great for brainstorming and generating
+4:30
+diverse ideas, but requires awareness
+4:33
+when consistency or accuracy are
+4:36
+critical. Some LLM interfaces also offer
+4:39
+settings to control this randomness when
+4:41
+needed. This setting is often referred
+4:44
+to as temperature. Additionally, while
+4:46
+these models are improving rapidly,
+4:49
+they've historically shown limitations
+4:51
+with complex reasoning tasks,
+4:53
+particularly with mathematical or
+4:55
+logical problems requiring multiple
+4:57
+steps. The good news is that newer
+5:00
+reasoning or extended thinking models
+5:02
+specifically designed to think stepby
+5:05
+step are showing strong progress in
+5:07
+these areas. And finally, while models
+5:10
+like Claude can now access external
+5:12
+tools, they may still lack access to
+5:15
+specific data sources or specialized
+5:17
+tools that would be needed for certain
+5:19
+tasks. It's like having a brilliant
+5:21
+colleague who can't access your
+5:23
+company's internal database. Their
+5:26
+ability to help will be limited no
+5:28
+matter how smart they are. If a model
+5:30
+doesn't have access to a piece of data
+5:32
+or tool that is needed to answer a
+5:34
+question, then it should not come as a
+5:36
+surprise that it won't be able to help
+5:38
+answer the question. The field of
+5:41
+generative AI is rapidly evolving.
+5:44
+Researchers are working to address
+5:45
+current limitations through techniques
+5:48
+like retrieval augmented generation
+5:51
+which connects models to external
+5:54
+knowledge and data sources as well as
+5:56
+expanding their ability to use tools and
+5:59
+improving their reasoning capabilities.
+6:01
+That said, some limitations will likely
+6:04
+remain for the foreseeable future, even
+6:06
+if we don't know exactly what those
+6:08
+limitations will be. Understanding what
+6:10
+AI can or cannot do is essential for AI
+6:13
+fluency and helps you determine when and
+6:16
+how to best incorporate these systems
+6:18
+effectively into your work and daily
+6:20
+life. The most effective applications
+6:22
+will leverage the complimentary
+6:23
+strengths of humans and AI. We bring
+6:26
+critical thinking, judgment, creativity,
+6:29
+and ethical oversight that AI may
+6:31
+struggle to replicate. While AI offers
+6:33
+speed, scale, pattern recognition, and
+6:36
+the ability to process vast amounts of
+6:38
+information. These complimentary
+6:40
+strengths will evolve as the technology
+6:42
+evolves. That's why continued learning
+6:45
+and experimentation are so valuable.
+6:48
+They help you stay a breast of these
+6:49
+changes and discover new possibilities.
+6:52
+In these exercises across this course,
+6:54
+you'll have a chance to explore these
+6:56
+concepts firsthand through conversations
+6:58
+with Claude. This direct experience will
+7:01
+help you develop an intuitive feel for
+7:04
+what generative AI can do, can't do, and
+7:07
+how best to work with it.
+Lesson 3B: Capabilities & limitations | AI Fluency: Framework & Foundations Course
+Anthropic
+Anthropic
+675K subscribers
+
+Subscribe
+
+generative AI can and cannot do effectively at this point in time. We highlight generative AI's versatility across language tasks, ability to maintain conversational flow, and capacity to switch between diverse tasks without additional training. We also address limitations including knowledge cutoff dates, hallucinations (factually incorrect outputs), context window constraints, and reasoning challenges. We emphasize how the field is evolving rapidly and explain that the most effective applications bring together the complementary strengths of humans and AI working together.
+
+Key takeaways
+Generative AI creates new content (text, images, code) rather than just analyzing existing data
+Modern systems like LLMs were made possible by three key developments:
+Algorithmic and architectural breakthroughs (especially the transformer architecture)
+Vast amounts of digital training data
+Dramatic increases in computational power
+Generative AI learns through two stages: pre-training (analyzing patterns across billions of examples) and fine-tuning (learning to follow instructions and provide helpful responses)
+Current capabilities include versatility across tasks, conversational awareness, and the ability to connect with external tools
+Current limitations include knowledge cutoff dates, potential for hallucinations, context window constraints, and challenges with complex reasoning
+The most effective applications combine human and AI strengths, with humans providing critical thinking, judgment, creativity, and ethical oversight
+Exercises
+Reflection
+Before moving on, take a moment to consider:
+
+How does understanding the technical foundations of generative AI (like training data and pre-training/fine-tuning) change how you think about working with these systems?
+What ethical considerations come to mind after learning about how these systems work and their current limitations?
+What's next
+In the next lesson, we'll take a closer look at the first of the 4D competencies: Delegation. You'll learn how to make strategic decisions about dividing work between yourself and AI based on understanding both your goals and AI capabilities. This foundation will help you thoughtfully determine when and how to bring AI into your creative and problem-solving processes.
+
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Understand the Delegation competency and its three components: Problem Awareness, Platform Awareness, and Task Delegation
+Recognize when and how to delegate tasks to AI effectively
+Develop awareness of task, platform, and mode considerations when working with AI
+A closer look at delegation
+(6 minutes)
+
+
+
+This video explores the first core competency of AI Fluency: Delegation. We explain that Delegation focuses on deciding what work to do yourself, what to collaborate on with AI, and how to distribute tasks effectively. We go over the three key components of Delegation:
+
+Problem Awareness: Understanding your goals and the work involved to achieve it
+Platform Awareness: Knowing what different AI systems can do
+Task Delegation: Strategically dividing work between you and AI
+We also emphasize why effective Delegation requires both expertise in your field and understanding of AI capabilities —and why it's essential for working effectively and efficiently with AI systems.
+
+Key takeaways
+Delegation is about making thoughtful decisions about what work to do yourself, what to do together with AI, or what to let AI handle independently, and how to distribute those tasks.
+Problem Awareness means clearly understanding your goals and the nature of the work before involving AI.
+Platform Awareness involves understanding the capabilities and limitations of different AI systems.
+Task Delegation is the process of thoughtfully distributing work between humans and AI to leverage the strengths of each.
+Effective delegation requires both domain expertise and an understanding of AI capabilities.
+The goal isn't to automate everything, but to create the most effective human-AI partnership for any given task or goal.
+Exercises
+Analyze tasks with an AI assistant
+Instructions:
+
+Pick a simple task from your work or personal life (something fairly small like drafting an email, outlining a presentation, or planning a meeting or event).
+Start a conversation with Claude
+With Claude, share the task you are thinking about doing.
+E.g. "Hi Claude, I'm preparing how to [insert task] and want to discuss with you what a delegation plan may look like for figuring out which parts I should delegate to an AI like you vs. not. Can you help me with this?"
+Together, explore these questions:
+What is the overall vision for the task? What does a good result look like?
+What are the different bits of work needed to get there?
+Which of these bits of work require human expertise, creativity, or judgment?
+Note: When discussing these questions, have an actual conversation! Don't just make statements or list answers. Actually have a chat back and forth—you each may see something the other doesn't!
+Work together to create a simple delegation plan that uses both your strengths and the AI's strengths.
+Reflection
+Before moving on, take a moment to consider:
+
+Think about a recent project where you worked with AI. How might your approach have been different with this Delegation framework in mind?
+What types of tasks in your work or studies do you think would benefit most from AI collaboration?
+What's next
+In the next lesson, you'll apply what you've learned about Delegation to a multi-step project that you'll work on throughout the rest of this course. You'll select a project that interests you, define your vision for it, break it down into tasks, and create a delegation plan that strategically divides work between you and AI (much like you practiced in this lesson). This project will serve as a practical canvas for applying all the AI Fluency competencies as you progress through the course.
+
+Feedback
+As you progress through the course, we'd love to hear from you about how you are using concepts from the course in your life, work, or classes and any feedback you may have. Share your feedback here.
+
+Acknowledgments and license
+Copyright 2025 Rick Dakan, Joseph Feller, and Anthropic. Released under the CC BY-NC-SA 4.0 license. This course is based on The AI Fluency Framework by Dakan and Feller. Supported in part by the Higher Education Authority, Ireland, through the National Forum for the Enhancement of Teaching and Learning.
+
+
+0:11
+In this video, we're going to take a
+0:13
+closer look at the delegation
+0:15
+competency. Remember that AI fluency is
+0:18
+about working with AI in ways that are
+0:20
+effective, efficient, ethical, and safe.
+0:25
+Delegation is primarily focused on the
+0:27
+first two of these. Helping you work
+0:30
+effectively and efficiently with AI
+0:33
+assistance. At its core, delegation is
+0:36
+about deciding what work is to be done,
+0:38
+what work you should do yourself, and
+0:41
+what work might be better suited to AI.
+0:43
+That might sound simple, but it's
+0:45
+surprisingly nuanced. Effective
+0:48
+delegation requires understanding both
+0:51
+what you're trying to accomplish and
+0:53
+what you and AI can each realistically
+0:55
+do. It's about breaking down complex
+0:58
+work into manageable pieces and making
+1:01
+strategic decisions about who handles
+1:04
+which part, whether through automation,
+1:07
+augmentation, or
+1:09
+agency. Here's something that might
+1:11
+surprise you.
+1:12
+The cornerstone of good delegation isn't
+1:15
+actually about AI at all. It's about
+1:18
+your own expertise and your own
+1:20
+understanding of what you're trying to
+1:21
+accomplish. Before involving AI in any
+1:24
+project, take a moment to answer some
+1:27
+important
+1:28
+questions. What exactly are you trying
+1:30
+to accomplish? What are you trying to
+1:32
+create or solve? What is your vision or
+1:36
+key project goals? What does success
+1:38
+look like to you?
+1:40
+and ask yourself what kind of thinking
+1:42
+and work is needed to get there. Are
+1:45
+there areas that are simple but
+1:47
+timeconuming? Areas of uncertainty where
+1:50
+you could use a trusted thinking
+1:52
+partner? Areas of ignorance where what
+1:54
+you need is more data or areas requiring
+1:57
+critical judgment. Every project and
+2:00
+every domain is different. We can't make
+2:03
+you an expert in your problem space. But
+2:06
+we can say that without a clear
+2:08
+understanding of your goals and the work
+2:10
+involved, even the most advanced AI
+2:13
+won't get you where you need to go.
+2:14
+You'll struggle to effectively work with
+2:16
+AI assistants, evaluate their outputs,
+2:20
+or know when human intervention is
+2:22
+necessary. The most effective AI
+2:25
+collaborators are experts in their
+2:27
+fields first and AI delegators second.
+2:31
+We call this first concept problem
+2:34
+awareness. the ability to clearly define
+2:37
+your goals and understand what work is
+2:39
+needed before bringing AI into the
+2:42
+picture. Beyond understanding your
+2:45
+problem, you also need a working
+2:47
+knowledge of the AI
+2:48
+landscape. Different AI systems offer
+2:51
+vastly different capabilities and this
+2:54
+field evolves almost daily. Effective
+2:57
+delegation isn't about finding one
+2:59
+perfect system. It's about understanding
+3:01
+the unique strengths and limitations of
+3:04
+the various options available to you.
+3:06
+Have you investigated which models
+3:08
+perform best for the kind of work you
+3:10
+have in mind? Do you know which AI
+3:13
+systems prioritize speed over depth or
+3:16
+accuracy over
+3:17
+creativity? This course includes several
+3:20
+technical sections that will help you
+3:22
+build this knowledge, but the landscape
+3:24
+moves quickly. The best approach is
+3:27
+hands-on. Experiment with different AI
+3:29
+systems as often as you can and develop
+3:32
+your own insights based on personal
+3:35
+experience. We call this second concept
+3:38
+platform awareness. A working knowledge
+3:40
+of available AI systems and their
+3:42
+specific capabilities and
+3:45
+limitations. Once you understand both
+3:48
+your problem and the available AI
+3:50
+assistance, the real art of delegation
+3:53
+emerges. thoughtfully distributing work
+3:56
+between human and artificial
+3:58
+intelligence to leverage the unique
+4:00
+strengths of each. Ask
+4:03
+yourself which specific parts of your
+4:05
+workflow would benefit from
+4:08
+automation or where would an
+4:10
+augmentation approach create more value
+4:12
+than either working alone or fully
+4:15
+automating? Are there critical judgment
+4:18
+areas that should remain exclusively
+4:20
+human and shouldn't be delegated at all?
+4:23
+What routine interactions can AI agents
+4:26
+handle on your behalf? With a clear
+4:28
+understanding of both your problem and
+4:31
+available AI systems, you can make
+4:34
+informed decisions about which aspects
+4:36
+of work should be automated by AI or
+4:40
+completed through human AI
+4:41
+collaboration or reserved exclusively
+4:44
+for human execution or handled by AI
+4:47
+agents acting on your behalf. We call
+4:50
+this third concept task delegation. The
+4:53
+strategic process of dividing work
+4:56
+between humans and
+4:58
+AI. To recap, delegation involves three
+5:02
+key elements. Problem awareness,
+5:05
+understanding your goals and the problem
+5:07
+to be solved. Platform awareness,
+5:10
+understanding AI capabilities and
+5:12
+limitations. And task delegation,
+5:15
+strategically dividing the work.
+5:18
+This competency highlights something
+5:21
+important. Effective AI collaboration
+5:24
+isn't about handing over the wheel and
+5:26
+calling it a day. It's about making
+5:29
+thoughtful choices and delegating work
+5:32
+that leverages the unique strengths of
+5:34
+both human and artificial intelligence.
+
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Apply your understanding of Delegation to a practical multi-step project you'll work on throughout the rest of this course
+Project planning and delegation
+Estimated time: 20 minutes
+
+Step 1: Choose your project
+Select a medium-sized, multi-step project that you can work on throughout the remainder of this course. Your project should be:
+
+Substantial enough to involve multiple types of tasks
+Manageable enough to complete within about 1 hour of work
+Something you're genuinely interested in creating or accomplishing
+Here are some suggestions to consider:
+
+Communication Projects:
+
+Create a compelling presentation on a topic you're knowledgeable about
+Write a post or series of posts explaining a complex topic to a general audience
+Develop a proposal or pitch for an idea you'd like to pursue
+Create a personal or professional bio with supporting materials
+Research Projects:
+
+Research and summarize the current state of an emerging technology or trend
+Analyze a dataset to identify patterns and create recommendations
+Compare multiple products, services, or approaches and create a recommendation
+Investigate a historical event and present your findings in an engaging format
+Creative Projects:
+
+Outline a short story with fully developed characters and plot
+Design a simple website structure with content for key pages
+Develop a concept for a product, service, or experience
+Learning Projects:
+
+Create a structured learning plan for a skill you want to develop
+Build a resource collection on a topic you're learning about
+Develop a tutorial or guide for a process you understand well
+Create a set of study materials for a topic you want to master
+Step 2: Project vision and goals
+Start a conversation with Claude. Share your project idea and invite Claude to ask you some questions until you feel you have a solid vision for the final result. Work together until you have a clear picture of:
+
+What success looks like for your project
+What would make this project particularly valuable or meaningful to you
+Step 3: Task breakdown and delegation analysis
+Similar to what you did in the previous lesson, work with Claude to explore your project through the lens of Delegation:
+
+Identify together the major tasks needed to complete your project.
+For each task, one at a time, discuss:
+What specific skills, knowledge, or AI capabilities are needed?
+Which parts would benefit from uniquely human strengths?
+Which parts could leverage AI capabilities well?
+Where might collaboration have the most impact?
+Note: Again, have a genuine conversation about these questions rather than just exchanging statements. Challenge assumptions, ask for clarification, and remain open to unexpected insights that emerge during your discussion.
+Create a project plan that includes your major tasks and delegation decisions.
+Save your project plan—you'll return to this project later in the course to practice your Description, Discernment, and Diligence skills.
+Reflection
+Before moving on, take a moment to consider:
+
+What insights emerged from your planning conversation with Claude?
+What do you anticipate will be the most challenging aspect of your delegation plan?
+What additional information or skills might help you delegate more effectively to AI?
+What's next
+In the next lesson, we'll explore the second core competency: Description. You'll learn approaches for communicating effectively with AI systems, which will help you implement the plan you've just created. This includes techniques for defining what you want, guiding how the AI approaches the task, and specifying how you want the AI to interact with you throughout the process.
+
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Understand how to effectively communicate your intentions to AI systems
+Recognize the importance of clear, purposeful communication
+Develop skills in three types of Description: Product, Process, and Performance
+A closer look at description
+(4 minutes)
+
+
+
+This video explores the Description competency of AI Fluency—the art of communicating effectively with AI systems. We explain that Description goes beyond simply writing prompts; it involves creating a collaborative environment where both you and the AI can work effectively together. We introduce three key components of Description:
+
+Product Description: Clearly defining what you want the AI to create
+Process Description: Guiding how the AI approaches your request
+Performance Description: Defining how you want the AI to behave during your collaboration.
+We also emphasize that AI can't read your mind, and how the quality of your results often comes down to how clearly you articulate your needs, preferred approach, and desired interaction style.
+
+Key takeaways
+Description is about communicating with AI in ways that create a productive collaborative environment
+Product Description involves clearly defining what you want in terms of outputs, format, audience, and style
+Process Description guides how the AI approaches your request, which can be as important as specifying the end goal
+Performance Description defines behavioral aspects like whether the AI should be concise or detailed, challenging or supportive
+AI systems are interactive partners, not databases or vending machines
+Clear communication up front saves time and leads to better results
+Exercises
+Bad Prompt Makeover
+Estimated time: 10 minutes
+
+Instructions:
+
+Ask Claude to challenge you with some poorly written prompts for you to improve.
+Apply your Description thinking to improve each one, considering:
+Clear product description (what exactly you want)
+Process guidance (how you want Claude to approach it)
+Performance specifications (how you want Claude to behave during your collaboration)
+Have a chat about the before/after versions with Claude and ask for feedback on how your improved descriptions would help it provide better responses.
+After about 5 minutes, switch roles and provide bad prompts for Claude to fix. Notice what information Claude tends to add and how it organizes this information.
+Reflection
+Before moving on, take a moment to consider:
+
+Which component of Description (product, process, or performance) do you think you might be overlooking in your current AI interactions?
+Think about a recent AI interaction that didn't quite meet your expectations. How might better description skills have improved the outcome?
+What’s next
+In the next lesson, we'll take a deeper dive into effective prompting techniques. You'll learn what prompt engineering is and why it matters, apply six foundational techniques for getting better results from AI, and practice troubleshooting and refining prompts when responses don't meet your needs.
+
+Feedback
+As you progress through the course, we'd love to hear from you about how you are using concepts from the course in your life, work, or classes and any feedback you may have. Share your feedback here.
+
+Acknowledgments and license
+Copyright 2025 Rick Dakan, Joseph Feller, and Anthropic. Released under the CC BY-NC-SA 4.0 license. This course is based on The AI Fluency Framework by Dakan and Feller. Supported in part by the Higher Education Authority, Ireland, through the National Forum for the Enhancement of Teaching and Learning.
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Understand what prompt engineering is and why it matters for productive AI collaboration
+Apply six foundational prompting techniques to improve your AI interactions
+Identify common patterns that lead to successful AI interactions
+Troubleshoot and refine prompts when AI responses don't meet your needs
+Effective Prompting Techniques
+
+
+This video explores practical skills for crafting effective prompts when working with AI assistants like Claude. We explain that prompt engineering is simply the practice of designing effective instructions for AI systems, combining familiar human communication principles with AI-specific considerations. We introduce six foundational techniques: giving context, showing examples of desired outputs, specifying constraints, breaking complex tasks into steps, asking the AI to think first, and defining the AI's role or tone. We also share troubleshooting strategies for when responses aren't quite right and highlight common patterns that lead to successful interactions.
+
+Key takeaways
+Effective prompting combines clear communication principles with AI-specific techniques
+Six foundational prompting techniques:
+Give context: Be specific about what you want, why you want it, and relevant background
+Show examples: Demonstrate the output style or format you're looking for
+Specify constraints: Clearly define format, length, and other output requirements
+Break complex tasks into steps: Guide the AI through multi-step reasoning
+Ask the AI to think first: Give space for the AI to work through its process
+Define the AI's role or tone: Specify how you want the AI to communicate
+The "secret weapon": Ask the AI itself to help improve your prompt
+Successful prompting is iterative (and perhaps also collaborative with the AI!). Expect to refine your approach based on results
+Common successful patterns include providing clear task overviews, format specifications, explicit constraints, and relevant background information
+Exercises
+Reflection
+Before moving on, take a moment to consider:
+
+Which of the six prompting techniques do you think would most enhance your current AI interactions?
+Think of a recent AI interaction that didn't meet your needs. Which techniques might have improved the outcome?
+How does understanding these prompting techniques connect to the Description competency from the AI Fluency Framework?
+If you like, revisit Bad Prompt Makeover from the previous lesson to give these prompting principles a workout.
+
+ 
+What’s next
+In the next lesson, we'll explore Discernment, the third core AI Fluency competency. Both this Deep Dive and the lesson preceding it focused on how to communicate effectively with AI and how to practice good Description. Discernment addresses the equally important challenge of thoughtfully evaluating what AI produces in response—the other half of the conversation!
+
+What you'll learn
+
+By the end of this lesson, you'll be able to:
+
+Understand how to evaluate AI outputs and processes thoughtfully
+Develop critical thinking skills for your AI interactions
+Learn to identify and address quality concerns in your AI interactions
+A Closer Look at Discernment
+(5 minutes)
+
+
+
+This video explores Discernment, the AI Fluency competency focused on thoughtfully evaluating AI outputs, processes, and behaviors. We explain that Discernment is the flip side of Description. While Description helps you communicate your intentions clearly, Discernment helps you evaluate whether what you receive meets your needs. The video introduces three types of Discernment:
+
+Product Discernment: Evaluating the quality of AI outputs
+Process Discernment: Assessing how the AI approached the task
+Performance Discernment: Evaluating how the AI behaved during the interaction itself
+Together, these skills help ensure that your AI collaboration remains guided by thoughtful human judgment.
+
+Key takeaways
+Discernment is your ability to thoughtfully evaluate what AI produces, how it produces it, and how it behaves
+Product Discernment focuses on evaluating the quality of actual outputs (accuracy, appropriateness, coherence, relevance)
+Process Discernment involves assessing how the AI arrived at its output, looking for logical errors, attention gaps, or inappropriate reasoning
+Performance Discernment evaluates how the AI behaves within the collaboration process itself, considering whether its communication style is effective for your needs
+Discernment works hand-in-hand with Description in a continuous feedback loop
+Even the most advanced AI systems benefit from human judgment and oversight
+Exercises
+Expert Discernment: Evaluating AI Responses in Your Domain
+Activity Goal
+Practice Product, Process, and Performance Discernment by evaluating AI-generated content in a domain where you have expertise, recognizing how your knowledge enhances your ability to critically assess AI outputs.
+
+Instructions
+Step 1: Return to Your Area of Expertise
+
+Recall the topic you discussed with Claude in the earlier exercise (Lesson 2, Exercise 2: "Explore something you love"). This was a topic where you had strong knowledge and passion.
+
+Step 2: Ask for Multiple Explanations
+
+Start a new conversation with Claude and ask it to generate three different explanations or analyses about a specific aspect of your expert topic. For example:
+
+If your topic was photography, you might ask for three different explanations of depth of field
+If your topic was cooking, you might ask for three different analyses of fermentation techniques
+If your topic was history, you might ask for three different perspectives on a specific historical event
+Step 3: Apply Your Expert Discernment
+
+Drawing on your expertise, carefully evaluate each explanation provided by Claude:
+
+Product Discernment:
+
+Which explanation contains the most accurate information?
+Are there any factual errors or misconceptions?
+Is the level of detail appropriate for someone learning about this topic?
+Process Discernment:
+
+Does Claude follow logical reasoning in each explanation?
+Are there gaps in its analysis or thinking process?
+Does Claude make appropriate connections between concepts?
+Performance Discernment:
+
+Was Claude attentive to your specific question and responsive to feedback and direction?
+Is terminology used appropriately for the topic?
+How does the tone and style affect the clarity of the explanation?
+Step 4: Provide Feedback and Refinement
+
+Based on your evaluation:
+
+Identify the strongest explanation and specifically tell Claude specifically why it's effective
+Identify the weakest explanation and provide specific feedback on what makes it problematic
+Work with Claude to create an improved version that addresses the issues you identified
+Step 5: Reflection
+
+Discuss with Claude (in the same chat):
+
+What specific knowledge did you have that allowed you to identify strengths or weaknesses?
+How might someone without your expertise struggle to discern the quality of these explanations?
+What does this experience teach you about the relationship between domain knowledge and effective Discernment?
+For a more playful Discernment workout, you might want to try some of the “Game Night” suggestions in the final lesson ("Additional Activities").
+
+Reflection
+Before moving on, take a moment to consider:
+
+Which type of Discernment (Product, Process, or Performance) do you find most challenging to apply, and why?
+How does Discernment complement Description? How do they work together?
+What signals or patterns might indicate that an AI output requires closer scrutiny?
+What’s next
+In the next lesson, you'll have the opportunity to apply both Description and Discernment skills to your overarching course project. You'll put into practice what you've learned about effectively communicating with AI and critically evaluating its outputs to produce results that leverage the best of both human and AI capabilities.
+
+Estimated Time: 30 - 60 minutes
+
+By the end of this lesson, you'll be able to:
+
+Apply Description and Discernment skills to a real project
+Engage in productive Description-Discernment feedback loops
+Create results through human-AI collaboration that exceed what either could achieve alone
+Exercises
+Exercise: Project execution with description-discernment loops
+Now it's time to put everything you've learned into practice by working on the project you planned in Lesson 5, using the Description and Discernment skills you've been developing.
+
+Step 1: Review your project plan
+Pull up the project plan you created in Lesson 5
+Quickly review your delegation decisions about which tasks would benefit from human expertise, AI capabilities, or collaboration
+Feel free to refine your plan based on what you've learned since then
+Step 2: Prepare your description approach
+Start a conversation with Claude and explain the project you'll be working on together. Before diving into execution, plan how you'll approach Description:
+
+Product Description: What specific outputs do you need from Claude for each task? What format, style, length, and level of detail are you looking for?
+Process Description: How should Claude approach each task? Are there specific methods, frameworks, or steps you want it to follow?
+Performance Description: What kind of collaborative behavior do you want from Claude during this project? Should it be concise or detailed, challenging or supportive, focused on ideas or analysis?
+Discuss these questions with Claude to establish clear expectations for your collaboration.
+
+Step 3: Execute your project using description-discernment loops
+Now, work through your planned project tasks with Claude. For each task:
+
+Describe what you need clearly, using the Description skills you've learned:
+Be specific about what you want (Product)
+Guide how Claude should approach or think about the task (Process)
+Specify how you want Claude to engage with you during the process (Performance)
+Discern the quality of what you receive:
+Evaluate the output itself (Product Discernment)
+Assess how Claude approached the task (Process Discernment)
+Consider if Claude's behavior is most helpful for what you need (Performance Discernment)
+Refine based on your discernment:
+Provide feedback on what worked and what didn't
+Clarify or adjust your description as needed
+Request iterations until you're satisfied with the result
+Integrate your own expertise and judgment:
+Add your unique perspective, creativity, or domain knowledge
+Make the final decisions about what to keep, modify, or discard
+Take responsibility for the final output
+Continue this Description-Discernment loop for each task in your project until completion.
+
+Reflection
+Before moving on, take a moment to consider:
+
+What patterns did you notice in the types of descriptions that led to the best outcomes?
+Which required more effort from you: Description or Discernment? Why do you think that was the case?
+How did your actual project execution compare to your initial plan from Lesson 5? What adjustments did you make along the way?
+What's next
+In the next lesson, we'll explore the final competency in the AI Fluency Framework: Diligence. While Delegation, Description, and Discernment focus primarily on effectiveness and efficiency, Diligence addresses the ethical and safety aspects of working with AI. You'll learn how to ensure your AI collaborations are responsible, transparent, and accountable.
+
+Estimated Time: 20 minutes
+
+By the end of this lesson, you'll be able to:
+
+Understand the ethical implications of AI collaboration
+Understand the importance of transparency in AI work
+Recognize your responsibility in AI interactions and outputs
+Video: A closer look at diligence
+(7 minutes)
+
+
+
+This video explores Diligence, the AI Fluency competency that focuses on responsible and ethical AI collaborations. We explain that while the other competencies primarily address effectiveness and efficiency, Diligence addresses ethical and safety aspects that are equally crucial. We introduce three components:
+
+Creation Diligence: Being thoughtful about which AI systems you choose and how you work with them
+Transparency Diligence: Being open about AI's role in your work
+Deployment Diligence: Taking ownership for AI-assisted outputs you share with others
+We emphasize that different contexts may have different expectations, but we each have a responsibility to understand and meet these expectations.
+
+Key takeaways
+Diligence is about taking responsibility for our AI collaborations
+Creation Diligence involves being thoughtful about which AI systems we use and how we engage with them
+Transparency Diligence means being honest about AI's role in our work with everyone who needs to know
+Deployment Diligence requires taking responsibility for verifying and vouching for the outputs we use or share
+Different contexts (personal, academic, professional) may have different expectations for disclosure and verification
+Thoughtful Diligence helps ensure our AI collaborations are not only effective and efficient, but also ethical and safe
+Exercises
+Exercise: Creating a Diligence Statement
+Estimated time: 14 minutes
+
+In this exercise, you'll draft a diligence statement for the project you’ve been working on. Here is the diligence statement for this course itself.
+
+Step 1: Understand Diligence Statements
+Estimated time: 3 minutes
+
+A diligence statement is a transparent acknowledgment of AI's role in your work, along with your commitment to responsibility for the final output. Here's an example:
+
+"In creating this [document/project/content], I collaborated with [AI assistant name] to assist with [specific tasks: drafting, research, editing, etc.]. I affirm that all AI-generated and co-created content underwent thorough review and evaluation. The final output accurately reflects my understanding, expertise, and intended meaning. While AI assistance was instrumental in the process, I maintain full responsibility for the content, its accuracy, and its presentation. This disclosure is made in the spirit of transparency and to acknowledge the role of AI in the creation process."
+
+Step 2: Reflect on Your AI Collaboration
+Estimated time: 5 minutes
+
+Think about your work on the course project and consider:
+
+Creation Diligence:
+Which AI systems did you choose to work with and why?
+What data or information did you share with the AI?
+Were there any privacy, security, or ethical considerations in your choices?
+Transparency Diligence:
+Who is the audience for your project output?
+What expectations might they have regarding AI disclosure?
+How specifically did AI contribute to different aspects of your work?
+Deployment Diligence:
+What steps did you take to verify the accuracy and appropriateness of AI contributions?
+How did you ensure the final output meets your standards and requirements?
+What responsibility are you taking for the final product?
+Step 3: Draft Your Diligence Statement
+Estimated time: 6 minutes
+
+Open a conversation with Claude and:
+
+Share your reflections from Step 2, as well as optionally your past conversations that you’ve had with Claude about this project
+Collaborate with Claude to draft a diligence statement specific to your project
+Ensure your statement addresses:
+Which AI systems you used
+How the AI contributed to your project
+The review process you employed
+Your assertion of responsibility for the final output
+Any context-specific considerations (academic, professional, etc.)
+Step 4: Add Your Statement to Your Project
+When you finish your project, add your diligence statement in an appropriate location (e.g., footer, appendix, or metadata).
+
+Reflection
+Before moving on, take a moment to consider:
+
+Which aspect of Diligence (Creation, Transparency, or Deployment) do you find most challenging, and why?
+How might your approach to Diligence vary depending on the context (personal, academic, professional)?
+How does acknowledging AI's role in your work affect how others might perceive it?
+What ethical considerations arose during your project that you hadn't anticipated?
+What personal guidelines might you develop for responsible AI collaboration going forward?
+What’s next
+In the final lesson of this course, we'll reflect on what we've learned about AI Fluency and how these competencies work together. We'll revisit the framework as a whole and discuss how you can continue developing these skills as AI capabilities evolve. The conclusion will help you synthesize the knowledge and practices you've gained and apply them to future AI collaborations.
+
+Video: Conclusion
+(6 minutes)
+
+
+
+This concluding video revisits the AI Fluency Framework and brings together the key concepts explored throughout the course. We recap the four core competencies (the 4Ds): Delegation (deciding what work to do with AI versus independently), Description (communicating effectively with AI), Discernment (evaluating AI outputs and behaviors), and Diligence (ensuring responsible AI collaboration). We emphasize that these competencies apply across all three major ways of interacting with AI (Automation, Augmentation, and Agency) and that fluency develops through practice, not overnight mastery. We close with a reminder that AI systems are powerful but not magical solutions; they're only as useful and safe as we enable them to be through our thoughtful engagement.
+
+Key takeaways
+AI Fluency develops through intentional practice of the four core competencies
+Delegation emphasizes that our expertise and judgment remain the foundation of effective AI collaboration
+Description involves clear communication that bridges our intentions and AI capabilities
+Discernment requires thoughtful and critical evaluation of outputs to work within the systems constraints
+Diligence ensures accountability, transparency, and responsibility in our AI work
+The most powerful outcomes emerge when humans and AI build on each other's strengths
+The framework is designed to remain relevant as AI systems continue to evolve
+Exercises
+Exercise: Discuss the AI Fluency Course with Claude
+Engage Claude in a meaningful conversation about this course and the AI Fluency Framework (upload a copy of the framework from https://ringling.libguides.com/ai/framework)
+
+Suggested conversation starters:
+
+"I've just completed a course on AI Fluency covering Delegation, Description, Discernment, and Diligence. Let’s discuss how these competencies might apply to [my degree program or my job or whatever]."
+"Let's explore how the AI Fluency Framework might evolve as AI capabilities advance. What new competencies might become important in the future?" (If you do this one, reach out and let us know what you discover!)
+"Help me identify which of the 4D competencies I seem to understand well and which I might need to develop further, based on our conversation."
+“Here’s [some exercise you did in this course]. Let’s analyze it to improve my competencies.”
+Exercise: Build a Personal AI Policy
+With the help of Claude, create your own guidelines for responsible and ethical AI collaboration in your personal and professional contexts:
+
+Create clear standards for when and how you'll work with AI in different contexts
+Establish boundaries for sensitive or confidential information
+Define how you'll maintain quality control for AI-assisted work
+Identify ethical issues most relevant to your field or activities
+Develop decision-making criteria for addressing ethical dilemmas
+Consider the perspectives of different people who might be affected by your AI interactions
+Determine how you'll disclose AI collaboration in different contexts
+Create templates for attribution and transparency statements
+Establish criteria for when more detailed disclosure is appropriate
+Work with Claude as a thinking partner in this process to explore ethical considerations from multiple perspectives.
+
+Reflection
+The exercises above serve as the reflection component for this lesson. Through them, you'll have the opportunity to consolidate your learning and connect it to your ongoing development.
+
+What’s next
+Congratulations on completing the AI Fluency: Framework and Foundations course! This is just the beginning of your AI Fluency journey. As AI technologies continue to evolve, the competencies you've developed in Delegation, Description, Discernment, and Diligence, will provide a lasting framework to guide your work with these systems.
+
+Remember that fluency develops through practice. Each interaction with AI is an opportunity to refine your skills and deepen your understanding. By approaching AI as a thinking partner rather than just a tool, and by maintaining a commitment to effectiveness, efficiency, ethics, and safety, you're well-positioned to navigate the future of human-AI collaboration.
+
+We encourage you to continue exploring, experimenting, and reflecting on your AI interactions. There are many good additional exercises in Lesson 12 to continue your journey.
+
+We encourage you to share what you've learned with others (and us!), seek out diverse perspectives, and contribute to the ongoing conversation about how we can work with AI in ways that amplify human potential while respecting our values and responsibilities to each other. Thank you for your participation and engagement throughout this course!
+
+0:11
+In this video, we'll dig deeper into the
+0:14
+AI fluency competency of
+0:16
+description. AI fluency means working
+0:19
+with an AI effectively, efficiently,
+0:21
+ethically, and safely. Description is
+0:24
+about communicating with AI, which is
+0:26
+the core of most human AI interaction.
+0:29
+Description goes far beyond just writing
+0:31
+clever prompts. It's about communicating
+0:33
+with the AI to explain tasks, ask
+0:35
+questions, provide context, and
+0:37
+otherwise guide the interaction. It's
+0:39
+about being able to steer a conversation
+0:41
+that is going wrong. It's about guiding
+0:43
+an AI's thought process or logical
+0:45
+reasoning. And it's about building a
+0:47
+kind of thinking environment where both
+0:49
+you and the AI can each do your best
+0:52
+work.
+0:54
+Think of it as building a bridge between
+0:56
+your intentions and the AI's
+0:58
+capabilities. The quality of AI outputs
+1:01
+often depend on how clearly you describe
+1:03
+what you want. It's like the difference
+1:06
+between asking someone to make dinner
+1:08
+versus providing a detailed recipe with
+1:11
+ingredients and cooking instructions. AI
+1:13
+can't read your mind. Instead of
+1:16
+assuming the AI knows what you're
+1:18
+looking for, you need to explain every
+1:20
+relevant detail. What is the context for
+1:23
+this work? What exactly are you looking
+1:25
+for the AI to do? What format should the
+1:27
+output take? Who is the audience and
+1:29
+what style is appropriate? Don't make AI
+1:33
+guess what you're thinking. Set explicit
+1:35
+requirements and give the AI the
+1:38
+information it needs to deliver what
+1:40
+you're actually looking for. We call
+1:42
+this first concept product description.
+1:46
+The ability to clearly define what you
+1:48
+want the AI to create or provide.
+1:52
+Sometimes specifying how an AI should
+1:54
+tackle a job is as or even more
+1:56
+important than specifying the end goal.
+1:59
+Just as you might prefer that a
+2:01
+colleague tackle a problem using your
+2:02
+specific method, you can guide how an AI
+2:05
+works through your request. You can and
+2:08
+should give the AI helpful guidance to
+2:10
+help it accomplish your desired goal.
+2:13
+There are different ways to approach
+2:15
+this. You might provide general guidance
+2:18
+like a manual, step-by-step instructions
+2:20
+like a cookbook, or even a demonstration
+2:23
+through examples. Here's how I'd do it.
+2:25
+Think about it this way. The AI already
+2:28
+has extensive training, but you're
+2:30
+providing additional context specific to
+2:33
+your unique
+2:34
+situation. Are there specific data you
+2:37
+want the AI to draw on? Are there
+2:39
+specific issues it should be addressing
+2:41
+or in a particular order? Is there a
+2:43
+particular style of analysis you need or
+2:46
+maybe a specific workflow or technique
+2:47
+you wanted to use? Taking time to
+2:50
+explain these elements makes a
+2:52
+tremendous
+2:53
+difference. We call this second concept
+2:56
+process description. The ability to
+2:58
+guide how the AI assistant approaches
+3:01
+your
+3:02
+request. If you take one thing from this
+3:05
+course, it should be this. AI tools are
+3:08
+not databases or vending machines. They
+3:11
+are interactive systems that can behave
+3:13
+differently in different contexts much
+3:15
+like people might. You need to explain
+3:17
+how you want the AI to behave to get the
+3:19
+best
+3:20
+results. When you next sit down with AI,
+3:23
+think first, what kind of thinking
+3:25
+partner do you need right now? Are you
+3:28
+narrowing down towards a specific answer
+3:30
+or trying to explore multiple
+3:31
+possibilities? Do you want the AI to
+3:33
+challenge your assumptions or simply
+3:35
+follow your lead? to provide expensive
+3:37
+detail or keep things concise to explain
+3:40
+why it's answering in a certain way or
+3:42
+just give you the answer. We call this
+3:44
+third concept performance description.
+3:47
+The ability to define the behavioral
+3:49
+aspects of an AI
+3:51
+interaction. You should now have a
+3:53
+better sense of how product description,
+3:54
+process description, and performance
+3:56
+description combine to form the
+3:58
+description competency. When you develop
+4:01
+your capacity for description, you
+4:03
+transform AI from generic assistants
+4:06
+into finely tuned thinking partners that
+4:08
+can truly meet your needs.
+
+
+Let's explore one of the most practical
+0:14
+skills when working with AI. Crafting
+0:16
+effective prompts. This might sound
+0:18
+technical or complicated, and some
+0:20
+guides certainly make it seem that way,
+0:22
+but at its heart, it's surprisingly
+0:24
+straightforward. Prompting is simply how
+0:26
+we apply this course's description
+0:27
+competency in practice. clearly
+0:30
+communicating what we want, how we want
+0:31
+it done, and how we want to interact
+0:33
+with our AI assistant throughout the
+0:35
+entire process. Think of prompting like
+0:37
+explaining a task to a helpful new
+0:39
+colleague who's eager to assist, but
+0:41
+needs clear directions and expectation
+0:43
+setting to do their best work. We'll be
+0:45
+using Claude throughout this section,
+0:47
+but these tips can be carried over to
+0:49
+many other AI systems. You might have
+0:52
+heard the term prompt engineering tossed
+0:54
+around. Prompt engineering is simply the
+0:56
+practice of designing effective
+0:58
+instructions for AI systems like Claude.
+1:01
+It's about crafting your questions and
+1:02
+providing context in ways that help AI
+1:04
+assistants understand exactly what you
+1:07
+want. What's fascinating is that
+1:09
+effective prompting blends familiar
+1:11
+human communication skills with a few
+1:13
+considerations specific to AI. Many
+1:16
+principles that make for good human
+1:17
+conversation, such as being clear,
+1:19
+providing relevant context, and giving
+1:21
+concrete examples, also apply when
+1:23
+working with AI. Yet, there are
+1:25
+differences, such as being more explicit
+1:27
+about things humans could naturally
+1:28
+infer, and accommodating the AI's
+1:31
+limited context window, and sometimes,
+1:33
+depending on the AI you're working with,
+1:35
+using specific formatting that machines
+1:37
+can easily process. As AI assistants
+1:40
+continue to evolve, prompting best
+1:42
+practices evolve, too. What works with
+1:44
+today's AI systems may be different from
+1:46
+what works with tomorrow's.
+1:48
+Experimentation is key to discovering
+1:50
+what works best for your specific needs.
+1:52
+In this video, we'll mainly explore six
+1:54
+foundational prompting tips that will go
+1:56
+a long way toward helping you
+1:57
+effectively communicate and collaborate
+1:59
+with Claude and other AI systems. They
+2:01
+are give Claude context, show examples
+2:04
+of what good looks like, specify output
+2:07
+constraints, break complex tasks into
+2:10
+steps, ask Claude to think first, and
+2:13
+define Claude's role, style, or tone.
+2:15
+The first principle is simple but
+2:17
+powerful. Be specific and clear about
+2:19
+what you want, why you want it, and
+2:21
+perhaps most surprisingly, who you are.
+2:24
+Let's take a simple prompt. Tell me
+2:26
+about climate change. How can we improve
+2:29
+this by giving Cloud more context? A
+2:31
+more specific contextrich version could
+2:33
+look like, explain three major impacts
+2:36
+of climate change on agriculture in
+2:38
+tropical regions with examples from the
+2:40
+past decade. Our baseline prompt was
+2:43
+vague and leaves clawed guessing about
+2:44
+our interests, level of knowledge, and
+2:46
+the depth of detail we're looking for,
+2:48
+such as geography and time span. We can
+2:50
+even add more context by providing
+2:52
+information not just about what we're
+2:54
+looking for, but why we're asking and
+2:56
+how we'll be using that information that
+2:58
+Claude gives us. Now, our prompt looks
+3:00
+like this. Explain three major impacts
+3:02
+of climate change on agriculture in
+3:04
+tropical regions with examples from the
+3:06
+past decade. I'm preparing for a job
+3:09
+interview at an agricultural research
+3:10
+lab in Indonesia. I have a degree in
+3:13
+ecology, but no specific knowledge on
+3:15
+climate change. write a summary of key
+3:17
+concepts that would help me speak
+3:18
+intelligently in the interview. All this
+3:21
+added context helps tailor Claude's
+3:23
+response to your specific situation and
+3:25
+knowledge level. This kind of background
+3:26
+information is something we naturally
+3:28
+provide in human conversations, but
+3:30
+might forget to include when talking
+3:31
+with Claude. Sometimes showing is better
+3:34
+than telling. Providing examples of the
+3:36
+kind of output you're looking for can be
+3:38
+incredibly effective. This is sometimes
+3:40
+called fshot prompting or nshot
+3:42
+prompting in technical circles where n
+3:44
+is the number of examples given but it's
+3:47
+really just about showing the AI
+3:48
+examples for it to emulate. For
+3:50
+instance, take the following prompt.
+3:52
+Please convert this technical statement
+3:54
+to plain language. The platform
+3:56
+implements end-to-end encryption
+3:57
+protocols to safeguard data integrity.
+4:00
+Clog may already be able to do this to
+4:02
+your satisfaction. So we definitely
+4:04
+recommend you just try first without
+4:06
+examples and see where it leads you. But
+4:08
+let's say you have a very specific style
+4:10
+you want Claude to follow, and it's
+4:12
+harder to explain than to give examples.
+4:15
+Your refreshed prompt could look
+4:16
+something like this. Here are two
+4:19
+examples of how to convert technical
+4:20
+jargon into plain language. Original,
+4:23
+the quantum algorithm exhibits quadratic
+4:25
+speed up. Plain, the new method solves
+4:27
+problems roughly twice as fast as
+4:29
+previous methods. Original, the
+4:32
+interface leverages intuitive design
+4:33
+paradigms. Plain, the design is easy to
+4:36
+understand and use. Now, please convert
+4:39
+this complex technical manual to plain
+4:41
+language. When providing examples, aim
+4:43
+to cover the full diversity of possible
+4:45
+prompts, such as examples that cover
+4:47
+different cases or styles. This helps
+4:50
+Claude better understand the broad range
+4:51
+of the pattern you want it to follow.
+4:53
+Being clear about output constraints,
+4:55
+such as the desired format and length of
+4:57
+Claude's response, or the language you
+4:59
+want Claude to code in, or the color of
+5:01
+the buttons on the web page you want
+5:03
+Claude to design, also helps ensure you
+5:05
+get exactly what you need. Here's an
+5:08
+example of clear and detailed
+5:09
+description to ensure Claude delivers
+5:11
+exactly what you're looking for. Create
+5:14
+a clean, modern, single page art
+5:16
+portfolio website. Include these main
+5:18
+sections: hero, about me, skills,
+5:19
+portfolio, projects, experience, and
+5:21
+contact. Make the navigation menu sticky
+5:24
+and responsive with hamburger menu on
+5:25
+mobile. Use a sunset color palette and
+5:28
+add a dark light mode toggle in the
+5:30
+navigation. Guidance like this helps
+5:32
+cloud structure its response to match
+5:34
+your expectations. When you have a
+5:36
+complicated request, breaking it down
+5:38
+into smaller steps helps Cloud follow
+5:40
+your thinking and deliver better
+5:42
+results. Think about it this way. If you
+5:45
+ask a friend to do something for you
+5:46
+without specifying how, there's a chance
+5:48
+that they may not do it the way you
+5:50
+intended them to. We've all been there.
+5:52
+Listing out task steps ensures that
+5:54
+Claude follows the process you want to
+5:56
+in order to accomplish its task. This is
+5:59
+sometimes called chain of thought
+6:00
+prompting. For example, instead of
+6:02
+asking Claude to analyze this quarterly
+6:04
+sales data, you might say, "I'd like to
+6:06
+analyze this quarterly sales data.
+6:08
+Please approach this by looking through
+6:10
+our sales records to identify the top
+6:11
+performing products, comparing current
+6:14
+quarter results to the previous quarter,
+6:16
+highlighting any unusual trends or
+6:17
+patterns, and then suggesting possible
+6:19
+reasons for these trends. By default,
+6:21
+you may not need to do this, especially
+6:23
+for tasks that are relatively
+6:24
+straightforward. Furthermore, modern
+6:27
+reasoning models or extended thinking
+6:29
+models are increasingly capable of
+6:31
+performing step-by-step reasoning on
+6:33
+their own, but you can still guide this
+6:36
+process to ensure it aligns with your
+6:37
+needs. The more variance there is in
+6:40
+ways to execute the task well, or the
+6:42
+more that proper task execution relies
+6:44
+on experience and knowledge you've
+6:45
+gained as a domain expert, the more you
+6:48
+should consider taking the time to
+6:49
+translate that knowledge into Claude.
+6:51
+Relatedly, sometimes it can be helpful
+6:53
+to explicitly give AI assistants like
+6:55
+Claude space to work through its process
+6:57
+first before executing its task. This
+7:00
+approach helps Claude produce more
+7:02
+thorough and well-considered responses.
+7:04
+For example, you can add this to your
+7:06
+prompt. Before answering, please think
+7:08
+through this problem carefully. Consider
+7:11
+the different factors involved,
+7:12
+potential constraints, and various
+7:14
+approaches before recommending the best
+7:16
+solution. As I mentioned, modern
+7:18
+reasoning or extended thinking models by
+7:20
+default think before acting. But if
+7:22
+you're working with an AI assistant that
+7:24
+does not think first by default, you can
+7:26
+still prompt the AI to do so. I want to
+7:28
+note the importance of giving the AI
+7:30
+assistant space to think before doing
+7:32
+its task, not after. If you want that
+7:35
+thinking to increase the quality of the
+7:37
+AI's work, just like how having space to
+7:39
+think before you act is different than
+7:41
+acting first, then being asked to
+7:43
+explain your thinking afterwards. As a
+7:45
+side benefit, this also allows you to
+7:47
+better see where the AI assistant might
+7:49
+be going astray and thus where you could
+7:51
+hone your description competency further
+7:53
+by providing more guidance. Specifying
+7:56
+how you want cloud to communicate and
+7:58
+behave can significantly change how it
+8:00
+approaches a task. By specifying the
+8:02
+level of expected expertise, the
+8:04
+perspective you want it to take, or its
+8:06
+communication style, you can guide both
+8:08
+Claude's interaction with you and the
+8:10
+final result of what it produces. Simply
+8:12
+put, who do you want the AI to act as?
+8:15
+For example, take this prompt. Please
+8:17
+explain how rainbows form from the
+8:19
+perspective of an experienced science
+8:21
+teacher speaking to a bright 10-year-old
+8:23
+who's interested in science. This is
+8:25
+also a good way to brainstorm or get
+8:27
+feedback. You can specify a general role
+8:29
+or even ask Claw to take on the persona
+8:31
+of a specific figure, such as Richard
+8:32
+Fineman, when asking for physics
+8:34
+explanations. Here's another example. As
+8:37
+a UX design expert, review this website
+8:40
+wireframe and suggest three improvements
+8:42
+focusing on user navigation and
+8:43
+accessibility. Perhaps the most powerful
+8:45
+technique is asking Claude to help
+8:47
+improve your prompt. When you're not
+8:49
+sure how to ask for something or how to
+8:51
+improve your prompt, describe to Claude
+8:53
+your issue or situation and ask it to
+8:55
+make your prompt better or write your
+8:56
+prompt for you. I'm trying to get you,
+8:59
+Claude, to help me with goal. I'm not
+9:01
+sure how to phrase my request to get the
+9:04
+best results. Can you help me craft an
+9:06
+effective prompt for this? Here's where
+9:08
+Claude and other AI assistants may vary
+9:10
+most in terms of performance. So, we
+9:12
+suggest you experiment with different
+9:13
+models as part of practicing delegation.
+9:17
+Effective prompting is iterative and
+9:19
+experimental. AI systems and best
+9:21
+practices are constantly evolving. So,
+9:23
+what works today may change tomorrow.
+9:25
+Your first attempt won't always yield
+9:27
+the perfect result, and that's expected.
+9:29
+When a response isn't quite what you
+9:31
+need, try refining your approach by
+9:33
+playing around with any of the
+9:34
+techniques we mentioned, such as add
+9:37
+more specificity or context. Provide
+9:40
+examples of your desired output. Break
+9:42
+the task into smaller steps and try a
+9:45
+different technique or combination of
+9:47
+techniques. You can also ask for
+9:49
+variations such as, "Can you give me
+9:50
+three different versions of this?" You
+9:53
+can request different formats such as,
+9:54
+"Instead of a paragraph, could you
+9:56
+present this in an interactive
+9:58
+artifact?" Note that artifacts are a
+10:00
+unique way that Claude can create
+10:01
+outputs that may be easier to understand
+10:03
+or more interesting to digest. You can
+10:05
+also check confidence, such as for
+10:07
+factual questions, you can ask, "How
+10:09
+confident are you about this answer?"
+10:12
+You can also reset the conversation
+10:13
+entirely. Sometimes starting a fresh
+10:15
+conversation gives better results than
+10:17
+trying to correct the conversation
+10:19
+that's gone off track. Use each
+10:21
+interaction as feedback to improve your
+10:23
+next prompt. Over time, you'll develop
+10:25
+an intuition for how to communicate
+10:27
+effectively with all AI systems. As you
+10:30
+apply these techniques in practice,
+10:31
+here's some guidance to recap. Some
+10:34
+patterns consistently work well.
+10:36
+Starting with a clear task overview
+10:37
+statement, including format
+10:39
+specifications and examples, setting
+10:41
+explicit constraints or requirements,
+10:43
+providing rich and relevant background
+10:45
+information, and common mistakes to
+10:47
+avoid are assuming that Claude can read
+10:49
+your mind, or overloading a single
+10:52
+prompt or conversation with multiple
+10:53
+unrelated tasks, being too vague about
+10:56
+what success looks like, and not
+10:57
+providing feedback on previous
+10:59
+responses. To recap, effective
+11:01
+communication with AI systems like
+11:03
+Claude combines timeless human
+11:04
+communication principles with AI
+11:06
+specific techniques. The approaches
+11:08
+we've covered will serve you well across
+11:10
+different AI systems. These six
+11:12
+principles together with the secret
+11:13
+weapon of asking Cloud for help form a
+11:16
+solid toolkit for applying the
+11:17
+description competence to your AI
+11:19
+interactions. Iteration and practice
+11:21
+here is the key to Swift improvement and
+11:24
+mastery. Remember that prompt
+11:26
+engineering is an evolving practice. As
+11:28
+models improve, some specific techniques
+11:30
+become less necessary. However, these
+11:33
+principles of good communication are
+11:35
+still relevant even if the way we apply
+11:37
+them changes. Maintain a spirit of
+11:39
+experimentation and adapt your approach
+11:42
+based on your results.
+
+0:11
+In this video, we'll dig deeper into the
+0:13
+AI fluency competency of
+0:16
+discernment. AI fluency means working
+0:18
+with AI effectively, efficiently,
+0:20
+ethically, and
+What is discernment
+0:22
+safely. Discernment is specifically
+0:24
+about evaluating AI outputs, processes,
+0:27
+and behaviors. essentially your quality
+0:29
+control system for AI
+0:31
+collaboration. Discernment is your
+0:33
+ability to critically evaluate what AI
+0:35
+produces, how it produces it, and how it
+0:37
+behaves. It's kind of the flip side of
+0:40
+description. If description is about
+0:42
+clearly communicating what you want,
+0:44
+discernment is about deciding whether
+0:46
+what you get back actually meets your
+0:49
+needs. Developing your discernment helps
+0:51
+you identify when AI outputs are
+0:53
+valuable versus problematic. Recognize
+0:56
+strengths and limitations and determine
+0:58
+when outputs are ready to use or need
+1:01
+more work. Doing this well requires both
+1:04
+domain expertise, in other words,
+1:06
+knowing enough to judge quality, and an
+1:09
+understanding of how AI systems work,
+1:11
+including their typical
+1:13
+shortcomings. Remember, even the most
+1:16
+advanced AI systems can make reasoning
+1:18
+errors, produce factual mistakes, or act
+1:20
+in unexpected ways. Your capacity for
+1:22
+discernment acts as an essential
+1:25
+safeguard. The most straightforward form
+1:27
+of discernment is evaluating the quality
+1:29
+of what the AI actually produces. When
+1:33
+reviewing AI generated content, ask
+1:35
+yourself questions like, is this
+1:37
+factually accurate? Is it appropriate
+1:39
+for my audience and purpose? Is it
+1:41
+coherent and well structured? Does it
+1:44
+meet my requirements? And does it add
+1:46
+value or solve the problem I intended?
+1:50
+We call this first concept product
+1:52
+discernment, the ability to judge the
+1:54
+accuracy and value of AI created output.
+Recognition process discernment
+1:58
+When interacting with AI, you need to
+2:01
+assess not just what the AI produces,
+2:03
+but how it got there. Some things to
+2:06
+look out for include logical errors,
+2:08
+lapses in the AI's attention, taking
+2:11
+inappropriate steps, getting stuck on
+2:14
+one small detail or interpretation and
+2:16
+being unable to consider any
+2:18
+alternatives, or getting trapped in
+2:20
+circular reasoning. For example, imagine
+2:23
+you're working with AI to expand on one
+2:25
+of five outline options it offered for a
+2:27
+document. After several rounds of back
+2:28
+and forth ideiation together, you notice
+2:30
+elements of rejected ideas being
+2:32
+reinserted by AI. We call this kind of
+2:36
+recognition process discernment, the
+2:38
+ability to judge the quality and
+2:39
+effectiveness of the AI's process. It's
+2:42
+needed to ensure you and the AI are
+2:44
+thinking in sync throughout the process,
+2:46
+guiding the AI towards your vision for
+2:50
+success. It becomes especially important
+2:52
+for complex tasks where the correct
+2:54
+answer isn't immediately obvious. In
+2:56
+these situations, having trust in the
+2:58
+process is
+3:00
+everything. It's also often valuable to
+Performance discernment
+3:03
+evaluate and guide how the AI behaves
+3:05
+during your interaction. We call this
+3:08
+performance discernment. The difference
+3:10
+between process and performance is maybe
+3:12
+a bit subtle. You can think of process
+3:15
+as the work the AI is doing, while
+3:17
+performance is how well it is
+3:18
+interacting with you while it does the
+3:20
+work. When evaluating an AI assistant's
+3:23
+performance, you can ask yourself, is
+3:25
+there a better way for the AI to
+3:26
+communicate with you for greater ease
+3:28
+and productivity going forward? Is it
+3:31
+providing the information you need in a
+3:33
+helpful way? Does it respond well to
+3:35
+your feedback and direction? And is the
+3:38
+interaction efficient or unnecessarily
+3:41
+complex? For example, is the AI asking
+3:43
+too many questions when you need concise
+3:45
+answers, or is it too brief when you
+3:46
+need comprehensive information? We call
+3:49
+this performance discernment, the
+3:51
+ability to judge the quality of the
+3:53
+human AI interaction, which helps you
+3:55
+shape more productive working engagement
+3:57
+with the AI systems. Of course,
+Feedback discernment
+4:00
+discernment doesn't end with evaluation.
+4:02
+You also need to provide feedback in
+4:04
+order to improve what an AI delivers
+4:06
+going forward. When you identify
+4:08
+problems in AI outputs, effective
+4:10
+feedback includes specifying what the
+4:12
+problem is, clearly explaining why it is
+4:14
+a problem, providing concrete
+4:16
+suggestions for improvement and revising
+4:19
+your instructions or examples. In other
+4:21
+words, when discernment flags a problem,
+4:24
+better description is often the
+4:26
+solution. But this isn't always the
+4:28
+case. Sometimes you may need to rethink
+4:31
+your delegation decisions because you
+4:33
+might be using the wrong tool or
+4:34
+approaching the problem in entirely the
+4:36
+wrong way. To recap, product process and
+Recap
+4:40
+performance discernment combine to form
+4:43
+the discernment
+4:44
+competency. Discernment works handinand
+4:47
+with description. While description
+4:49
+focuses on communicating your needs to
+4:51
+AI, discernment evaluates how well those
+4:54
+needs were met. Together, they form a
+4:57
+continuous loop of instruction and
+4:59
+evaluation that drives quality. By
+5:01
+developing your discernment skills, you
+5:03
+ensure that your AI collaboration
+5:05
+remains guided by human judgment, a
+5:08
+critical element of truly effective AI
+5:10
+fluency.
+Lesson 8: A closer look at Discernment | AI Fluency: Framework & Foundations Course
+Anthropic
+Anthropic
+675K subscribers
+
+Subscribe
+
+547
+
+
+Share
+
+Ask
+
+Save
+
+230,504 views  Jun 12, 2025  AI Fluency Course
+
+The four core competencies in the AI Fluency Framework are known as "The 4 Ds." Which of the following lists all four correctly?
+
+Direction, Description, Decision-making, Diligence
+Data, Delegation, Discernment, Documentation
+Design, Description, Development, Deployment
+Delegation, Description, Discernment, Diligence
+
+Which competency focuses primarily on deciding what work should be done by AI versus what should be handled by humans?
+
+Diligence
+Discernment
+Description
+Delegation
+
+According to the framework, what is the primary focus of the Diligence competency?
+
+Evaluating the quality of AI outputs
+Writing better prompts for AI systems
+Making AI work faster and more efficiently
+Responsible AI use, transparency, and accountability
+
+Which of the following best describes "Problem Awareness" within the Delegation competency?
+
+Understanding which AI platform to use
+Knowing how to write effective prompts
+Evaluating the quality of AI outputs
+Clearly defining your goals and understanding what work is needed before involving AI
+
+Which competency focuses on communicating clearly with AI systems about what you want, how you want it done, and how you want to interact?
+
+Diligence
+Discernment
+Description
+Delegation
+
+Which of the following best describes "Product Description" within the Description competency?
+
+Explaining which AI platform to use for a task
+Evaluating whether AI outputs meet your requirements
+Clearly defining what you want the AI to create or provide
+Taking responsibility for AI-generated content accuracy
+
+Which competency involves critically evaluating AI outputs, processes, and behaviors to ensure quality and appropriateness?
+
+Description
+Discernment
+Delegation
+Diligence
+Previous 
+
+Which of the following best describes "Process Discernment" within the Discernment competency?
+
+Ensuring transparency about AI involvement in your work
+Assessing whether the AI's reasoning process and problem solving approach is effective
+Deciding which AI system to use for a task
+Judging the final quality of AI-generated content
+
+Which of the following best describes "Transparency Diligence" within the Diligence competency?
+
+Choosing the most advanced AI system available
+Being open and honest about AI's role in your work with those who need to know
+Making AI work as fast as possible
+Ensuring AI outputs are technically accurate
+
+Estimated Time: Self-paced
+
+The following activities are designed for self-directed learning after completing the AI Fluency: Framework and Foundations course.
+
+Choose the ones that resonate with your interests and needs—or use them as inspiration to create your own!
+
+Build a personal AI fluency plan
+With the help of an AI assistant, create a structured plan for developing your AI fluency over time:
+
+Current Competency Assessment
+For each of the 4D competencies, rate your current level of proficiency (novice, developing, confident)
+Document specific strengths and areas for growth within each competency
+Identify which ways of AI interacting (Automation, Augmentation, Agency) you currently use most and least effectively
+Development Priority Identification
+Select 1-2 competencies to focus on developing first
+Identify specific aspects of these competencies that would be most valuable in your context
+Consider which ways of AI interaction you want to become more proficient with
+Specific Action Planning
+Create specific activities to develop each priority competency
+Establish a timeline and frequency for practice sessions
+Identify resources and tools to support your development
+Define how you'll recognize progress and success
+Work with Claude as a thinking partner in this process, sharing your self-assessments and getting feedback on your plan.
+
+Build a personal prompt & pattern library
+Create a personalized collection of effective prompts and patterns for your recurring AI interactions with the help of Claude:
+
+Common Task Template Creation
+Identify 5-10 tasks you regularly perform with AI
+For each task, develop a template prompt that consistently produces good results
+Include placeholders or notes for variable information you'll need to add each time
+Effective Strategy Documentation
+Document specific Description techniques that work well for different types of tasks
+Record Discernment patterns that help you evaluate outputs more effectively
+Note which approaches work best for different interaction modes
+Personal Reference Resource Building
+Organize your templates and strategies in a way that’s easy to search and access
+Include examples of successful outputs for reference
+Create a system for updating your library as you discover new effective approaches
+You can work with Claude to analyze your past successful interactions and identify patterns that made them effective.
+
+ 
+
+Game night!
+These playful exercises for both you and Claude help you practice precise Description and sharpen your Discernment skills through word puzzles. Since puzzles have specific instructions (unlike open-ended tasks like "draft a thank-you note"), they're excellent for practicing clear communication. And because they're deliberately tricky, they provide great Discernment workouts! You can learn a lot about careful evaluation guidance of AI thinking processes by just playing a few games. Try any or all of the below.
+
+Swap Riddles
+Create a riddle (or try this one: "Five-score and more drums I tap to paint a symphony of light. What am I doing?").
+
+(Answer: I am typing on a computer keyboard (usually 104 keys) to create pixels on a monitor.)
+
+Have Claude guess, and, importantly, explain its reasoning.
+
+Take note of not just what Claude guesses, but why.
+
+Then don’t give it the answer, but rather gently nudge Claude towards the right chain-of-thought and context to get to the answer.
+
+Then switch sides and ask for a riddle in return. Have Claude guide you as you did it.
+
+Co-operative crosswords
+Work on crossword clues together (cryptic crossword clues can be especially interesting).
+
+The focus is not about how good you or Claude are at doing the crossword. It's about learning to guide and refine thinking: “Remember, it’s only 5 letters” “No can’t be that because it starts with B” “Maybe they didn’t mean “swallow” like drink, maybe they mean “swallow” like the bird.”
+
+These steering skills will prove surprisingly useful in a “real” project.
+
+Word association
+Word association games are very satisfying and informative to play with Claude (or a model of your choice). There are many games freely available online, just have a search!
+
+Even just picking 12 - 20 random words and collaborating with Claude to find relationships between them can be great Discernment practice. When you notice Claude making questionable connections or overlooking promising patterns, point this out and guide it toward better reasoning. Similarly, be open to Claude spotting connections you might miss!
+
+As you collaborate, practice all three types of Discernment:
+
+Product Discernment: Do the answers make logical sense and truly fit a cohesive theme?
+Process Discernment: How does Claude approach solving the puzzle? Does it consider multiple possibilities? Does it focus too narrowly on one interpretation?
+Performance Discernment: How does Claude communicate its thinking? Is it clear? Does it ask good questions? Does it build on your suggestions effectively?
+More game suggestions
+Continue developing your Description and Discernment skills through these activities:
+
+Twenty Questions: Have Claude think of an object, person, or concept, then try to guess it by asking yes/no questions. Then switch roles. Notice how you each formulate questions and provide clues.
+Collaborative Storytelling: Start a story with one sentence, have Claude continue with another, and alternate back and forth. Observe how you both maintain narrative coherence and build on each other's ideas.
+A Wizard Approaches You in the Tavern: If you enjoy playing role playing games, try playing a game or two with a language model as either player or game master.
+Concepts & Constraints: Choose a complex concept and really tight constraints like “explain using cooking metaphors only.” Then ask Claude to give you a challenge, try it yourself, and compare approaches.
+Advanced Puzzling: Create your own logic or word puzzles, then challenge Claude to solve it. Alternatively, ask Claude to create puzzles for you to solve. (If you are a programmer, you can swap out the puzzles and instead tackle thorny problems like https://projecteuler.net/ with Claude).
+ 

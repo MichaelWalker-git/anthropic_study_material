@@ -1,0 +1,2439 @@
+Accessing the API
+
+Open in Claude
+
+When building applications with Claude, understanding the complete request lifecycle helps you make better architectural decisions and debug issues more effectively. Let's walk through what happens from the moment a user clicks "send" in your chat interface to when Claude's response appears on screen.
+
+
+The Five-Step Request Flow
+Every interaction with Claude follows a predictable pattern with five distinct phases: request to server, request to Anthropic API, model processing, response to server, and response to client.
+
+
+Why You Need a Server
+You should never make requests to the Anthropic API directly from client-side code. Here's why:
+
+API requests require a secret API key for authentication
+Exposing this key in client code creates a serious security vulnerability
+Anyone could extract the key and make unauthorized requests
+Instead, your web or mobile app sends requests to your own server, which then communicates with the Anthropic API using the securely stored key.
+
+Making API Requests
+When your server contacts the Anthropic API, you can use either an official SDK or make plain HTTP requests. Anthropic provides SDKs for Python, TypeScript, JavaScript, Go, and Ruby.
+
+
+Every request must include these essential fields:
+
+API Key - Identifies your request to Anthropic
+Model - Name of the model to use (like "claude-3-sonnet")
+Messages - List containing the user's input text
+Max Tokens - Limit for how many tokens Claude can generate
+Inside Claude's Processing
+Once Anthropic receives your request, Claude processes it through four main stages: tokenization, embedding, contextualization, and generation.
+
+
+Tokenization
+Claude first breaks your input text into smaller chunks called tokens. These can be whole words, parts of words, spaces, or symbols. For simplicity, think of each word as one token.
+
+Embedding
+Each token gets converted into an embedding - a long list of numbers that represents all possible meanings of that word. Think of embeddings as numerical definitions that capture semantic relationships.
+
+
+Words often have multiple meanings. For example, "quantum" could refer to:
+
+A discrete unit of physical quantity (physics)
+Quantum mechanics or quantum physics concepts
+Something extremely small or subatomic
+Quantum computing applications
+Contextualization
+Claude refines each embedding based on surrounding words to determine the most likely meaning in context. This process adjusts the numerical representations to highlight the appropriate definition.
+
+
+Generation
+The contextualized embeddings pass through an output layer that calculates probabilities for each possible next word. Claude doesn't always pick the highest probability word - it uses a mix of probability and controlled randomness to create natural, varied responses.
+
+
+After selecting each word, Claude adds it to the sequence and repeats the entire process for the next word.
+
+When Claude Stops Generating
+After each token, Claude checks several conditions to decide whether to continue:
+
+
+Max tokens reached - Has it hit the limit you specified?
+Natural ending - Did it generate an end-of-sequence token?
+Stop sequence - Did it encounter a predefined stop phrase?
+The API Response
+When generation completes, the API sends back a structured response containing:
+
+Message - The generated text
+Usage - Count of input and output tokens
+Stop Reason - Why generation ended
+
+Your server receives this response and forwards the generated text back to your client application, where it appears in the user interface.
+
+
+Key Takeaways
+Understanding this flow helps you:
+
+Design secure architectures that protect your API keys
+Set appropriate token limits for your use case
+Handle different stop reasons in your application logic
+Debug issues by understanding where they might occur in the pipeline
+Don't worry about memorizing every detail - the goal is familiarizing yourself with the terminology and overall process you'll encounter when working with Claude's API.
+
+Getting an API key
+
+Open in Claude
+
+In the next video we will be making a request to the Anthropic API. To do so, you will need a secret API key. This guide will walk you through the process of creating an API key.
+
+Step One: Navigate to the Anthropic API Console
+In your browser, navigate to https://console.anthropic.com/ and log in to your Anthropic account. You'll then see a page like this:
+
+
+
+Step Two: Click the 'Get API Keys' button
+This button can be found towards the top right of the main dashboard page.
+
+
+
+Step Three: Click the 'Create Key' button
+At the top right of the page, find the 'Create Key' button and click it.
+
+
+
+Step Four: Enter a workspace and name for your key
+Create the key in workspace 'Default' and enter a name for your key. This name is used to help you identify the keys you generate. Let's use a name of 'Anthropic Course'.
+
+
+
+Step Five: Copy the Key
+Your API key will then be displayed in a pop up window. Copy this key and hold onto it - we will use it in the next video. This key will only be displayed once, so make sure you copy it!
+
+If you accidentally close the window, delete the old key and generate it again.
+
+Making a request
+
+Open in Claude
+
+Making your first request to the Anthropic API is straightforward once you understand the basic setup and structure. This guide walks through the essential steps to get Claude responding to your prompts using Python.
+
+Setting Up Your Environment
+Before making any API calls, you need to install the required packages and configure your API key securely.
+
+First, install the necessary dependencies in your Jupyter notebook:
+
+%pip install anthropic python-dotenv
+Next, create a .env file in the same directory as your notebook to store your API key securely:
+
+ANTHROPIC_API_KEY="your-api-key-here"
+This approach keeps your API key out of your code and prevents accidentally committing it to version control. Always add .env to your .gitignore file.
+
+Load the environment variables and create your API client:
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from anthropic import Anthropic
+
+client = Anthropic()
+model = "claude-sonnet-4-0"
+The Create Function
+The core of making API requests is the client.messages.create() function. This function requires three key parameters:
+
+
+
+model - The name of the Claude model you want to use
+max_tokens - A safety limit on response length (not a target)
+messages - The conversation history you're sending to Claude
+The max_tokens parameter acts as a safety mechanism. If you set it to 1000, Claude will stop generating after 1000 tokens even if it has more to say. Claude doesn't try to reach this limit - it just writes what it thinks is appropriate and stops if it hits the maximum.
+
+Understanding Messages
+Messages represent the conversation between you and Claude, similar to a chat application. There are two types of messages:
+
+
+
+User messages - Content you want to send to Claude (written by humans)
+Assistant messages - Responses that Claude has generated
+Each message is a dictionary with a role (either "user" or "assistant") and content (the actual text).
+
+Making Your First Request
+Here's a complete example of making a request to Claude:
+
+message = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=[
+        {
+            "role": "user",
+            "content": "What is quantum computing? Answer in one sentence"
+        }
+    ]
+)
+When you run this code, Claude will process your request and return a response object containing the generated text along with metadata about the request.
+
+Extracting the Response
+The response object contains a lot of information, but you usually just want the generated text. Access it using:
+
+message.content[0].text
+This gives you clean, readable output like: "Quantum computing is a type of computation that leverages quantum mechanics principles like superposition and entanglement to process information using quantum bits (qubits), potentially solving certain complex problems exponentially faster than classical computers."
+
+With these basics in place, you can start experimenting with different prompts and building more complex interactions with Claude.
+
+Multi-Turn conversations
+
+Open in Claude
+
+When working with the Anthropic API and Claude, there's a crucial concept you need to understand: Claude doesn't store any of your conversation history. Each request you make is completely independent, with no memory of previous exchanges.
+
+
+This means if you want to have a multi-turn conversation where Claude remembers context from earlier messages, you need to handle the conversation state yourself.
+
+The Problem with Stateless Conversations
+Let's say you ask Claude "What is quantum computing?" and get a good response. Then you follow up with "Write another sentence" - Claude has no idea what you're referring to. It will write a sentence about something completely random because it has no memory of the quantum computing discussion.
+
+
+How Multi-Turn Conversations Work
+To maintain conversation context, you need to do two things:
+
+Manually maintain a list of all messages in your code
+Send the complete message history with every request
+
+Here's the flow that actually works:
+
+Send your initial user message to Claude
+Take Claude's response and add it to your message list as an assistant message
+Add your follow-up question as another user message
+Send the entire conversation history to Claude
+
+Building Helper Functions
+To make conversation management easier, you can create three helper functions:
+
+def add_user_message(messages, text):
+    user_message = {"role": "user", "content": text}
+    messages.append(user_message)
+
+def add_assistant_message(messages, text):
+    assistant_message = {"role": "assistant", "content": text}
+    messages.append(assistant_message)
+
+def chat(messages):
+    message = client.messages.create(
+        model=model,
+        max_tokens=1000,
+        messages=messages,
+    )
+    return message.content[0].text
+Putting It All Together
+Here's how you use these functions to maintain a conversation:
+
+# Start with an empty message list
+messages = []
+
+# Add the initial user question
+add_user_message(messages, "Define quantum computing in one sentence")
+
+# Get Claude's response
+answer = chat(messages)
+
+# Add Claude's response to the conversation history
+add_assistant_message(messages, answer)
+
+# Add a follow-up question
+add_user_message(messages, "Write another sentence")
+
+# Get the follow-up response with full context
+final_answer = chat(messages)
+Now Claude will understand that "Write another sentence" refers to expanding on the quantum computing definition, because you've provided the complete conversation context.
+
+These helper functions will be useful throughout your work with Claude, making it much easier to build applications that can maintain meaningful conversations over multiple exchanges.
+
+System prompts
+
+Open in Claude
+
+System prompts are a powerful way to customize how Claude responds to user input. Instead of getting generic answers, you can shape Claude's tone, style, and approach to match your specific use case.
+
+
+Why System Prompts Matter
+Consider building a math tutor chatbot. When a student asks "How do I solve 5x + 2 = 3 for x?", you want Claude to act like a real tutor, not just spit out the answer. A good math tutor should:
+
+Initially give hints rather than complete solutions
+Patiently walk students through problems step by step
+Show solutions for similar problems as examples
+You definitely don't want Claude to:
+
+Immediately give direct answers
+Tell students to just use a calculator
+How System Prompts Work
+
+System prompts provide Claude with guidance on how to respond. You define them as plain strings and pass them into the create function call. The key benefits are:
+
+System prompts provide Claude guidance on how to respond
+Claude will try to respond in the same way someone in the specified role would respond
+Helps keep Claude on task
+Here's the basic structure:
+
+system_prompt = """
+You are a patient math tutor.
+Do not directly answer a student's questions.
+Guide them to a solution step by step.
+"""
+
+client.messages.create(
+    model=model,
+    messages=messages,
+    max_tokens=1000,
+    system=system_prompt
+)
+Seeing the Difference
+Without a system prompt, Claude gives a complete step-by-step solution immediately. This might be helpful, but it doesn't encourage the student to think through the problem themselves.
+
+With the math tutor system prompt, Claude's response changes dramatically. Instead of providing the full solution, Claude asks guiding questions like "What do you think would be a good first step to isolate x? Consider what operation we might need to perform on both sides to start moving terms around."
+
+Building a Flexible Chat Function
+Rather than hard-coding system prompts, you can make your chat function more reusable by accepting system prompts as parameters:
+
+def chat(messages, system=None):
+    params = {
+        "model": model,
+        "max_tokens": 1000,
+        "messages": messages,
+    }
+    
+    if system:
+        params["system"] = system
+    
+    message = client.messages.create(**params)
+    return message.content[0].text
+This approach handles an important detail: Claude's API doesn't accept system=None, so you need to conditionally include the system parameter only when it's provided.
+
+Now you can call your chat function with or without a system prompt:
+
+# Without system prompt
+answer = chat(messages)
+
+# With system prompt
+system = """
+You are a patient math tutor.
+Do not directly answer a student's questions.
+Guide them to a solution step by step.
+"""
+answer = chat(messages, system=system)
+System prompts are essential for creating AI applications that behave consistently and appropriately for their intended purpose. They transform generic AI responses into specialized, role-appropriate interactions.
+
+Open in Claude
+
+Temperature is a powerful parameter that controls how predictable or creative Claude's responses will be. Understanding how to use it effectively can dramatically improve your AI applications.
+
+How Claude Generates Text
+Before diving into temperature, it helps to understand Claude's text generation process. When you send Claude a prompt like "What do you think?", it goes through three key steps:
+
+Tokenization - Breaking your input into smaller chunks
+Prediction - Calculating probabilities for possible next words
+Sampling - Choosing a token based on those probabilities
+
+In this example, Claude might assign a 30% probability to "about", 20% to "would", 10% to "of", and so on. The model then selects one token and repeats this entire process to build complete sentences.
+
+
+What Temperature Does
+Temperature is a decimal value between 0 and 1 that directly influences these selection probabilities. It's like adjusting the "creativity dial" on Claude's responses.
+
+
+At low temperatures (near 0), Claude becomes very deterministic - it almost always picks the highest probability token. At high temperatures (near 1), Claude distributes probability more evenly across options, leading to more varied and creative outputs.
+
+Interactive Temperature Demo
+You can see temperature in action with Claude's interactive demo. Watch how the probability distribution changes as you adjust the temperature slider:
+
+
+At temperature 0.0, "about" gets 100% probability - completely deterministic. At temperature 1.0, probabilities spread more evenly across all possible tokens, introducing randomness and creativity.
+
+Choosing the Right Temperature
+Different tasks call for different temperature ranges:
+
+
+Low Temperature (0.0 - 0.3)
+Factual responses
+Coding assistance
+Data extraction
+Content moderation
+Medium Temperature (0.4 - 0.7)
+Summarization
+Educational content
+Problem-solving
+Creative writing with constraints
+High Temperature (0.8 - 1.0)
+Brainstorming
+Creative writing
+Marketing content
+Joke generation
+Implementing Temperature in Code
+Adding temperature support to your chat function is straightforward. Here's how to modify your existing function:
+
+def chat(messages, system=None, temperature=1.0):
+    params = {
+        "model": model,
+        "max_tokens": 1000,
+        "messages": messages,
+        "temperature": temperature
+    }
+    
+    if system:
+        params["system"] = system
+    
+    message = client.messages.create(**params)
+    return message.content[0].text
+The key changes are adding temperature=1.0 as a parameter and including "temperature": temperature in the params dictionary.
+
+Testing Temperature Effects
+To see temperature in action, try generating movie ideas with different settings:
+
+# Low temperature - more predictable
+answer = chat(messages, temperature=0.0)
+
+# High temperature - more creative  
+answer = chat(messages, temperature=1.0)
+At temperature 0.0, you might consistently get responses like "A time-traveling archaeologist must prevent ancient artifacts from being stolen." At temperature 1.0, you'll see much more variety in themes, characters, and plot elements.
+
+Key Takeaways
+Remember that temperature doesn't guarantee different outputs - it just changes the probability of getting them. Even at high temperatures, Claude might occasionally produce similar responses. The key is matching your temperature choice to your specific use case:
+
+Need consistent, factual responses? Use low temperature
+Want creative brainstorming? Dial up the temperature
+Somewhere in between? Medium temperatures work well for most general tasks
+Temperature is one of the most practical parameters you can adjust to fine-tune Claude's behavior for your specific needs.
+
+Response streaming
+
+Open in Claude
+
+When building chat applications with Claude, there's a significant user experience challenge: responses can take 10-30 seconds to generate, leaving users staring at a loading spinner. The solution is response streaming, which lets users see text appear chunk by chunk as Claude generates it, creating a much more responsive feel.
+
+
+The Problem with Standard Responses
+In a typical chat setup, your server sends a user message to Claude and waits for the complete response before sending anything back to the client. This creates an awkward delay where users have no feedback that anything is happening.
+
+
+How Streaming Works
+With streaming enabled, Claude immediately sends back an initial response indicating it has received your request and is starting to generate text. Then you receive a series of events, each containing a small piece of the overall response.
+
+
+Your server can forward these text chunks to your client application as they arrive, allowing users to see the response building up word by word. All of these events are part of a single request to Claude.
+
+
+Understanding Stream Events
+When you enable streaming, Claude sends back several types of events:
+
+MessageStart - A new message is being sent
+ContentBlockStart - Start of a new block containing text, tool use, or other content
+ContentBlockDelta - Chunks of the actual generated text
+ContentBlockStop - The current content block has been completed
+MessageDelta - The current message is complete
+MessageStop - End of information about the current message
+
+The ContentBlockDelta events contain the actual generated text that you'll want to display to users.
+
+Basic Streaming Implementation
+To enable streaming, add stream=True to your messages.create call:
+
+messages = []
+add_user_message(messages, "Write a 1 sentence description of a fake database")
+
+stream = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=messages,
+    stream=True
+)
+
+for event in stream:
+    print(event)
+
+Simplified Text Streaming
+Rather than manually parsing events, you can use the SDK's simplified streaming interface that extracts just the text content:
+
+with client.messages.stream(
+    model=model,
+    max_tokens=1000,
+    messages=messages
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="")
+This approach automatically filters out everything except the actual text content, which is usually what you need for displaying responses to users.
+
+Getting the Complete Message
+While streaming individual chunks is great for user experience, you often need the complete message for storage or further processing. After streaming completes, you can get the assembled final message:
+
+with client.messages.stream(
+    model=model,
+    max_tokens=1000,
+    messages=messages
+) as stream:
+    for text in stream.text_stream:
+        # Send each chunk to your client
+        pass
+    
+    # Get the complete message for database storage
+    final_message = stream.get_final_message()
+This gives you the best of both worlds: real-time streaming for users and a complete message object for your application logic.
+
+Structured data
+
+Open in Claude
+
+When you need Claude to generate structured data like JSON, Python code, or bulleted lists, you'll often run into a common problem: Claude wants to be helpful and add explanatory text around your content. While this is usually great, sometimes you need just the raw data with nothing else.
+
+Consider building a web app that generates AWS EventBridge rules. Users enter a description, click generate, and expect to see clean JSON they can immediately copy and use. If Claude returns the JSON wrapped in markdown code blocks with explanatory text, users can't simply copy the entire response - they have to manually select just the JSON portion.
+
+
+The Problem with Default Responses
+By default, when you ask Claude to generate JSON, you might get something like this:
+
+```json
+{
+  "source": ["aws.ec2"],
+  "detail-type": ["EC2 Instance State-change Notification"],
+  "detail": {
+    "state": ["running"]
+  }
+}
+```
+
+This rule captures EC2 instance state changes when instances start running.
+The JSON is correct, but it's wrapped in markdown formatting and includes explanatory text. For a web app where users need to copy the raw JSON, this creates friction in the user experience.
+
+The Solution: Assistant Message Prefilling + Stop Sequences
+You can combine assistant message prefilling with stop sequences to get exactly the content you want. Here's how it works:
+
+messages = []
+
+add_user_message(messages, "Generate a very short event bridge rule as json")
+add_assistant_message(messages, "```json")
+
+text = chat(messages, stop_sequences=["```"])
+This technique works by:
+
+The user message tells Claude what to generate
+The prefilled assistant message makes Claude think it already started a markdown code block
+Claude continues by writing just the JSON content
+When Claude tries to close the code block with ```, the stop sequence immediately ends generation
+
+The result is clean JSON with no extra formatting:
+
+{
+  "source": ["aws.ec2"],
+  "detail-type": ["EC2 Instance State-change Notification"],
+  "detail": {
+    "state": ["running"]
+  }
+}
+Processing the Response
+You might notice some extra newline characters in the response. These are easy to handle:
+
+import json
+
+# Clean up and parse the JSON
+clean_json = json.loads(text.strip())
+Beyond JSON
+This technique isn't limited to JSON generation. Use it anytime you need structured data without commentary:
+
+Python code snippets
+Bulleted lists
+CSV data
+Any formatted content where you want just the content, not explanations
+The key is identifying what Claude naturally wants to wrap your content in, then using that as your prefill and stop sequence. For code, it's usually markdown code blocks. For lists, it might be different formatting markers.
+
+This approach gives you precise control over Claude's output format, making it much easier to integrate AI-generated content into applications where clean, structured data is essential.
+
+You want to send a request to Claude's API. What's the minimum information you must include?
+
+Only the API key and your question
+Just your message text
+API key, model name, messages, and max tokens
+Your name, email, and message
+
+
+You ask Claude "What is pizza?" and it answers. Then you ask "What toppings are popular?" but Claude doesn't understand what you're referring to. What's the problem?
+
+Your internet connection is slow
+Claude is broken
+You asked too quickly
+Claude doesn't remember previous messages
+Previous Next Question
+
+When Claude processes your text, what's the first thing it does?
+
+Generates a response immediately
+Checks if it's appropriate content
+Breaks it into smaller chunks called tokens
+Translates it to another language
+
+
+Users complain your chat app feels slow because they wait 20 seconds staring at a loading spinner, then all the generated text appears at once. What can fix this?
+
+Asking shorter questions
+Using a faster internet connection
+Enabling response streaming
+Using a different web browser
+
+You're building a web app that talks to Claude. Where should you store your API key?
+
+In your mobile app that users install
+In a text file on the user's computer
+On your server that users can't access
+In your JavaScript code that users download
+
+You're building a math tutor bot. You want Claude to give hints instead of direct answers. What should you use?
+
+Setting a very low word limit
+Using all capital letters in your messages
+A system prompt explaining the tutor role
+Asking users to be more specific
+Previous Next Question
+
+You want Claude to give very predictable, consistent answers for a factual Q&A app. What temperature setting should you use?
+
+Temperature doesn't matter for facts
+Low temperature (near 0.0)
+Medium temperature (around 0.5)
+High temperature (near 1.0)
+Previous Next Question
+
+You're building an app that needs clean JSON from Claude with no extra text or formatting. How do you get just the raw JSON?
+
+Send the request multiple times and pick the best one
+Ask Claude very nicely to only return JSON
+Combine prefilled messages and stop sequences
+Use a very high temperature setting
+
+Prompt evaluation
+
+Open in Claude
+
+When working with Claude, writing a good prompt is just the beginning. To build reliable AI applications, you need to understand two critical concepts: prompt engineering and prompt evaluation. Prompt engineering gives you techniques for writing better prompts, while prompt evaluation helps you measure how well those prompts actually work.
+
+
+Prompt Engineering vs Prompt Evaluation
+Prompt engineering is your toolkit for crafting effective prompts. It includes techniques like:
+
+Multishot prompting
+Structuring with XML tags
+Many other best practices
+These techniques help Claude understand exactly what you're asking for and how you want it to respond.
+
+Prompt evaluation takes a different approach. Instead of focusing on how to write prompts, it's about measuring their effectiveness through automated testing. You can:
+
+Test against expected answers
+Compare different versions of the same prompt
+Review outputs for errors
+Three Paths After Writing a Prompt
+Once you've drafted a prompt, you typically face three options for what to do next:
+
+
+Option 1: Test the prompt once and decide it's good enough. This carries a significant risk of breaking in production when users provide unexpected inputs.
+
+Option 2: Test the prompt a few times and tweak it to handle a corner case or two. While better than option 1, users will often provide very unexpected outputs that you haven't considered.
+
+Option 3: Run the prompt through an evaluation pipeline to score it, then iterate on the prompt based on objective metrics. This approach requires more work and cost, but gives you much more confidence in your prompt's reliability.
+
+Why Most Engineers Fall Into Testing Traps
+Options 1 and 2 are common traps that all engineers fall into, myself included. It's natural to write a prompt for a serious application and not test it thoroughly enough. We tend to underestimate how many edge cases real users will encounter.
+
+The reality is that when you deploy a prompt to production, users will interact with it in ways you never anticipated. What seemed like a solid prompt during your limited testing can quickly break down when faced with the full variety of real-world inputs.
+
+The Evaluation-First Approach
+Option 3 represents a more systematic approach to prompt development. By running your prompt through an evaluation pipeline, you get objective metrics about its performance across a broader range of test cases. This data-driven approach lets you:
+
+Identify weaknesses before they become production issues
+Compare different prompt versions objectively
+Iterate with confidence based on measurable improvements
+Build more reliable AI applications
+While this approach requires more upfront investment in time and testing infrastructure, it pays dividends in the reliability and robustness of your final application. The goal is to catch problems during development rather than after your users encounter them
+
+A typical eval workflow
+
+Open in Claude
+
+A typical prompt evaluation workflow follows five key steps that help you systematically improve your prompts through objective measurement. While there are many different ways to assemble these workflows and various open source and paid tools available, understanding the core process helps you start small and scale up as needed.
+
+
+Step 1: Draft a Prompt
+Start by writing an initial prompt that you want to improve. For this example, we'll use a simple prompt:
+
+prompt = f"""
+Please answer the user's question:
+
+{question}
+"""
+
+This basic prompt will serve as our baseline for testing and improvement.
+
+Step 2: Create an Eval Dataset
+Your evaluation dataset contains sample inputs that represent the types of questions or requests your prompt will handle in production. The dataset should include questions that will be interpolated into your prompt template.
+
+
+For this example, our dataset includes three questions:
+
+"What's 2+2?"
+"How do I make oatmeal?"
+"How far away is the Moon?"
+In real-world evaluations, you might have tens, hundreds, or even thousands of records. You can assemble these datasets by hand or use Claude to generate them for you.
+
+Step 3: Feed Through Claude
+Take each question from your dataset and merge it with your prompt template to create complete prompts. Then send each one to Claude to get responses.
+
+
+For example, the first question becomes:
+
+Please answer the user's question:
+What's 2+2?
+Claude might respond with "2 + 2 = 4" for the math question, provide oatmeal cooking instructions for the second question, and give the distance to the Moon for the third.
+
+Step 4: Feed Through a Grader
+The grader evaluates the quality of Claude's responses by examining both the original question and Claude's answer. This step provides objective scoring, typically on a scale from 1 to 10, where 10 represents a perfect answer and lower scores indicate room for improvement.
+
+
+In our example, the grader might assign:
+
+Math question: 10 (perfect answer)
+Oatmeal question: 4 (needs improvement)
+Moon question: 9 (very good answer)
+The average score across all questions gives you an objective measurement: (10 + 4 + 9) ÷ 3 = 7.66
+
+Step 5: Change Prompt and Repeat
+Now that you have a baseline score, you can modify your prompt and run the entire process again to see if your changes improve performance.
+
+
+For example, you might add more guidance to your prompt:
+
+prompt = f"""
+Please answer the user's question:
+
+{question}
+
+Answer the question with ample detail
+"""
+After running this improved prompt through the same evaluation process, you might get a higher average score of 8.7, indicating that the additional instruction helped Claude provide better responses.
+
+Prompt Scoring
+The key benefit of this workflow is getting objective measurements of prompt performance. You can:
+
+Compare different prompt versions numerically
+Use the version with the best score
+Continue iterating to find even better approaches
+
+This systematic approach removes guesswork from prompt engineering and gives you confidence that your changes are actually improvements rather than just different variations.
+
+Generating test datasets
+
+Open in Claude
+
+Building a custom prompt evaluation workflow starts with creating a solid prompt and then generating test data to see how well it performs. Let's walk through setting up an evaluation system for a prompt that helps users write AWS-specific code.
+
+Setting Up the Goal
+Our prompt needs to assist users in writing three specific types of output for AWS use cases:
+
+Python code
+JSON configuration files
+Regular expressions
+The key requirement is that when a user requests help with a task, we return clean output in one of these formats without any extra explanations, headers, or footers.
+
+
+Here's our starting prompt (version 1):
+
+prompt = f"""
+Please provide a solution to the following task:
+{task}
+"""
+Creating an Evaluation Dataset
+An evaluation dataset contains inputs that we'll feed into our prompt. For each combination of prompt and input, we'll run the prompt and analyze the results.
+
+Our dataset will be an array of JSON objects, where each object contains a "task" property describing what we want Claude to accomplish. We can either create this dataset by hand or generate it automatically using Claude.
+
+
+Since we're generating test data, this is a perfect opportunity to use a faster model like Haiku instead of the full Claude model.
+
+Generating Test Data with Code
+Let's create a function that automatically generates our test dataset. First, we'll need our helper functions for working with Claude:
+
+def add_user_message(messages, text):
+    user_message = {"role": "user", "content": text}
+    messages.append(user_message)
+
+def add_assistant_message(messages, text):
+    assistant_message = {"role": "assistant", "content": text}
+    messages.append(assistant_message)
+
+def chat(messages, system=None, temperature=1.0, stop_sequences=[]):
+    params = {
+        "model": model,
+        "max_tokens": 1000,
+        "messages": messages,
+        "temperature": temperature
+    }
+    if system:
+        params["system"] = system
+    if stop_sequences:
+        params["stop_sequences"] = stop_sequences
+    
+    response = client.messages.create(**params)
+    return response.content[0].text
+Now we'll create our dataset generation function:
+
+def generate_dataset():
+    prompt = """
+Generate an evaluation dataset for a prompt evaluation. The dataset will be used to evaluate prompts that generate Python, JSON, or Regex specifically for AWS-related tasks. Generate an array of JSON objects, each representing task that requires Python, JSON, or a Regex to complete.
+
+Example output:
+```json
+[
+  {
+    "task": "Description of task",
+  },
+  ...additional
+]
+```
+
+* Focus on tasks that can be solved by writing a single Python function, a single JSON object, or a single regex
+* Focus on tasks that do not require writing much code
+
+Please generate 3 objects.
+"""
+To properly parse the JSON response, we'll use prefilling and stop sequences:
+
+    messages = []
+    add_user_message(messages, prompt)
+    add_assistant_message(messages, "```json")
+    text = chat(messages, stop_sequences=["```"])
+    return json.loads(text)
+Testing the Dataset Generation
+Let's run our function and see what kind of test cases we get:
+
+dataset = generate_dataset()
+print(dataset)
+This should return three different test cases covering our target outputs - Python functions, JSON configurations, and regular expressions for AWS-specific tasks.
+
+Saving the Dataset
+Once we have our dataset, we'll save it to a file so we can easily load it later during evaluation:
+
+with open('dataset.json', 'w') as f:
+    json.dump(dataset, f, indent=2)
+This creates a dataset.json file in the same directory as your notebook, containing your list of tasks ready for prompt evaluation.
+
+With this foundation in place, you now have a systematic way to generate test data for evaluating how well your prompts perform across different types of AWS-related coding tasks
+
+Go home
+Building with the Claude API
+Course Overview
+Introduction
+ Welcome to the course
+Anthropic overview
+ Overview of Claude models
+Accessing Claude with the API
+ Accessing the API
+ Getting an API key
+ Making a request
+ Multi-Turn conversations
+ Chat exercise
+ System prompts
+ System prompts exercise
+ Temperature
+ Course satisfaction survey
+ Response streaming
+ Structured data
+ Structured data exercise
+ Quiz on accessing Claude with the API
+Prompt evaluation
+ Prompt evaluation
+ A typical eval workflow
+ Generating test datasets
+ Running the eval
+ Model based grading
+ Code based grading
+ Exercise on prompt evals
+ Quiz on prompt evaluation
+Prompt engineering techniques
+ Prompt engineering
+ Being clear and direct
+ Being specific
+ Structure with XML tags
+ Providing examples
+ Exercise on prompting
+ Quiz on prompt engineering techniques
+Tool use with Claude
+ Introducing tool use
+ Project overview
+ Tool functions
+ Tool schemas
+ Handling message blocks
+ Sending tool results
+ Multi-turn conversations with tools
+ Implementing multiple turns
+ Using multiple tools
+ Fine grained tool calling
+ The text edit tool
+ The web search tool
+ Quiz on tool use with Claude
+RAG and Agentic Search
+ Introducing Retrieval Augmented Generation
+ Text chunking strategies
+ Text embeddings
+ The full RAG flow
+ Implementing the RAG flow
+ BM25 lexical search
+ A Multi-Index RAG pipeline
+Features of Claude
+ Extended thinking
+ Image support
+ PDF support
+ Citations
+ Prompt caching
+ Rules of prompt caching
+ Prompt caching in action
+ Code execution and the Files API
+ Quiz on features of Claude
+Model Context Protocol
+ Introducing MCP
+ MCP clients
+ Project setup
+ Defining tools with MCP
+ The server inspector
+ Implementing a client
+ Defining resources
+ Accessing resources
+ Defining prompts
+ Prompts in the client
+ MCP review
+ Quiz on Model Context Protocol
+Anthropic apps - Claude Code and computer use
+ Anthropic apps
+ Claude Code setup
+ Claude Code in action
+ Enhancements with MCP servers
+Agents and workflows
+ Agents and workflows
+ Parallelization workflows
+ Chaining workflows
+ Routing workflows
+ Agents and tools
+ Environment inspection
+ Workflows vs agents
+ Quiz on Agents and Workflows
+Final assessment
+ Final Assessment
+Wrapping up!
+ Course Wrap Up
+Running the eval
+
+Open in Claude
+
+Now that we have our evaluation dataset ready, it's time to build the core evaluation pipeline. This involves taking each test case, merging it with our prompt, feeding it to Claude, and then grading the results.
+
+
+The evaluation process follows a clear workflow: we take our dataset of test cases, combine each one with our prompt template, send it to Claude for processing, and then evaluate the output using a grader system.
+
+Building the Core Functions
+The evaluation pipeline consists of three main functions, each with a specific responsibility. Let's start with the simplest one - the function that handles individual prompts.
+
+The run_prompt Function
+This function takes a test case and merges it with our prompt template:
+
+def run_prompt(test_case):
+    """Merges the prompt and test case input, then returns the result"""
+    prompt = f"""
+Please solve the following task:
+
+{test_case["task"]}
+"""
+    
+    messages = []
+    add_user_message(messages, prompt)
+    output = chat(messages)
+    return output
+Right now, we're keeping the prompt extremely simple. We're not including any formatting instructions, so Claude will likely return more verbose output than we need. We'll refine this later as we iterate on our prompt design.
+
+The run_test_case Function
+This function orchestrates running a single test case and grading the result:
+
+def run_test_case(test_case):
+    """Calls run_prompt, then grades the result"""
+    output = run_prompt(test_case)
+    
+    # TODO - Grading
+    score = 10
+    
+    return {
+        "output": output,
+        "test_case": test_case,
+        "score": score
+    }
+For now, we're using a hardcoded score of 10. The grading logic is where we'll spend significant time in upcoming sections, but this placeholder lets us test the overall pipeline.
+
+The run_eval Function
+This function coordinates the entire evaluation process:
+
+def run_eval(dataset):
+    """Loads the dataset and calls run_test_case with each case"""
+    results = []
+    
+    for test_case in dataset:
+        result = run_test_case(test_case)
+        results.append(result)
+    
+    return results
+This function processes every test case in our dataset and collects all the results into a single list.
+
+Running the Evaluation
+To execute our evaluation pipeline, we load our dataset and run it through our functions:
+
+with open("dataset.json", "r") as f:
+    dataset = json.load(f)
+
+results = run_eval(dataset)
+The first time you run this, expect it to take some time - even with Claude Haiku, it can take around 30 seconds to process a full dataset. We'll cover optimization techniques later.
+
+Examining the Results
+The evaluation returns a structured JSON array where each object represents one test case result:
+
+print(json.dumps(results, indent=2))
+
+Each result contains three key pieces of information:
+
+output: The complete response from Claude
+test_case: The original test case that was processed
+score: The evaluation score (currently hardcoded)
+As you can see in the output, Claude generates quite verbose responses since we haven't provided specific formatting instructions yet. This is exactly the kind of issue we'll address as we refine our prompts.
+
+
+What We've Accomplished
+At this point, we've successfully built the core evaluation pipeline. We can take our dataset, process it through Claude, and collect structured results. The major missing piece is the grading system - that hardcoded score of 10 needs to be replaced with actual evaluation logic.
+
+This pipeline represents the foundation of most AI evaluation systems. While it may seem simple, you've just built the majority of what an eval pipeline actually does. The complexity comes in the details - better prompts, sophisticated grading, and performance optimizations.
+
+Next, we'll dive into the critical topic of graders, which will transform our hardcoded scores into meaningful evaluations of Claude's performance.
+
+
+Building with the Claude API
+Course Overview
+Introduction
+ Welcome to the course
+Anthropic overview
+ Overview of Claude models
+Accessing Claude with the API
+ Accessing the API
+ Getting an API key
+ Making a request
+ Multi-Turn conversations
+ Chat exercise
+ System prompts
+ System prompts exercise
+ Temperature
+ Course satisfaction survey
+ Response streaming
+ Structured data
+ Structured data exercise
+ Quiz on accessing Claude with the API
+Prompt evaluation
+ Prompt evaluation
+ A typical eval workflow
+ Generating test datasets
+ Running the eval
+ Model based grading
+ Code based grading
+ Exercise on prompt evals
+ Quiz on prompt evaluation
+Prompt engineering techniques
+ Prompt engineering
+ Being clear and direct
+ Being specific
+ Structure with XML tags
+ Providing examples
+ Exercise on prompting
+ Quiz on prompt engineering techniques
+Tool use with Claude
+ Introducing tool use
+ Project overview
+ Tool functions
+ Tool schemas
+ Handling message blocks
+ Sending tool results
+ Multi-turn conversations with tools
+ Implementing multiple turns
+ Using multiple tools
+ Fine grained tool calling
+ The text edit tool
+ The web search tool
+ Quiz on tool use with Claude
+RAG and Agentic Search
+ Introducing Retrieval Augmented Generation
+ Text chunking strategies
+ Text embeddings
+ The full RAG flow
+ Implementing the RAG flow
+ BM25 lexical search
+ A Multi-Index RAG pipeline
+Features of Claude
+ Extended thinking
+ Image support
+ PDF support
+ Citations
+ Prompt caching
+ Rules of prompt caching
+ Prompt caching in action
+ Code execution and the Files API
+ Quiz on features of Claude
+Model Context Protocol
+ Introducing MCP
+ MCP clients
+ Project setup
+ Defining tools with MCP
+ The server inspector
+ Implementing a client
+ Defining resources
+ Accessing resources
+ Defining prompts
+ Prompts in the client
+ MCP review
+ Quiz on Model Context Protocol
+Anthropic apps - Claude Code and computer use
+ Anthropic apps
+ Claude Code setup
+ Claude Code in action
+ Enhancements with MCP servers
+Agents and workflows
+ Agents and workflows
+ Parallelization workflows
+ Chaining workflows
+ Routing workflows
+ Agents and tools
+ Environment inspection
+ Workflows vs agents
+ Quiz on Agents and Workflows
+Final assessment
+ Final Assessment
+Wrapping up!
+ Course Wrap Up
+Model based grading
+
+Open in Claude
+
+When building prompt evaluation workflows, grading systems provide objective signals about output quality. A grader takes model output and returns some kind of measurable feedback - typically a number between 1 and 10, where 10 represents high quality and 1 represents poor quality.
+
+Types of Graders
+
+There are three main approaches to grading model outputs:
+
+Code graders - Programmatically evaluate outputs using custom logic
+Model graders - Use another AI model to assess the quality
+Human graders - Have people manually review and score outputs
+Code Graders
+Code graders let you implement any programmatic check you can imagine. Common uses include:
+
+Checking output length
+Verifying output does/doesn't have certain words
+Syntax validation for JSON, Python, or regex
+Readability scores
+The only requirement is that your code returns some usable signal - usually a number between 1 and 10.
+
+Model Graders
+Model graders feed your original output into another API call for evaluation. This approach offers tremendous flexibility for assessing:
+
+Response quality
+Quality of instruction following
+Completeness
+Helpfulness
+Safety
+Human Graders
+Human graders provide the most flexibility but are time-consuming and tedious. They're useful for evaluating:
+
+General response quality
+Comprehensiveness
+Depth
+Conciseness
+Relevance
+Defining Evaluation Criteria
+
+Before implementing any grader, you need clear evaluation criteria. For a code generation prompt, you might focus on:
+
+Format - Should return only Python, JSON, or Regex without explanation
+Valid Syntax - Produced code should have valid syntax
+Task Following - Response should directly address the user's task with accurate code
+
+The first two criteria work well with code graders, while task following is better suited for model graders due to their flexibility.
+
+Implementing a Model Grader
+Here's how to build a model grader function:
+
+def grade_by_model(test_case, output):
+    # Create evaluation prompt
+    eval_prompt = """
+    You are an expert code reviewer. Evaluate this AI-generated solution.
+    
+    Task: {task}
+    Solution: {solution}
+    
+    Provide your evaluation as a structured JSON object with:
+    - "strengths": An array of 1-3 key strengths
+    - "weaknesses": An array of 1-3 key areas for improvement  
+    - "reasoning": A concise explanation of your assessment
+    - "score": A number between 1-10
+    """
+    
+    messages = []
+    add_user_message(messages, eval_prompt)
+    add_assistant_message(messages, "```json")
+    
+    eval_text = chat(messages, stop_sequences=["```"])
+    return json.loads(eval_text)
+The key insight is asking for strengths, weaknesses, and reasoning alongside the score. Without this context, models tend to default to middling scores around 6.
+
+Integrating Grading into Your Workflow
+Update your test case runner to call the grader:
+
+def run_test_case(test_case):
+    output = run_prompt(test_case)
+    
+    # Grade the output
+    model_grade = grade_by_model(test_case, output)
+    score = model_grade["score"]
+    reasoning = model_grade["reasoning"]
+    
+    return {
+        "output": output, 
+        "test_case": test_case, 
+        "score": score,
+        "reasoning": reasoning
+    }
+Finally, calculate an average score across all test cases:
+
+from statistics import mean
+
+def run_eval(dataset):
+    results = []
+    
+    for test_case in dataset:
+        result = run_test_case(test_case)
+        results.append(result)
+    
+    average_score = mean([result["score"] for result in results])
+    print(f"Average score: {average_score}")
+    
+    return results
+This gives you an objective metric to track as you iterate on your prompt. While model graders can be somewhat capricious, they provide a consistent baseline for measuring improvements.
+
+ode based grading
+
+Open in Claude
+
+When evaluating AI models that generate code, you need more than just checking if the response makes sense. You also need to verify that the generated code actually has valid syntax and follows the correct format. This is where code-based grading comes in.
+
+How Code Grading Works
+Code grading validates two key aspects of AI-generated responses:
+
+
+Format - The response should return only the requested code type (Python, JSON, or Regex) without explanations
+Valid Syntax - The generated code should actually parse correctly as the intended language
+Task Following - The response should directly address what was asked and be accurate
+The first two criteria are handled by the code grader, while task following is evaluated by the model grader. Together, they provide a comprehensive evaluation.
+
+Syntax Validation Functions
+To check if generated code has valid syntax, you can create three helper functions that attempt to parse the output:
+
+
+def validate_json(text):
+    try:
+        json.loads(text.strip())
+        return 10
+    except json.JSONDecodeError:
+        return 0
+
+def validate_python(text):
+    try:
+        ast.parse(text.strip())
+        return 10
+    except SyntaxError:
+        return 0
+
+def validate_regex(text):
+    try:
+        re.compile(text.strip())
+        return 10
+    except re.error:
+        return 0
+Each function tries to parse the text as its respective format. If parsing succeeds, it returns a perfect score of 10. If it fails with an error, the syntax is invalid and returns 0.
+
+Dataset Format Requirements
+For the code grader to know which validator to use, your test cases need to specify the expected output format:
+
+{
+    "task": "Create a Python function to validate an AWS IAM username",
+    "format": "python"
+}
+You can update your dataset generation prompt to automatically include this format field by adding it to the example output structure.
+
+Improving Prompt Clarity
+To get better results from your AI model, make your prompt instructions more specific about the expected output format:
+
+* Respond only with Python, JSON, or a plain Regex
+* Do not add any comments or commentary or explanation
+You can also use a pre-filled assistant message with code blocks to encourage the model to return just the raw code:
+
+add_assistant_message(messages, "```code")
+This tells Claude to start generating code content without having to specify whether it's Python, JSON, or Regex ahead of time.
+
+Combining Scores
+The final step is merging the model grader score with the code grader score. A simple approach is to take the average:
+
+model_grade = grade_by_model(test_case, output)
+model_score = model_grade["score"]
+syntax_score = grade_syntax(output, test_case)
+
+score = (model_score + syntax_score) / 2
+This gives equal weight to both content quality and technical correctness. You might adjust these weights based on what matters more for your specific use case.
+
+Testing Your Implementation
+Once you've implemented code grading, run your evaluation to get a baseline score. The score itself isn't inherently good or bad - what matters is whether you can improve it by refining your prompts. This gives you a quantitative way to measure prompt engineering progress rather than relying on subjective assessment.
+
+You need test cases for your prompt evaluation. You have two options: write them by hand or use Claude to generate them. Which model should you use for generation?
+
+The most expensive model available
+Multiple models combined
+A faster model like Haiku
+The same model you're testing
+ 
+ You're running a prompt evaluation workflow. You've used Claude to generate some responses. What's the next step?
+
+Deploy to production
+Rewrite the original prompt
+Create more test questions
+Feed the responses through a grader
+You want to measure how well your prompts actually work in practice. Which approach should you focus on?
+
+Using more examples
+Prompt engineering techniques
+Writing longer prompts
+Prompt evaluation methods
+
+
+You're using a model grader to evaluate responses. To get better scores than just middle-range numbers, what should you ask for alongside the score?
+
+Just the numerical score
+Comparison to other responses
+Strengths, weaknesses, and reasoning
+A longer explanation
+
+Which type of grader uses another AI model to assess the quality of outputs?
+
+Model grader
+Human grader
+Syntax grader
+Code grader
+
+Prompt engineering is about taking a prompt you've written and improving it to get more reliable, higher-quality outputs. This process involves iterative refinement - starting with a basic prompt, evaluating its performance, then systematically applying engineering techniques to improve it.
+
+
+The Iterative Improvement Process
+The approach follows a clear cycle that you can repeat until you achieve your desired results:
+
+
+Set a goal - Define what you want your prompt to accomplish
+Write an initial prompt - Create a basic first attempt
+Evaluate the prompt - Test it against your criteria
+Apply prompt engineering techniques - Use specific methods to improve performance
+Re-evaluate - Verify that your changes actually improved the results
+You repeat the last two steps until you're satisfied with the performance. Each iteration should show measurable improvement in your evaluation scores.
+
+Setting Up Your Evaluation Pipeline
+To demonstrate this process, we'll work with a practical example: creating a prompt that generates one-day meal plans for athletes. The prompt needs to take into account an athlete's height, weight, goals, and dietary restrictions, then produce a comprehensive meal plan.
+
+
+The evaluation setup uses a PromptEvaluator class that handles dataset generation and model grading. When creating your evaluator instance, you can control concurrency with the max_concurrent_tasks parameter:
+
+evaluator = PromptEvaluator(max_concurrent_tasks=5)
+Start with a low concurrency value (like 3) to avoid rate limit errors. You can increase it if your API quota allows for faster processing.
+
+Generating Test Data
+The evaluation system can automatically generate test cases based on your prompt requirements. You define what inputs your prompt needs:
+
+dataset = evaluator.generate_dataset(
+    task_description="Write a compact, concise 1 day meal plan for a single athlete",
+    prompt_inputs_spec={
+        "height": "Athlete's height in cm",
+        "weight": "Athlete's weight in kg", 
+        "goal": "Goal of the athlete",
+        "restrictions": "Dietary restrictions of the athlete"
+    },
+    output_file="dataset.json",
+    num_cases=3
+)
+Keep the number of test cases low (2-3) during development to speed up your iteration cycle. You can increase this for final validation.
+
+Writing Your Initial Prompt
+Start with a simple, naive prompt to establish a baseline. Here's an example of a deliberately basic first attempt:
+
+def run_prompt(prompt_inputs):
+    prompt = f"""
+What should this person eat?
+
+- Height: {prompt_inputs["height"]}
+- Weight: {prompt_inputs["weight"]}
+- Goal: {prompt_inputs["goal"]}
+- Dietary restrictions: {prompt_inputs["restrictions"]}
+"""
+    
+    messages = []
+    add_user_message(messages, prompt)
+    return chat(messages)
+This basic prompt will likely produce poor results, but it gives you a starting point to measure improvement against.
+
+Adding Evaluation Criteria
+When running your evaluation, you can specify additional criteria that the grading model should consider:
+
+results = evaluator.run_evaluation(
+    run_prompt_function=run_prompt,
+    dataset_file="dataset.json",
+    extra_criteria="""
+The output should include:
+- Daily caloric total
+- Macronutrient breakdown  
+- Meals with exact foods, portions, and timing
+"""
+)
+This helps ensure your prompt is evaluated against the specific requirements that matter for your use case.
+
+Analyzing Results
+After running an evaluation, you'll get both a numerical score and a detailed HTML report. The report shows you exactly how each test case performed, including the model's reasoning for each score.
+
+
+Don't be discouraged by low initial scores - a score of 2.3 out of 10 is typical for a first attempt. The goal is to see consistent improvement as you apply engineering techniques.
+
+
+The detailed evaluation report helps you understand exactly where your prompt is failing and what improvements are needed. Use this feedback to guide your next iteration.
+
+Next Steps
+With your baseline established, you're ready to start applying specific prompt engineering techniques. Each technique you learn should result in measurable improvement in your evaluation scores, gradually transforming your basic prompt into a reliable, high-performing tool.
+
+Remember that prompt engineering is an iterative process. The key is to make one change at a time, evaluate the impact, and build on what works. This systematic approach ensures you understand which techniques provide the most value for your specific use case.
+
+The first line of your prompt is the most important part of your entire request. This is where you set the stage for everything that follows, and getting it right can dramatically improve your results.
+
+Being Clear and Direct
+When crafting that crucial first line, you want to focus on two key principles: clarity and directness. This means using simple language that leaves no room for ambiguity about what you want Claude to do.
+
+
+Clear Communication
+Being "clear" means:
+
+Use simple language that anyone can understand
+State exactly what you want without beating around the bush
+Lead with a straightforward statement of Claude's task
+Instead of writing something vague like "I need to know about those things people put on their roofs that use sun - those solar panel things, I think they're called," be direct and write: "Write three paragraphs about how solar panels work."
+
+Direct Instructions
+Being "direct" focuses on how you structure your request:
+
+Use instructions, not questions
+Start with direct action verbs like "Write," "Create," or "Generate"
+Rather than asking "I was reading about renewable energy and geothermal energy sounds neat. What countries use it?" try: "Identify three countries that use geothermal energy. Include generation stats for each."
+
+Putting It Into Practice
+Let's see this technique in action. Starting with a weak prompt that simply asked "What should this person eat?" we can apply our clear and direct approach.
+
+The improved version becomes: Generate a one-day meal plan for an athlete that meets their dietary restrictions.
+
+This revision immediately tells Claude:
+
+What action to take (generate)
+What to create (a meal plan)
+Key constraints (one day, for an athlete, meeting dietary restrictions)
+Results Matter
+This simple change can have a significant impact on performance. In our example, the evaluation score jumped from 2.32 to 3.92 - a substantial improvement from just restructuring that opening line.
+
+The key takeaway is that Claude responds best when you treat it like a capable assistant who needs clear direction rather than someone who has to guess what you want. Start strong with a direct action verb, be specific about the task, and you'll see better results right away.
+
+ When you're building prompts that include a lot of content, Claude can sometimes struggle to understand which pieces of text belong together or what different sections are supposed to represent. XML tags provide a simple way to add structure and clarity to your prompts, especially when you're interpolating large amounts of data.
+
+Why Structure Matters
+Consider a prompt where you need to analyze 20 pages of sales records. Without clear boundaries, Claude might have trouble distinguishing between your instructions and the actual data you want analyzed.
+
+
+The example above shows how unclear boundaries can make it difficult for Claude to parse your intent. By wrapping the sales records in XML tags like <sales_records> and </sales_records>, you create clear delimiters that help Claude understand the structure of your prompt.
+
+
+Practical Example: Code and Documentation
+Here's a more dramatic example of why XML tags matter. If you ask Claude to debug code using provided documentation, mixing everything together creates confusion:
+
+
+The "Not Great" version makes it nearly impossible to tell what's code versus documentation. The "Better" version uses <my_code> and <docs> tags to create clear boundaries.
+
+Custom Tag Names
+You don't need to use official XML tags. Create descriptive names that make sense for your content:
+
+<sales_records> is better than <data>
+<athlete_information> clearly identifies user details
+<my_code> and <docs> separate different types of content
+The more specific and descriptive your tag names, the better Claude can understand the purpose of each section.
+
+When to Use XML Tags
+XML tags are most useful when:
+
+Including large amounts of context or data
+Mixing different types of content (code, documentation, data)
+You want to be extra clear about content boundaries
+Working with complex prompts that interpolate multiple variables
+Even for shorter content, XML tags can help serve as delimiters that make your prompt structure more obvious to Claude.
+
+Real-World Application
+In practice, you might structure a prompt like this:
+
+<athlete_information>
+- Height: 6'2"
+- Weight: 180 lbs
+- Goal: Build muscle
+- Dietary restrictions: Vegetarian
+</athlete_information>
+
+Generate a meal plan based on the athlete information above.
+This makes it crystal clear that the height, weight, goal, and restrictions are all related athlete data that should be considered together when generating the meal plan.
+
+While you might not see dramatic improvements with simple prompts, XML tags become increasingly valuable as your prompts grow more complex and include larger amounts of varied content.
+
+When working with Claude, one of the most effective ways to improve your results is to be specific about what you want. Instead of leaving everything up to the model's interpretation, you can provide clear guidelines or steps that direct Claude toward the kind of output you're looking for.
+
+Think about it this way: if you ask Claude to "write a short story about a character who discovers a hidden talent," Claude could go in countless directions. The story might be 200 words or 2,000 words. It might have one character or five. It could focus on any type of talent discovery scenario.
+
+
+By adding specific guidelines, you give Claude a clearer target to aim for. This dramatically improves both the consistency and quality of the output.
+
+Two Types of Guidelines
+There are two main approaches to being specific in your prompts, and you'll often see them used together in professional applications.
+
+
+Output Quality Guidelines
+The first type focuses on listing qualities that your output should have. These guidelines help you control:
+
+Length of the response
+Structure and format
+Specific attributes or elements to include
+Tone or style requirements
+For example, you might specify that a story should be under 1,000 words, include a clear action that reveals the character's talent, and feature at least one supporting character.
+
+Process Steps
+The second type provides specific steps for Claude to follow. This approach is particularly useful when you want Claude to think through a problem systematically or consider multiple perspectives before arriving at a final answer.
+
+Instead of jumping straight to writing, you might ask Claude to:
+
+Brainstorm three talents that would create dramatic tension
+Pick the most interesting talent
+Outline a pivotal scene that reveals the talent
+Brainstorm supporting character types that could increase the impact
+Real-World Impact
+The difference that specificity makes is dramatic. In testing a meal planning prompt, adding guidelines improved the evaluation score from 3.92 to 7.86 - more than doubling the quality of the output simply by telling Claude exactly what elements to include.
+
+Guidelines:
+1. Include accurate daily calorie amount
+2. Show protein, fat, and carb amounts  
+3. Specify when to eat each meal
+4. Use only foods that fit restrictions
+5. List all portion sizes in grams
+6. Keep budget-friendly if mentioned
+When to Use Each Approach
+Here's a practical guide for when to use each type of specificity:
+
+Always Use Output Guidelines
+You should include quality guidelines in almost every prompt you write. They're your safety net for getting consistent, useful results.
+
+Use Process Steps For Complex Problems
+Add step-by-step instructions when you're dealing with:
+
+Troubleshooting complex problems
+Decision-making scenarios
+Critical thinking tasks
+Any situation where you want Claude to consider multiple angles
+
+For instance, if you're asking Claude to analyze why a sales team's performance dropped, you'd want to guide it through examining market metrics, industry changes, individual performance, organizational changes, and customer feedback - rather than letting it focus on just one potential cause.
+
+Combining Both Approaches
+In professional prompting, you'll often see both techniques used together. You might have guidelines that control the format and content of your output, plus steps that ensure Claude thinks through the problem thoroughly before responding.
+
+This combination gives you both consistency in your results and confidence that Claude has considered all the important factors in reaching its conclusion.
+
+Providing examples in your prompts is one of the most effective prompt engineering techniques you'll use. This approach, known as "one-shot" or "multi-shot" prompting, involves giving Claude sample input/output pairs to guide its responses.
+
+How Examples Work
+Let's look at a sentiment analysis example. Say you want Claude to categorize whether a tweet is positive or negative:
+
+
+The challenge here is sarcasm. A tweet like "Yeah, sure, that was the best movie I've seen since 'Plan 9 from Outer Space'" appears positive on the surface, but it's actually sarcastic and negative (Plan 9 is famously one of the worst movies ever made).
+
+Adding Examples to Handle Corner Cases
+To solve this, you can add examples that show Claude how to handle tricky cases:
+
+
+The improved prompt includes:
+
+A clear positive example: "Great game tonight!" → "Positive"
+A sarcastic example: "Oh yeah, I really needed a flight delay tonight! Excellent!" → "Negative"
+Context explaining why sarcasm should be treated carefully
+Notice how the examples are wrapped in XML tags like <sample_input> and <ideal_output>. This structure makes it crystal clear to Claude what each part represents.
+
+When to Use Examples
+Examples are particularly useful for:
+
+Capturing corner cases or edge scenarios
+Defining complex output formats (like specific JSON structures)
+Showing the exact style or tone you want
+Demonstrating how to handle ambiguous inputs
+One-Shot vs Multi-Shot
+One-Shot: Provide a single example to establish the pattern
+
+Multi-Shot: Provide multiple examples to cover different scenarios
+
+Use multi-shot when you need to handle various edge cases or want to show different types of valid responses.
+
+Finding Good Examples from Evaluations
+When running prompt evaluations, look for your highest-scoring outputs to use as examples:
+
+
+Find responses that scored 10 (or your highest available score) and use those input/output pairs as examples in your prompt. This helps Claude understand what "perfect" output looks like for your specific use case.
+
+Adding Context to Examples
+Don't just provide the input/output pair - explain why the output is good:
+
+<ideal_output>
+[Your example output here]
+</ideal_output>
+
+This example is well-structured, provides detailed information 
+on food choices and quantities, and aligns with the athlete's 
+goals and restrictions.
+This additional context helps Claude understand the reasoning behind good responses, not just the format.
+
+Best Practices
+Always use XML tags to structure your examples clearly
+Be explicit about what you're showing: "Here is an example input with an ideal response"
+Include examples that address your most common failure cases
+Explain why your example outputs are considered ideal
+Keep examples relevant to your specific task
+Examples are especially powerful because they show rather than tell. Instead of trying to describe exactly what you want in words, you demonstrate it directly. This makes your prompts much more reliable and helps Claude understand subtle requirements that might be hard to express in instructions alone.
+
+You want Claude to create a workout plan. Which opening line works better?
+
+"Create a 30-minute workout plan for beginners"
+"Do you know anything about exercise?"
+"I was wondering about workouts and fitness stuff"
+"What kind of workout should I do?"
+
+laude keeps missing sarcastic comments when analyzing social media posts. What's the best way to fix this?
+
+Ask it to guess when something might be sarcastic
+Provide examples showing sarcastic posts labeled as negative
+Tell it to "be more careful about sarcasm"
+Make the prompt longer with more instructions
+Previous Next Question
+
+What is prompt engineering?
+
+Training AI models on new datasets
+Improving a prompt to get more reliable, higher-quality outputs
+Programming AI models from scratch using code
+Building the hardware infrastructure for AI systems
+
+"Providing sample input/output pairs to guide AI responses" describes which prompt engineering technique?
+
+Being clear and direct
+Iterative refinement
+XML structuring
+One-shot or multi-shot prompting
+
+What is the main purpose of using XML tags in prompts?
+
+To reduce the token count of prompts
+To increase the processing speed of AI models
+To add structure and clarity, especially when including large amounts of content
+To make prompts look more professional
+
+Introducing tool use
+
+Open in Claude
+
+Tools allow Claude to access information from the outside world, extending its capabilities beyond what it learned during training. By default, Claude only knows information from its training data and can't access current events, real-time data, or external systems. Tool use solves this limitation by creating a structured way for Claude to request and receive fresh information.
+
+The Problem Without Tools
+When users ask Claude for current information, it hits a wall. For example, if someone asks "What's the weather in San Francisco, California?" Claude has to respond with something like "I'm sorry, but I don't have access to up-to-date weather information."
+
+
+This creates a frustrating user experience when people need real-time data that Claude could theoretically help with if it just had access to current information.
+
+How Tool Use Works
+Tool use follows a specific back-and-forth pattern between your application and Claude. Here's the complete flow:
+
+
+Initial Request: You send Claude a question along with instructions on how to get extra data from external sources
+Tool Request: Claude analyzes the question and decides it needs additional information, then asks for specific details about what data it needs
+Data Retrieval: Your server runs code to fetch the requested information from external APIs or databases
+Final Response: You send the retrieved data back to Claude, which then generates a complete response using both the original question and the fresh data
+Weather Example in Practice
+Let's see how this works with the weather question. The process becomes much more specific:
+
+
+When a user asks about current weather, you include instructions in your prompt about how to retrieve weather data. Claude recognizes it needs current information and requests weather data for the specific location. Your server then calls a weather API to get real-time conditions and sends that data back to Claude. Finally, Claude combines the fresh weather data with the user's question to provide an accurate, current response.
+
+Key Benefits
+Real-time Information: Access current data that wasn't available during Claude's training
+External System Integration: Connect Claude to databases, APIs, and other services
+Dynamic Responses: Provide answers based on the latest available information
+Structured Interaction: Claude knows exactly what information it needs and how to ask for it
+Tool use transforms Claude from a static knowledge base into a dynamic assistant that can work with live data. This opens up possibilities for building applications that need current information, whether that's weather data, stock prices, database queries, or any other real-time information your users might need.
+
+
+When building AI applications with Claude, you'll often need to give it access to real-time information or the ability to perform actions. This is where tool functions come in - they're Python functions that Claude can call when it needs additional data to help users.
+
+
+The image above shows three essential tools we'll be implementing: getting the current date/time, adding duration to dates, and setting reminders. Let's start with the first one.
+
+What Are Tool Functions?
+A tool function is a plain Python function that gets executed automatically when Claude decides it needs extra information to help a user. For example, if someone asks "What time is it?", Claude would call your date/time tool to get the current time.
+
+
+Here's an example of a weather tool function. Notice how it validates inputs and provides clear error messages - these are important best practices.
+
+Best Practices for Tool Functions
+When writing tool functions, follow these guidelines:
+
+Use descriptive names: Both your function name and parameter names should clearly indicate their purpose
+Validate inputs: Check that required parameters aren't empty or invalid, and raise errors when they are
+Provide meaningful error messages: Claude can see error messages and might retry the function call with corrected parameters
+The validation is particularly important because Claude learns from errors. If you raise a clear error like "Location cannot be empty", Claude might try calling the function again with a proper location value.
+
+Building Your First Tool Function
+Let's create a function to get the current date and time. This function will accept a date format parameter so Claude can request the time in different formats:
+
+def get_current_datetime(date_format="%Y-%m-%d %H:%M:%S"):
+    if not date_format:
+        raise ValueError("date_format cannot be empty")
+    return datetime.now().strftime(date_format)
+This function uses Python's datetime module to get the current time and format it according to the provided format string. The default format gives us year-month-day hour:minute:second.
+
+You can test it with different formats:
+
+# Default format: "2024-01-15 14:30:25"
+get_current_datetime()
+
+# Just hour and minute: "14:30"
+get_current_datetime("%H:%M")
+The validation check ensures Claude can't pass an empty string for the date format. While this specific error is unlikely, it demonstrates the pattern of validating inputs and providing helpful error messages that Claude can learn from.
+
+Next Steps
+Creating the function is just the first step. Next, you'll need to write a JSON schema that describes the function to Claude, then integrate it into your chat system. This tool function approach gives Claude powerful capabilities while keeping your code organized and maintainable.
+
+Tool schemas
+
+Open in Claude
+
+After writing your tool function, the next step is creating a JSON schema that tells Claude what arguments your function expects and how to use it. This schema acts as documentation that Claude reads to understand when and how to call your tools.
+
+Understanding JSON Schema
+JSON Schema isn't specific to AI or tool calling - it's a widely-used data validation specification that's been around for years. The AI community adopted it because it's a convenient way to describe function parameters and validate data.
+
+
+The complete tool specification has three main parts:
+
+name - A clear, descriptive name for your tool (like "get_weather")
+description - What the tool does, when to use it, and what it returns
+input_schema - The actual JSON schema describing the function's arguments
+Writing Effective Descriptions
+Your tool description is crucial for helping Claude understand when to use your function. Best practices include:
+
+Aim for 3-4 sentences explaining what the tool does
+Describe when Claude should use it
+Explain what kind of data it returns
+Provide detailed descriptions for each argument
+
+The Easy Way to Generate Schemas
+Instead of writing JSON schemas from scratch, you can use Claude itself to generate them. Here's the process:
+
+Copy your tool function code
+Go to Claude and ask it to write a JSON schema for tool calling
+Include the Anthropic documentation on tool use as context
+Let Claude generate a properly formatted schema following best practices
+The prompt should be something like: "Write a valid JSON schema spec for the purposes of tool calling for this function. Follow the best practices listed in the attached documentation."
+
+
+Implementing the Schema in Code
+Once Claude generates your schema, copy it into your code file. Here's a good naming pattern to follow:
+
+def get_current_datetime(date_format="%Y-%m-%d %H:%M:%S"):
+    if not date_format:
+        raise ValueError("date_format cannot be empty")
+    return datetime.now().strftime(date_format)
+
+get_current_datetime_schema = {
+    "name": "get_current_datetime",
+    "description": "Returns the current date and time formatted according to the specified format",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "date_format": {
+                "type": "string",
+                "description": "A string specifying the format of the returned datetime. Uses Python's strftime format codes.",
+                "default": "%Y-%m-%d %H:%M:%S"
+            }
+        },
+        "required": []
+    }
+}
+Use the pattern of function_name followed by function_name_schema to keep your schemas organized and easy to match with their corresponding functions.
+
+Adding Type Safety
+For better type checking, import and use the ToolParam type from the Anthropic library:
+
+from anthropic.types import ToolParam
+
+get_current_datetime_schema = ToolParam({
+    "name": "get_current_datetime",
+    "description": "Returns the current date and time formatted according to the specified format",
+    # ... rest of schema
+})
+While not strictly necessary for functionality, this prevents type errors when you use the schema with Claude's API and makes your code more robust.
+
+When working with Claude's tool functionality, you'll encounter a new type of response structure that's different from the simple text responses you've seen before. Instead of just getting back a single text block, Claude can now return multi-block messages that contain both text and tool usage information.
+
+Making Tool-Enabled API Calls
+To enable Claude to use tools, you need to include a tools parameter in your API call. Here's how to structure the request:
+
+messages = []
+messages.append({
+    "role": "user",
+    "content": "What is the exact time, formatted as HH:MM:SS?"
+})
+
+response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=messages,
+    tools=[get_current_datetime_schema],
+)
+The tools parameter takes a list of JSON schemas that describe the available functions Claude can call.
+
+Understanding Multi-Block Messages
+When Claude decides to use a tool, it returns an assistant message with multiple blocks in the content list. This is a significant change from the simple text-only responses you've worked with before.
+
+
+A multi-block message typically contains:
+
+Text Block - Human-readable text explaining what Claude is doing (like "I can help you find out the current time. Let me find that information for you")
+ToolUse Block - Instructions for your code about which tool to call and what parameters to use
+The ToolUse block includes:
+
+An ID for tracking the tool call
+The name of the function to call (like "get_current_datetime")
+Input parameters formatted as a dictionary
+The type designation "tool_use"
+Managing Conversation History with Multi-Block Messages
+Remember that Claude doesn't store conversation history - you need to manage it manually. When working with tool responses, you must preserve the entire content structure, including all blocks.
+
+Here's how to properly append a multi-block assistant message to your conversation history:
+
+messages.append({
+    "role": "assistant",
+    "content": response.content
+})
+This preserves both the text block and the tool use block, which is crucial for maintaining the conversation context when you make subsequent API calls.
+
+The Complete Tool Usage Flow
+
+The tool usage process follows this pattern:
+
+Send user message with tool schema to Claude
+Receive assistant message with text block and tool use block
+Extract tool information and execute the actual function
+Send tool result back to Claude along with complete conversation history
+Receive final response from Claude
+Each step requires careful handling of the message structure to ensure Claude has the full context it needs to provide accurate responses.
+
+Updating Helper Functions
+If you've been using helper functions like add_user_message() and add_assistant_message(), you'll need to update them to handle multi-block content. The current versions likely only support single text blocks, but now they need to accommodate the more complex content structures that include tool use blocks.
+
+This multi-block message handling is essential for building robust applications that can seamlessly integrate Claude's tool capabilities while maintaining proper conversation flow.
+
+Sending tool results
+
+Open in Claude
+
+After Claude requests a tool call, you need to execute the function and send the results back. This completes the tool use workflow by providing Claude with the information it requested.
+
+Running the Tool Function
+When Claude responds with a tool use block, you extract the input parameters and call your function. Here's how to access the tool parameters:
+
+response.content[1].input
+This gives you a dictionary of the arguments Claude wants to pass to your function. Since your function expects keyword arguments rather than a dictionary, you use Python's unpacking syntax:
+
+get_current_datetime(**response.content[1].input)
+
+Tool Result Block
+After running the tool function, you need to send the results back to Claude using a tool result block. This block goes inside a user message and tells Claude what happened when you executed the tool.
+
+
+The tool result block has several important properties:
+
+tool_use_id - Must match the id of the ToolUse block that this ToolResult corresponds to
+content - Output from running your tool, serialized as a string
+is_error - True if an error occurred
+Handling Multiple Tool Calls
+Claude can request multiple tool calls in a single response. For example, if a user asks "What's 10 + 10 and what's 30 + 30?", Claude might respond with two separate ToolUse blocks.
+
+
+Each tool call gets a unique ID, and you must match these IDs when sending back results. This ensures Claude knows which result corresponds to which request, even if the results arrive in a different order.
+
+
+Building the Follow-up Request
+Your follow-up request to Claude must include the complete conversation history plus the new tool result. Here's the structure:
+
+messages.append({
+    "role": "user",
+    "content": [{
+        "type": "tool_result",
+        "tool_use_id": response.content[1].id,
+        "content": "15:04:22",
+        "is_error": False
+    }]
+})
+The complete message history now contains:
+
+Original user message
+Assistant message with tool use block
+User message with tool result block
+Making the Final Request
+When sending the follow-up request, you must still include the tool schema even though you're not expecting Claude to make another tool call. Claude needs the schema to understand the tool references in your conversation history.
+
+client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=messages,
+    tools=[get_current_datetime_schema]
+)
+
+Claude will then respond with a final message that incorporates the tool results into a natural response for the user. The tool use workflow is now complete - you've successfully enabled Claude to access real-time information through your custom function.
+
+Multi-turn conversations with tools
+
+Open in Claude
+
+When building applications with multiple tools, you need to handle scenarios where Claude might need to call several tools in sequence to answer a single user question. For example, if a user asks "What day is 103 days from today?", Claude needs to first get the current date, then add 103 days to it.
+
+
+This creates a multi-turn conversation pattern where Claude makes multiple tool requests before providing a final answer. Your application needs to handle this automatically.
+
+The Multi-Turn Tool Pattern
+Here's what happens behind the scenes when Claude needs multiple tools:
+
+User asks: "What day is 103 days from today?"
+Claude responds with a tool use block requesting get_current_datetime
+Your server calls the function and returns the result
+Claude realizes it needs more information and requests add_duration_to_datetime
+Your server calls that function and returns the result
+Claude now has enough information to provide the final answer
+
+Building a Conversation Loop
+To handle this pattern, you need a conversation loop that continues until Claude stops requesting tools:
+
+def run_conversation(messages):
+    while True:
+        response = chat(messages)
+
+        add_assistant_message(messages, response)
+
+        # Pseudo code
+        if response isn't asking for a tool:
+            break
+
+        tool_result_blocks = run_tools(response)
+        add_user_message(messages, tool_result_blocks)
+        
+    return messages
+
+Refactoring Helper Functions
+Before implementing the conversation loop, you need to update your helper functions to handle multiple message blocks properly.
+
+Updating Message Handlers
+Your add_user_message and add_assistant_message functions currently assume you're always working with plain text. Update them to handle full message objects:
+
+from anthropic.types import Message
+
+def add_user_message(messages, message):
+    user_message = {
+        "role": "user",
+        "content": message.content if isinstance(message, Message) else message
+    }
+    messages.append(user_message)
+This allows you to pass in either a string, a list of blocks, or a complete message object.
+
+Updating the Chat Function
+Modify your chat function to accept a list of tools and return the full message instead of just text:
+
+def chat(messages, system=None, temperature=1.0, stop_sequences=[], tools=None):
+    params = {
+        "model": model,
+        "max_tokens": 1000,
+        "messages": messages,
+        "temperature": temperature,
+        "stop_sequences": stop_sequences,
+    }
+    
+    if tools:
+        params["tools"] = tools
+        
+    if system:
+        params["system"] = system
+        
+    message = client.messages.create(**params)
+    return message
+Extracting Text from Messages
+Since you're now returning full message objects, create a helper to extract text when needed:
+
+def text_from_message(message):
+    return "\n".join(
+        [block.text for block in message.content if block.type == "text"]
+    )
+This function finds all text blocks in a message and joins them together, which is useful when you need to display the final response to users.
+
+Key Improvements
+These refactoring steps prepare your code for robust tool handling:
+
+Flexible message handling - Your helper functions can now work with different message formats
+Tool support in chat - The chat function can receive and pass through tool schemas
+Full message returns - You get complete message objects instead of just text, preserving all blocks
+Text extraction utility - Easy way to get readable text from complex messages
+With these foundations in place, you're ready to implement the conversation loop that handles multiple tool calls automatically, creating a seamless experience where Claude can use as many tools as needed to answer user questions.
+
+Building a conversation system with tools requires implementing a loop that keeps calling Claude until it stops requesting tool usage. When Claude no longer asks for tools, that signals it has a final response ready for the user.
+
+Detecting Tool Requests
+The key to knowing whether Claude wants to use a tool lies in the stop_reason field of the response message. When Claude decides it needs to call a tool, this field gets set to "tool_use". This gives us a clean way to check if we need to continue the conversation loop:
+
+if response.stop_reason != "tool_use":
+    break  # Claude is done, no more tools needed
+The Conversation Loop
+The main conversation function follows a simple pattern:
+
+def run_conversation(messages):
+    while True:
+        response = chat(messages, tools=[get_current_datetime_schema])
+        add_assistant_message(messages, response)
+        print(text_from_message(response))
+        
+        if response.stop_reason != "tool_use":
+            break
+            
+        tool_results = run_tools(response)
+        add_user_message(messages, tool_results)
+    
+    return messages
+This loop continues until Claude provides a final answer without requesting any tools.
+
+Handling Multiple Tool Calls
+Claude can request multiple tools in a single response. The message content contains a list of blocks, and we need to process each tool use block separately:
+
+
+The run_tools function handles this by filtering for tool use blocks and processing each one:
+
+def run_tools(message):
+    tool_requests = [
+        block for block in message.content if block.type == "tool_use"
+    ]
+    tool_result_blocks = []
+    
+    for tool_request in tool_requests:
+        # Process each tool request...
+Tool Result Blocks
+Each tool use block must be answered with a corresponding tool result block. The connection between them is maintained through matching IDs:
+
+
+The tool result block structure includes:
+
+tool_result_block = {
+    "type": "tool_result",
+    "tool_use_id": tool_request.id,
+    "content": json.dumps(tool_output),
+    "is_error": False
+}
+Error Handling
+Robust tool execution requires handling potential errors. When a tool fails, we still need to provide a result block to Claude:
+
+try:
+    tool_output = run_tool(tool_request.name, tool_request.input)
+    tool_result_block = {
+        "type": "tool_result",
+        "tool_use_id": tool_request.id,
+        "content": json.dumps(tool_output),
+        "is_error": False
+    }
+except Exception as e:
+    tool_result_block = {
+        "type": "tool_result", 
+        "tool_use_id": tool_request.id,
+        "content": f"Error: {e}",
+        "is_error": True
+    }
+Scalable Tool Routing
+To support multiple tools, create a routing function that maps tool names to their implementations:
+
+def run_tool(tool_name, tool_input):
+    if tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    elif tool_name == "another_tool":
+        return another_tool(**tool_input)
+    # Add more tools as needed
+This approach makes it easy to add new tools without modifying the core conversation logic.
+
+Complete Workflow
+The complete multi-turn conversation works like this:
+
+Send user message to Claude with available tools
+Claude responds with text and/or tool requests
+Execute all requested tools and create result blocks
+Send tool results back as a user message
+Repeat until Claude provides a final answer
+This creates a seamless experience where Claude can use multiple tools across several turns to fully answer complex user requests. The conversation history maintains the complete context, allowing Claude to build upon previous tool results to provide comprehensive responses.
+
+Adding multiple tools to your Claude implementation becomes straightforward once you have the core tool-handling infrastructure in place. This tutorial shows how to integrate additional tools by following a simple pattern.
+
+
+The Tools We're Adding
+We need three main capabilities for our reminder system:
+
+Get current date time - Claude needs to know the current date and time
+Add duration to date time - Claude isn't perfect with date time addition
+Set a reminder - Need a way to set a reminder
+The good news is that most of the implementation work is already done. The add_duration_to_datetime function and set_reminder function are provided, along with their corresponding schemas.
+
+Adding Tools to the Conversation
+First, update the run_conversation function to include the new tool schemas in the tools list:
+
+response = chat(messages, tools=[
+    get_current_datetime_schema,
+    add_duration_to_datetime_schema,
+    set_reminder_schema
+])
+This tells Claude about all three available tools it can use during the conversation.
+
+Updating the Tool Router
+Next, modify the run_tool function to handle the new tool calls. Add elif cases for each new tool:
+
+def run_tool(tool_name, tool_input):
+    if tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    elif tool_name == "add_duration_to_datetime":
+        return add_duration_to_datetime(**tool_input)
+    elif tool_name == "set_reminder":
+        return set_reminder(**tool_input)
+The pattern is simple: check the tool name, call the corresponding function with the provided input, and return the result.
+
+Testing Multiple Tool Usage
+To test the system, try a request that requires multiple tools: "Set a reminder for my doctors appointment. Its 177 days after Jan 1st, 2050."
+
+This request forces Claude to:
+
+Calculate the date (using add_duration_to_datetime)
+Set the reminder (using set_reminder)
+
+Claude handles this by first explaining what it needs to do, then making the appropriate tool calls in sequence. The conversation shows Claude calculating June 27, 2050 as the target date, then setting the reminder for that date.
+
+Understanding the Message Flow
+When you examine the conversation history, you'll see the complete message structure:
+
+User message with the request
+Assistant message containing both text and tool use blocks
+Tool result messages
+Follow-up assistant messages
+
+This demonstrates how Claude can include multiple blocks in a single message - combining explanatory text with tool usage requests.
+
+The Simple Pattern for Adding Tools
+Once you have the core tool infrastructure, adding new tools follows this pattern:
+
+Create the tool function implementation
+Define the tool schema
+Add the schema to the tools list in run_conversation
+Add a case for the tool in run_tool
+This modular approach makes it easy to expand your AI assistant's capabilities without restructuring existing code. Each new tool integrates seamlessly with the existing conversation flow and tool-handling logic.
+
+Fine grained tool calling
+
+Open in Claude
+
+When you combine tool use with streaming in Claude, you get real-time updates as the AI generates tool arguments. This creates a more responsive user experience, but there are some important details to understand about how it works behind the scenes.
+
+Basic Tool Streaming
+With streaming enabled, Claude sends back different types of events as it processes your request. You're already familiar with events like ContentBlockDelta for regular text generation. For tool use, you'll also need to handle a new event type called InputJsonEvent.
+
+
+Each InputJsonEvent contains two key properties:
+
+partial_json - A chunk of JSON representing part of the tool arguments
+snapshot - The cumulative JSON built up from all chunks received so far
+Here's how you handle these events in your streaming pipeline:
+
+for chunk in stream:
+    if chunk.type == "input_json":
+        # Process the partial JSON chunk
+        print(chunk.partial_json)
+        # Or use the complete snapshot so far
+        current_args = chunk.snapshot
+
+How JSON Validation Works
+Here's where things get interesting. The Anthropic API doesn't immediately send you every chunk as Claude generates it. Instead, it buffers chunks and validates them first.
+
+
+The API waits for complete top-level key-value pairs before sending anything. For example, if your tool expects this structure:
+
+{
+  "abstract": "This paper presents a novel...",
+  "meta": {
+    "word_count": 847,
+    "review": "This paper introduces QuanNet..."
+  }
+}
+The API will:
+
+Wait until the entire abstract value is complete
+Validate that key-value pair against your schema
+Send all the buffered chunks for abstract at once
+Repeat the process for the meta object
+
+This validation process explains why you see delays followed by bursts of text, even with streaming enabled. The chunks are being held back until a complete, valid top-level key-value pair is ready.
+
+
+Fine-Grained Tool Calling
+If you need faster, more granular streaming - perhaps to show users immediate updates or start processing partial results quickly - you can enable fine-grained tool calling.
+
+
+Fine-grained tool calling does one main thing: it disables JSON validation on the API side. This means:
+
+You get chunks as soon as Claude generates them
+No buffering delays between top-level keys
+More traditional streaming behavior
+Critical: JSON validation is disabled - your code must handle invalid JSON
+Enable it by adding fine_grained=True to your API call:
+
+run_conversation(
+    messages, 
+    tools=[save_article_schema], 
+    fine_grained=True
+)
+With fine-grained tool calling, you might receive a word_count value much earlier in the stream, without waiting for the entire meta object to be completed.
+
+Handling Invalid JSON
+When using fine-grained tool calling, Claude might generate invalid JSON like "word_count": undefined instead of a proper number. Your application needs to handle these cases gracefully:
+
+try:
+    parsed_args = json.loads(chunk.snapshot)
+except json.JSONDecodeError:
+    # Handle invalid JSON appropriately
+    print("Received invalid JSON, continuing...")
+Without fine-grained tool calling, the API's validation would catch this error and potentially wrap problematic values in strings, which might not match your expected schema.
+
+When to Use Fine-Grained Tool Calling
+Consider enabling fine-grained tool calling when:
+
+You need to show users real-time progress on tool argument generation
+You want to start processing partial tool results as quickly as possible
+The buffering delays negatively impact your user experience
+You're comfortable implementing robust JSON error handling
+For most applications, the default behavior with validation is perfectly adequate. But when you need that extra responsiveness, fine-grained tool calling gives you the control to get chunks as fast as Claude can generate them.
+
+Important Note: Tool version strings can for all model versions can be found here: https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/text-editor-tool
+
+Claude comes with one built-in tool that you don't need to create from scratch: the text editor tool. This tool gives Claude the ability to work with files and directories just like you would in a standard text editor.
+
+What the Text Editor Tool Can Do
+The text editor tool provides Claude with a comprehensive set of file manipulation capabilities:
+
+View file or directory contents
+View specific ranges of lines in a file
+Replace text in a file
+Create new files
+Insert text at specific lines in a file
+Undo recent edits to files
+
+
+This dramatically expands Claude's abilities and essentially gives it the power to act as a software engineer right out of the gate.
+
+Understanding the Implementation Requirements
+Here's where things get a bit confusing: while the tool schema is built into Claude, you still need to provide the actual implementation. Think of it this way - Claude knows how to ask for file operations, but you need to write the code that actually performs those operations.
+
+
+
+When you use other tools, you write both the JSON schema and the function implementation. With the text editor tool, Claude provides the schema knowledge, but you must write functions to handle Claude's requests to create files, read directories, replace text, and so on.
+
+Schema Versions
+While the main schema is built into Claude, you do need to include a small schema stub when making requests. The exact schema depends on which Claude model you're using:
+
+def get_text_edit_schema(model):
+    if model.startswith("claude-3-7-sonnet"):
+        return {
+            "type": "text_editor_20250124",
+            "name": "str_replace_editor",
+        }
+    elif model.startswith("claude-3-5-sonnet"):
+        return {
+            "type": "text_editor_20241022", 
+            "name": "str_replace_editor",
+        }
+
+
+Claude sees this small schema and automatically expands it into the full text editor tool specification behind the scenes.
+
+Practical Example
+Let's see the text editor tool in action. When you ask Claude to work with files, it will use the tool to read, modify, and create files as needed.
+
+For example, if you ask Claude to "Open the ./main.py file and summarize its contents", Claude will:
+
+Use the text editor tool to view the file
+Read the contents
+Provide you with a summary
+You can take this further by asking Claude to modify files. For instance: "Open the ./main.py file and write out a function to calculate pi to the 5th digit. Then create a ./test.py file to test your implementation."
+
+Claude will:
+
+View the existing main.py file
+Replace its contents with a new implementation including the pi calculation function
+Create a new test.py file with appropriate unit tests
+Why Use the Text Editor Tool?
+You might wonder why this tool exists when modern code editors already have AI assistants built in. The text editor tool becomes valuable in scenarios where:
+
+You're building applications that need to programmatically edit files
+You're working in environments without access to full-featured code editors
+You want to integrate file editing capabilities directly into your Claude-powered applications
+Essentially, the text editor tool lets you replicate much of the functionality of a fancy AI-powered code editor within your own applications, giving you fine-grained control over how Claude interacts with your file system.
+Important note: Your organization must enable the Web Search tool in the settings console before using it. You can find this setting here: https://console.anthropic.com/settings/privacy
+
+Claude includes a built-in web search tool that lets it search the internet for current or specialized information to answer user questions. Unlike other tools where you need to provide the implementation, Claude handles the entire search process automatically - you just need to provide a simple schema to enable it.
+
+
+
+Setting Up the Web Search Tool
+To use the web search tool, you create a schema object with these required fields:
+
+web_search_schema = {
+    "type": "web_search_20250305",
+    "name": "web_search", 
+    "max_uses": 5
+}
+The max_uses field limits how many searches Claude can perform. Claude might do follow-up searches based on initial results, so this prevents excessive API calls. A single search returns multiple results, but Claude may decide additional searches are needed.
+
+How the Response Works
+When Claude uses the web search tool, the response contains several types of blocks:
+
+Text blocks - Claude's explanation of what it's doing
+ServerToolUseBlock - Shows the exact search query Claude used
+WebSearchToolResultBlock - Contains the search results
+WebSearchResultBlock - Individual search results with titles and URLs
+Citation blocks - Text that supports Claude's statements
+
+
+The response structure lets you see exactly what Claude searched for and which sources it found. Citations include the specific text Claude used to support its answers, along with the source URLs.
+
+Restricting Search Domains
+You can limit searches to specific domains using the allowed_domains field. This is particularly useful when you want reliable, authoritative sources:
+
+web_search_schema = {
+    "type": "web_search_20250305",
+    "name": "web_search",
+    "max_uses": 5,
+    "allowed_domains": ["nih.gov"]
+}
+For example, when asking about medical or exercise advice, restricting to domains like PubMed (nih.gov) ensures you get evidence-based information rather than random blog content.
+
+
+
+Rendering Search Results
+The different block types in the response are designed for specific UI rendering:
+
+Render text blocks as regular content
+Display web search results as a list of sources at the top
+Show citations inline with the text, including the source domain, page title, URL, and quoted text
+
+
+This structure helps users understand how Claude arrived at its answers and provides transparency about the sources being used. The citation format makes it clear which specific information came from which sources, building trust in the AI's responses.
+
+Practical Usage
+The web search tool works best for:
+
+Current events and recent developments
+Specialized information not in Claude's training data
+Fact-checking and finding authoritative sources
+Research tasks requiring up-to-date information
+Simply include the schema in your tools array when making API calls, and Claude will automatically decide when a web search would help answer the user's question.
+
+When Claude uses a tool, what type of message structure does it return?
+
+Multi-block messages with text and tool use blocks
+Simple text-only responses
+JSON data without any text
+Error messages only
+
+How can you tell if Claude wants to make another tool call in a conversation?
+
+Check if the response contains the word "tool"
+Check if the response is longer than usual
+Look at the stop_reason field for "tool_use"
+Count the number of message blocks
+
+What is the main purpose of a JSON schema when working with Claude tools?
+
+To format the final response for users
+To tell Claude what arguments your function expects and how to use it
+To store the results of tool function calls
+To encrypt data between Claude and your server
+
+What problem does the batch tool solve?
+
+It makes tools run faster
+It translates tool results into different languages
+It reduces the number of back-and-forth communications when multiple tools are needed
+It automatically fixes errors in tool responses
+
+What is the correct sequence of steps in the tool use workflow?
+
+Initial Request → Tool Request → Data Retrieval → Final Response
+Tool Request → Initial Request → Final Response → Data Retrieval
+Final Response → Initial Request → Tool Request → Data Retrieval
+Data Retrieval → Tool Request → Initial Request → Final Response
+
+Claude can only access information from its training data by default. What allows Claude to get current, real-time information?
+
+Making educated guesses based on patterns
+Searching through its training data more carefully
+Asking the user to provide more details
+Using tools to access external information
+
+What makes Claude's built-in text editor and web search tools different from custom tools?
+
+Claude provides the schema, but you may still need to implement some functionality
+They require special API keys
+They only work with specific file types
+They cost more to use
+
+Question 3:  Incorrect answer
+What is the main purpose of a JSON schema when working with Claude tools?
+
+ To format the final response for users
+ To tell Claude what arguments your function expects and how to use it
+ To store the results of tool function calls
+ To encrypt data between Claude and your server
+
+ Question 6:  Correct answer
+Claude can only access information from its training data by default. What allows Claude to get current, real-time information?
+
+ Making educated guesses based on patterns
+ Searching through its training data more carefully
+ Asking the user to provide more details
+ Using tools to access external information
+Question 7:  Correct answer
+What makes Claude's built-in text editor and web search tools different from custom tools?
+
+ Claude provides the schema, but you may still need to implement some functionality
+ They require special API keys
+ They only work with specific file types
+ They cost more to use
