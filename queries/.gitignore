@@ -1,3 +1,21 @@
 node_modules
-post-log.json
+dist
+*.tsbuildinfo
+
+# Environment (keep .env.example, ignore real secrets)
+.env
+.env.local
+
+# SQLite database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Claude Code (keep the committed example template)
+.claude/settings.local.json
+
+# Hook logs
 pre-log.json
+post-log.json
+
+.DS_Store
