@@ -1,0 +1,25 @@
+[project]
+name = "exam-trainer"
+version = "0.1.0"
+description = "Local quiz app for Claude Certified Architect — Foundations exam prep"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "anthropic[bedrock]>=0.40",
+    "python-dotenv>=1.0",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "live: hits the real Bedrock API — costs money, slow; skipped unless --run-live",
+    "e2e: drives a real browser (Chrome + puppeteer); skipped unless --run-e2e",
+]
+addopts = "-ra"
