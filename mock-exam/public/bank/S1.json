@@ -27,7 +27,7 @@
         },
         {
           "id": "D",
-          "text": "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type.",
+          "text": "Implement a routing classifier that analyzes each incoming request up front and dynamically enables only the subset of tools deemed appropriate for that detected request type.",
           "correct": false,
           "explanation": "This addresses tool availability rather than tool ordering, which is the actual problem here."
         }
@@ -114,7 +114,7 @@
         },
         {
           "id": "B",
-          "text": "Increase the agent's max retry count so it eventually gives up after enough attempts.",
+          "text": "Increase the agent's maximum retry count so it eventually gives up after enough attempts.",
           "correct": false,
           "explanation": "Retrying a non-retryable validation error is wasteful regardless of the cap; the real fix is signaling that the error is not retryable."
         },
@@ -153,7 +153,7 @@
         },
         {
           "id": "C",
-          "text": "Instruct the model in the system prompt to \"remember all important details\".",
+          "text": "Add an instruction to the system prompt telling the model to \"remember all important details\" mentioned earlier in the conversation.",
           "correct": false,
           "explanation": "A vague instruction does not prevent summarization from dropping specific numeric values."
         },
@@ -345,7 +345,7 @@
         },
         {
           "id": "B",
-          "text": "Only the raw, unsummarized conversation transcript with no structured fields at all.",
+          "text": "Only the raw, unsummarized conversation transcript with no structured fields, leaving the human to piece together the details themselves.",
           "correct": false,
           "explanation": "The human lacks transcript access in this scenario, and even with it, an unsummarized dump is slow to act on."
         },
@@ -378,7 +378,7 @@
         },
         {
           "id": "B",
-          "text": "Tell the agent in the system prompt to be careful about differing date formats.",
+          "text": "Add a note in the system prompt telling the agent to be careful about the differing date formats and to convert them itself before comparing.",
           "correct": false,
           "explanation": "Prompt cautions are probabilistic; a normalization hook fixes the data deterministically."
         },
@@ -423,7 +423,7 @@
         },
         {
           "id": "D",
-          "text": "Lowering the model temperature so it behaves more predictably around limits.",
+          "text": "Lowering the model's sampling temperature so that it behaves more predictably and conservatively around the refund threshold limits.",
           "correct": false,
           "explanation": "Temperature does not enforce business thresholds; only programmatic interception does."
         }
@@ -483,7 +483,7 @@
         },
         {
           "id": "C",
-          "text": "Always use fully dynamic decomposition for both, since it is the most flexible.",
+          "text": "Always use fully dynamic, adaptive decomposition for both kinds of work, on the grounds that it is the most flexible approach available.",
           "correct": false,
           "explanation": "Dynamic decomposition adds needless overhead and variability for predictable, well-defined tasks."
         },
@@ -516,7 +516,7 @@
         },
         {
           "id": "C",
-          "text": "The model will automatically re-request the tool, fixing itself.",
+          "text": "The model detects the missing message and automatically re-requests the same tool, transparently repairing the conversation on its own.",
           "correct": false,
           "explanation": "There is no guaranteed self-repair; the malformed history typically causes an error or confused reasoning."
         },
@@ -720,7 +720,7 @@
         },
         {
           "id": "D",
-          "text": "Let the agent decide to escalate but send only an unstructured transcript dump.",
+          "text": "Let the agent decide when to escalate, but hand the human only an unstructured dump of the entire raw conversation transcript with no summary.",
           "correct": false,
           "explanation": "Unstructured dumps slow the human; a structured handoff is far more useful."
         }
@@ -807,7 +807,7 @@
         },
         {
           "id": "B",
-          "text": "Always run the adaptive planner for consistency across all requests.",
+          "text": "Always run the adaptive planner on every request for a single consistent code path.",
           "correct": false,
           "explanation": "Uniform heavyweight planning wastes latency on trivial requests."
         },
@@ -879,7 +879,7 @@
         },
         {
           "id": "C",
-          "text": "Reject the response as malformed because only one tool_use is allowed per turn.",
+          "text": "Reject the entire response as malformed, on the assumption that only a single tool_use block is ever allowed in one assistant turn.",
           "correct": false,
           "explanation": "Multiple tool_use blocks per turn are valid and should all be handled."
         },
@@ -906,7 +906,7 @@
         },
         {
           "id": "B",
-          "text": "Uniform errors are fine because the agent should always retry on any failure.",
+          "text": "Uniform errors are perfectly fine, because the correct behavior for the agent is to simply retry on any failure regardless of its underlying cause.",
           "correct": false,
           "explanation": "Blind retrying is wrong for non-retryable policy errors and wastes calls."
         },
@@ -978,7 +978,7 @@
         },
         {
           "id": "C",
-          "text": "Return an error for the empty case to prompt the agent to escalate.",
+          "text": "Return an error for the empty-result case so that the agent treats it as a failure and immediately escalates to a human.",
           "correct": false,
           "explanation": "An empty result is a normal outcome, not an error warranting escalation."
         },
@@ -1005,7 +1005,7 @@
         },
         {
           "id": "B",
-          "text": "Keep both descriptions identical so the model treats them as interchangeable.",
+          "text": "Keep both tool descriptions identical so the model treats them as interchangeable.",
           "correct": false,
           "explanation": "Identical descriptions are exactly what cause misrouting between similar tools."
         },
@@ -1038,7 +1038,7 @@
         },
         {
           "id": "B",
-          "text": "Tool descriptions are irrelevant when a system prompt exists.",
+          "text": "Tool descriptions become irrelevant the moment a system prompt is present, because prompt text always takes precedence over them.",
           "correct": false,
           "explanation": "Descriptions still matter; the point is that prompt wording can override them in unintended ways."
         },
@@ -1077,7 +1077,7 @@
         },
         {
           "id": "C",
-          "text": "Add four more specialized tools so each one covers a narrower, more specific operation.",
+          "text": "Add four more specialized tools so each covers a narrower, more specific operation.",
           "correct": false,
           "explanation": "Adding tools worsens the decision-complexity problem."
         },
@@ -1215,7 +1215,7 @@
         },
         {
           "id": "D",
-          "text": "Copy the description from `get_customer` for consistency.",
+          "text": "Copy the description from the `get_customer` tool word for word for consistency.",
           "correct": false,
           "explanation": "Duplicating descriptions across tools causes overlap and misrouting."
         }
@@ -1269,7 +1269,7 @@
         },
         {
           "id": "B",
-          "text": "Immediately propagate a generic failure up to the coordinator and stop all work.",
+          "text": "Immediately propagate a generic failure status up to the coordinator agent and stop all further work, without attempting any local recovery first.",
           "correct": false,
           "explanation": "Propagating a generic failure without local recovery or context wastes the chance to self-heal and hides useful detail."
         },
@@ -1374,7 +1374,7 @@
         },
         {
           "id": "C",
-          "text": "Proceed with whichever record appears first in the results.",
+          "text": "Proceed with whichever of the two records appears first in the result list.",
           "correct": false,
           "explanation": "Acting on an arbitrary match risks operating on the wrong account."
         },
@@ -1446,7 +1446,7 @@
         },
         {
           "id": "D",
-          "text": "Encoded into the system prompt at session start and never updated.",
+          "text": "Encoded into the system prompt at session start as a fixed block, never updated.",
           "correct": false,
           "explanation": "Case facts change during the session; a static prompt block can't track evolving state."
         }
@@ -1479,7 +1479,7 @@
         },
         {
           "id": "D",
-          "text": "Confidence scores are reliable and should be the primary escalation trigger.",
+          "text": "Self-reported confidence scores are well calibrated and reliable, so they should serve as the agent's primary escalation trigger.",
           "correct": false,
           "explanation": "This contradicts the known poor calibration of self-reported confidence."
         }
@@ -1539,7 +1539,7 @@
         },
         {
           "id": "C",
-          "text": "A randomness problem; set the sampling temperature to 0 for more stable recall.",
+          "text": "A randomness problem in the model's sampling; setting the temperature to 0 will make recall fully deterministic and stop the middle details from being dropped.",
           "correct": false,
           "explanation": "Temperature doesn't address positional information loss in long contexts."
         },
@@ -1599,7 +1599,7 @@
         },
         {
           "id": "B",
-          "text": "The API caches all prior turns automatically, so resending is optional.",
+          "text": "The API automatically caches all of the conversation's prior turns on the server, so resending the full history with each request is entirely optional.",
           "correct": false,
           "explanation": "There is no automatic server-side memory of your conversation; you must resend context."
         },
@@ -1665,7 +1665,7 @@
         },
         {
           "id": "B",
-          "text": "Summarization always increases overall token usage rather than reducing it.",
+          "text": "Summarizing the conversation always increases overall token usage rather than reducing it.",
           "correct": false,
           "explanation": "Summarization reduces tokens; the risk is fact loss, not token growth."
         },
@@ -1698,7 +1698,7 @@
         },
         {
           "id": "B",
-          "text": "A minimal one-liner that simply says the tool \"escalates the case to a human agent.\"",
+          "text": "A minimal one-line description that simply states the tool \"escalates the case to a human agent,\" with no conditions or payload details.",
           "correct": false,
           "explanation": "Too minimal — it doesn't tell the model when to use it versus resolve autonomously."
         },
@@ -1809,7 +1809,7 @@
         },
         {
           "id": "D",
-          "text": "Immediate escalation since double-charges are always human-only.",
+          "text": "Immediate escalation to a human, on the assumption that double-charge investigations are always human-only and never agent-resolvable.",
           "correct": false,
           "explanation": "Many double-charge cases are diagnosable by the agent; escalate only if it hits a real blocker."
         }
@@ -1842,7 +1842,7 @@
         },
         {
           "id": "D",
-          "text": "Both → retryable: false.",
+          "text": "Both the backend timeout and the refund-exceeds-policy rejection → retryable: false, treating every failure as permanent.",
           "correct": false,
           "explanation": "Marking a transient timeout non-retryable prevents a legitimate, often-successful retry."
         }
@@ -1875,7 +1875,7 @@
         },
         {
           "id": "D",
-          "text": "Lower the model's sampling temperature and hope it self-limits the refund amount.",
+          "text": "Lower the model's sampling temperature and hope it both self-limits the refund amount and reliably records each blocked attempt.",
           "correct": false,
           "explanation": "Temperature can't enforce a hard threshold or guarantee logging."
         }
@@ -1974,7 +1974,7 @@
         },
         {
           "id": "D",
-          "text": "It only matters for API cost considerations, not for tool-selection reliability.",
+          "text": "It only matters for API cost and token-budget considerations, and has no real bearing on the agent's tool-selection reliability or accuracy.",
           "correct": false,
           "explanation": "The primary harm here is reduced selection reliability and potential misuse, not just cost."
         }
@@ -2007,7 +2007,7 @@
         },
         {
           "id": "D",
-          "text": "Let the facts be gradually absorbed into the rolling conversation summary over time.",
+          "text": "Let the case facts be gradually absorbed into the rolling conversation summary over time, rather than keeping them in a separate block.",
           "correct": false,
           "explanation": "Merging it into the summary reintroduces the fact-loss problem it was meant to prevent."
         }

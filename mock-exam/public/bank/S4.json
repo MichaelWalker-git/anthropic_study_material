@@ -21,7 +21,7 @@
         },
         {
           "id": "C",
-          "text": "Use Read on every file in the repository and scan for the name.",
+          "text": "Use Read on every single file in the whole repository and scan each one for the name.",
           "correct": false,
           "explanation": "Reading all files upfront is wasteful; Grep targets the content directly."
         },
@@ -42,19 +42,19 @@
       "options": [
         {
           "id": "A",
-          "text": "Configure the server in project-scoped `.mcp.json` and reference the token via environment variable expansion (e.g. `${GITHUB_TOKEN}`).",
+          "text": "Use project-scoped `.mcp.json` and reference the token via `${GITHUB_TOKEN}`.",
           "correct": true,
           "explanation": "Project-scoped `.mcp.json` shares the server via version control, and environment variable expansion supplies credentials without committing secrets."
         },
         {
           "id": "B",
-          "text": "Configure it in user-scoped `~/.claude.json` with the token pasted inline.",
+          "text": "Configure it in the user-scoped `~/.claude.json` file with the GitHub token pasted inline so it travels with you.",
           "correct": false,
           "explanation": "User-scoped config isn't shared with the team, and inline tokens risk credential leakage."
         },
         {
           "id": "C",
-          "text": "Commit the token directly into `.mcp.json` so everyone has it.",
+          "text": "Commit the GitHub token directly into the shared `.mcp.json` file so every teammate has it on checkout.",
           "correct": false,
           "explanation": "Committing a secret is a serious security violation."
         },
@@ -75,19 +75,19 @@
       "options": [
         {
           "id": "A",
-          "text": "Continue while `stop_reason` is `tool_use`, executing requested tools and appending results, and terminate when `stop_reason` is `end_turn`.",
+          "text": "Loop while `stop_reason` is `tool_use`, then terminate once it is `end_turn`.",
           "correct": true,
           "explanation": "The agentic loop lifecycle keys off `stop_reason`: keep iterating on `tool_use`, terminate on `end_turn`. This is the reliable, model-driven control signal."
         },
         {
           "id": "B",
-          "text": "Parse the assistant's natural-language text for phrases like \"I'm done\" to decide when to stop.",
+          "text": "Parse the assistant's natural-language reply text for phrases such as \"I'm done\" or \"all finished\" and stop the loop the moment one of them appears.",
           "correct": false,
           "explanation": "Parsing natural-language signals is an anti-pattern — unreliable compared to the structured `stop_reason`."
         },
         {
           "id": "C",
-          "text": "Set a fixed iteration cap as the primary stopping mechanism.",
+          "text": "Set a fixed maximum-iteration cap as the primary stopping mechanism regardless of what the model reports.",
           "correct": false,
           "explanation": "Arbitrary iteration caps as the primary stop are an anti-pattern; they cut off legitimate work or run too long."
         },
@@ -108,13 +108,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Run a Bash loop that cats each directory and filters output by extension.",
+          "text": "Run a Bash loop that cats each directory and filters by extension.",
           "correct": false,
           "explanation": "Shelling out is fragile and slower; Glob is purpose-built for path patterns."
         },
         {
           "id": "B",
-          "text": "Use Glob with the pattern `**/*.test.tsx` to match file paths by name.",
+          "text": "Use Glob with the pattern `**/*.test.tsx` to match the file paths by name.",
           "correct": true,
           "explanation": "Glob matches file paths and names by pattern, so `**/*.test.tsx` is the right way to enumerate those files."
         },
@@ -186,7 +186,7 @@
         },
         {
           "id": "C",
-          "text": "Glob the whole tree and Read the first ten files alphabetically.",
+          "text": "Glob the entire module tree and then Read the first ten matching files in alphabetical order.",
           "correct": false,
           "explanation": "Reading arbitrary files by name order does not target the relevant code."
         },
@@ -246,7 +246,7 @@
         },
         {
           "id": "B",
-          "text": "Use Write to output the entire 4,000-line file with the one line changed.",
+          "text": "Use Write to output the whole file with the one line changed.",
           "correct": false,
           "explanation": "Write rewrites the whole file, which is wasteful when a targeted Edit will do."
         },
@@ -279,7 +279,7 @@
         },
         {
           "id": "B",
-          "text": "Grep for `STRIPE_KEY` to pinpoint the files, then Read only those.",
+          "text": "Grep for `STRIPE_KEY` to pinpoint the files, then Read only those matches.",
           "correct": true,
           "explanation": "Grep locates the symbol quickly across the repo so only the relevant files get Read, avoiding wasteful full reads."
         },
@@ -291,7 +291,7 @@
         },
         {
           "id": "D",
-          "text": "Write a temporary index file cataloguing every variable by hand first.",
+          "text": "Write a temporary index file cataloguing every variable first.",
           "correct": false,
           "explanation": "Manually building an index is more work than a direct content search."
         }
@@ -318,7 +318,7 @@
         },
         {
           "id": "C",
-          "text": "Inside the committed `CLAUDE.md` so Claude reads it each session.",
+          "text": "Inside the committed project `CLAUDE.md` file so that Claude reads the server at the start of each session.",
           "correct": false,
           "explanation": "CLAUDE.md provides instructions, not MCP server configuration, and would be shared."
         },
@@ -411,7 +411,7 @@
         },
         {
           "id": "B",
-          "text": "Only after the tools are individually re-declared inside CLAUDE.md.",
+          "text": "Only after each of the server's tools is individually re-declared by hand inside the project CLAUDE.md.",
           "correct": false,
           "explanation": "MCP tools are discovered automatically; you do not redeclare them in CLAUDE.md."
         },
@@ -438,7 +438,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Environment variable expansion is unsupported, so the token never resolves.",
+          "text": "Environment variable expansion is unsupported inside `.mcp.json`, so the referenced token can never be resolved at all.",
           "correct": false,
           "explanation": "Environment variable expansion is supported; that is the intended mechanism."
         },
@@ -543,7 +543,7 @@
         },
         {
           "id": "B",
-          "text": "Permissions are inherited automatically from the repository settings.",
+          "text": "Permissions are inherited automatically from the repository settings, exactly as they are during local development.",
           "correct": false,
           "explanation": "CI does not auto-inherit tool permissions from repo settings."
         },
@@ -609,7 +609,7 @@
         },
         {
           "id": "B",
-          "text": "It helps the model understand what each parameter expects when calling the tool.",
+          "text": "It helps the model understand what each parameter expects so it can call the tool correctly.",
           "correct": true,
           "explanation": "Parameter field descriptions tell the model what each argument means, which is essential for the model to call the tool correctly."
         },
@@ -642,7 +642,7 @@
         },
         {
           "id": "B",
-          "text": "Increase the effort level so the model can reason past the clutter.",
+          "text": "Increase the session's effort level so the model can reason its way past all of the clutter.",
           "correct": false,
           "explanation": "Effort level does not reduce the context cost of tool definitions."
         },
@@ -681,7 +681,7 @@
         },
         {
           "id": "C",
-          "text": "The CLI does not add persistent tool definitions to the context window.",
+          "text": "The CLI does not add any persistent tool definitions to the context window upfront.",
           "correct": true,
           "explanation": "An MCP server loads tool definitions into context persistently; a CLI invoked via Bash adds no such definitions, so it is more context-efficient."
         },
@@ -735,7 +735,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Skills, which load only a name and description until Claude needs them.",
+          "text": "Skills, which keep only a name and description until needed.",
           "correct": true,
           "explanation": "Skills keep just a name and description in context and load the full contents only when needed, unlike MCP servers that load all tool definitions upfront."
         },
@@ -834,7 +834,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Edit, since reading and editing are the same underlying operation.",
+          "text": "Edit, since reading a file and editing it are really the same underlying operation.",
           "correct": false,
           "explanation": "Edit modifies text; it is not for retrieving full contents."
         },
@@ -999,7 +999,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Run `/memory` to see and verify the loaded memory files.",
+          "text": "Run the `/memory` command to see and verify exactly which memory files are loaded.",
           "correct": true,
           "explanation": "The `/memory` command lets you view and verify which CLAUDE.md files are currently loaded into the session."
         },
@@ -1017,7 +1017,7 @@
         },
         {
           "id": "D",
-          "text": "Inspect `.mcp.json` to confirm the memory files are registered there.",
+          "text": "Inspect `.mcp.json` to confirm the memory files are registered.",
           "correct": false,
           "explanation": "Memory files are not registered in `.mcp.json`; that file configures servers."
         }
@@ -1281,7 +1281,7 @@
         },
         {
           "id": "D",
-          "text": "Define a PreToolUse hook that emits the boilerplate instructions.",
+          "text": "Define a PreToolUse hook that emits the boilerplate instructions before each tool call runs.",
           "correct": false,
           "explanation": "Hooks intercept tool calls; they are not an on-demand workflow command."
         }
@@ -1302,7 +1302,7 @@
         },
         {
           "id": "B",
-          "text": "Add a `@parameters` decorator at the top of the command file.",
+          "text": "Add a `@parameters` decorator at the very top of the command's markdown file.",
           "correct": false,
           "explanation": "There is no `@parameters` decorator for custom commands."
         },
@@ -1362,7 +1362,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A Skill, whose full contents load on demand when Claude needs it.",
+          "text": "A Skill, whose full contents load on demand only when Claude needs it.",
           "correct": true,
           "explanation": "A Skill keeps only its name and description in context and loads the full instructions only when Claude determines it should use it."
         },
@@ -1374,7 +1374,7 @@
         },
         {
           "id": "C",
-          "text": "A CLAUDE.md @import, which streams its target file in piece by piece.",
+          "text": "A CLAUDE.md @import, which streams its target file piece by piece.",
           "correct": false,
           "explanation": "An @import loads the full referenced file into every request, not on demand."
         },
@@ -1446,7 +1446,7 @@
         },
         {
           "id": "D",
-          "text": "Disable the Write tool so it cannot create API route files at all.",
+          "text": "Disable the Write tool entirely so that the agent cannot create any API route files at all.",
           "correct": false,
           "explanation": "Disabling Write blocks legitimate edits too; a memory rule is the right scope."
         }
@@ -1479,7 +1479,7 @@
         },
         {
           "id": "D",
-          "text": "Avoid both features since combining them is not supported together.",
+          "text": "Avoid both features altogether, since plan mode and a higher effort level cannot be combined in one session.",
           "correct": false,
           "explanation": "Combining plan mode and higher effort is explicitly supported."
         }
@@ -1500,7 +1500,7 @@
         },
         {
           "id": "B",
-          "text": "It loads only after you explicitly run `/init` in the session.",
+          "text": "It loads into the session only after you have explicitly run the `/init` command yourself.",
           "correct": false,
           "explanation": "`/init` generates the file; an existing one loads automatically without it."
         },
@@ -1533,7 +1533,7 @@
         },
         {
           "id": "B",
-          "text": "A PostToolUse hook that re-runs the linter after every file edit.",
+          "text": "A PostToolUse hook that automatically re-runs the project linter after every single file edit.",
           "correct": false,
           "explanation": "A linter hook formats or checks; it is not a fresh-context reviewer agent."
         },
@@ -1560,13 +1560,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Append a `tool_result` block keyed to the matching `tool_use_id`.",
+          "text": "Append a `tool_result` block keyed to the request's matching `tool_use_id`.",
           "correct": true,
           "explanation": "Each tool result must be a `tool_result` block carrying the same `tool_use_id` as the request so the model can correlate it with the call."
         },
         {
           "id": "B",
-          "text": "Append the output as a plain assistant text message in the history.",
+          "text": "Append the output as a plain assistant text message.",
           "correct": false,
           "explanation": "Tool output must be a structured tool_result, not free assistant text."
         },
@@ -1599,13 +1599,13 @@
         },
         {
           "id": "B",
-          "text": "The model has finished this turn and the loop should stop iterating.",
+          "text": "The model has now finished this turn and the loop should stop iterating.",
           "correct": true,
           "explanation": "`end_turn` means the model has completed its turn, so the loop terminates rather than executing more tools."
         },
         {
           "id": "C",
-          "text": "The request hit the token limit and must be retried with more budget.",
+          "text": "The request hit the token limit and must be retried.",
           "correct": false,
           "explanation": "A length cutoff has its own stop reason; `end_turn` is normal completion."
         },
@@ -1644,7 +1644,7 @@
         },
         {
           "id": "D",
-          "text": "Stop the loop because multiple tool calls indicate a malformed reply.",
+          "text": "Stop the loop immediately because two tool calls in one turn indicate a malformed reply.",
           "correct": false,
           "explanation": "Multiple tool_use blocks are valid; the loop handles each one."
         }
@@ -1665,7 +1665,7 @@
         },
         {
           "id": "B",
-          "text": "Raise the effort level so the model reasons through the clutter faster.",
+          "text": "Raise the effort level so the model reasons through clutter.",
           "correct": false,
           "explanation": "Effort level does not reduce how much exploration output enters context."
         },
@@ -1725,7 +1725,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A subagent runs faster because it skips the agentic loop entirely.",
+          "text": "A subagent always runs noticeably faster than the main agent because it skips the agentic loop entirely.",
           "correct": false,
           "explanation": "Subagents still use the loop; the value is fresh, unbiased context."
         },
@@ -1758,7 +1758,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Resuming the prior session so its accumulated context is restored.",
+          "text": "Resuming the prior session so that its accumulated context is fully restored.",
           "correct": true,
           "explanation": "Resuming a session restores the prior conversation and context so work continues from where it stopped."
         },
@@ -1770,7 +1770,7 @@
         },
         {
           "id": "C",
-          "text": "Running `/init`, which reloads the previous conversation automatically.",
+          "text": "Running `/init`, which reloads the previous conversation.",
           "correct": false,
           "explanation": "`/init` generates a CLAUDE.md; it does not restore a session."
         },
@@ -1824,7 +1824,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Immediately ask for edits, trusting the resumed context is still accurate.",
+          "text": "Immediately ask for edits, trusting the resumed context.",
           "correct": false,
           "explanation": "The resumed context predates the external edits, so it may be stale."
         },
@@ -1863,7 +1863,7 @@
         },
         {
           "id": "B",
-          "text": "Run `claude --from-pr <PR_NUMBER>` to pick up where they left off.",
+          "text": "Run `claude --from-pr <PR_NUMBER>` to pick up exactly where they left off.",
           "correct": true,
           "explanation": "`claude --from-pr <PR_NUMBER>` resumes the session linked to that PR, restoring context to address reviews or fix builds."
         },
@@ -1875,7 +1875,7 @@
         },
         {
           "id": "D",
-          "text": "Add the PR number to `.mcp.json` so the server reattaches the session.",
+          "text": "Add the PR number to `.mcp.json` so the server reattaches it.",
           "correct": false,
           "explanation": "`.mcp.json` configures servers and has nothing to do with PR linkage."
         }
@@ -1902,7 +1902,7 @@
         },
         {
           "id": "C",
-          "text": "Switch to plan mode, which forces deep reasoning on every reply.",
+          "text": "Switch the session into plan mode, which forces extra-deep reasoning on every single reply.",
           "correct": false,
           "explanation": "Plan mode adds breadth and a planning gate, not per-prompt reasoning depth."
         },
@@ -1962,7 +1962,7 @@
         },
         {
           "id": "B",
-          "text": "The model automatically re-runs every tool until results appear on their own.",
+          "text": "The model automatically re-runs every tool until results appear.",
           "correct": false,
           "explanation": "The model does not auto-rerun tools; the loop owner must supply results."
         },
@@ -1989,7 +1989,7 @@
       "options": [
         {
           "id": "A",
-          "text": "stdio, since it runs the server as a local subprocess on your own machine.",
+          "text": "stdio, since it runs the server as a local subprocess.",
           "correct": false,
           "explanation": "stdio runs a local process; it is for tools needing direct system access, not a remote cloud service."
         },
@@ -2022,7 +2022,7 @@
       "options": [
         {
           "id": "A",
-          "text": "It separates Claude's own options from the command and args passed to the server.",
+          "text": "It separates Claude's own options from the command and the args that are passed on to the server.",
           "correct": true,
           "explanation": "For stdio servers, `--` separates Claude's options (like --transport, --env) from the server command and its arguments, which are passed untouched."
         },
@@ -2061,7 +2061,7 @@
         },
         {
           "id": "B",
-          "text": "Both definitions load as two separate connections to the server.",
+          "text": "Both definitions load at once as two completely separate connections to the same server.",
           "correct": false,
           "explanation": "When a server is defined in multiple places, Claude Code connects to it once, not twice."
         },
@@ -2094,7 +2094,7 @@
         },
         {
           "id": "B",
-          "text": "The header is silently dropped and the server connects anyway.",
+          "text": "The header is silently dropped from the request and the server connects anyway without it.",
           "correct": false,
           "explanation": "An unset required variable with no default causes a parse failure, not a silent drop."
         },
@@ -2133,7 +2133,7 @@
         },
         {
           "id": "C",
-          "text": "Move the server into user scope so it is prioritized.",
+          "text": "Move the server into user scope so that its tools are prioritized over the others.",
           "correct": false,
           "explanation": "Scope controls sharing and precedence, not whether tools are always loaded into context."
         },
@@ -2187,7 +2187,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A server tool requires you to send back a `tool_result` for each call.",
+          "text": "A server tool still requires your application code to send back a `tool_result` block for each call it makes.",
           "correct": false,
           "explanation": "Returning a tool_result is the client-tool flow; server tools are executed by Anthropic."
         },
@@ -2220,7 +2220,7 @@
       "options": [
         {
           "id": "A",
-          "text": "From the init system message's `session_id` emitted during the first query.",
+          "text": "From the `session_id` carried on the init system message emitted during the very first query.",
           "correct": true,
           "explanation": "The first query emits an init system message carrying the session_id, which you pass as `resume` to continue with full prior context."
         },
@@ -2265,7 +2265,7 @@
         },
         {
           "id": "C",
-          "text": "As a slash command like `/mcp__github__pr_review 456`.",
+          "text": "As a slash command written like `/mcp__github__pr_review 456`.",
           "correct": true,
           "explanation": "MCP prompts appear as commands in the form `/mcp__servername__promptname`, with arguments passed space-separated after the command."
         },
@@ -2292,7 +2292,7 @@
         },
         {
           "id": "B",
-          "text": "Use an @ mention like `@docs:file://api/authentication`.",
+          "text": "Use an @ mention inline, written like `@docs:file://api/authentication`.",
           "correct": true,
           "explanation": "MCP resources are referenced with @ mentions in the form `@server:protocol://resource/path`, and are fetched and attached automatically."
         },

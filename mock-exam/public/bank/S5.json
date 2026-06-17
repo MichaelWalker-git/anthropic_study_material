@@ -15,7 +15,7 @@
         },
         {
           "id": "B",
-          "text": "Set the environment variable `CLAUDE_HEADLESS=true` before running the command.",
+          "text": "Set the environment variable `CLAUDE_HEADLESS=true` before running the command in the pipeline.",
           "correct": false,
           "explanation": "This references a non-existent feature."
         },
@@ -48,7 +48,7 @@
         },
         {
           "id": "B",
-          "text": "Switch both workflows to batch processing with status polling to check for completion.",
+          "text": "Switch both workflows to batch processing and add status polling to check each batch for completion before merging.",
           "correct": false,
           "explanation": "Relying on \"often faster\" completion isn't acceptable for blocking workflows."
         },
@@ -75,7 +75,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow.",
+          "text": "Split into focused passes: review each file on its own, then run a separate integration pass on cross-file data flow.",
           "correct": true,
           "explanation": "Splitting reviews into focused passes addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, and a separate integration pass catches cross-file issues."
         },
@@ -93,7 +93,7 @@
         },
         {
           "id": "D",
-          "text": "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs.",
+          "text": "Run three independent review passes over the full PR and only flag issues that appear in at least two of the three separate runs.",
           "correct": false,
           "explanation": "Voting across full-PR passes still suffers the same per-pass attention dilution."
         }
@@ -108,19 +108,19 @@
       "options": [
         {
           "id": "A",
-          "text": "Write specific review criteria defining which issues to report (bugs, security) versus skip (minor style, local patterns), rather than relying on confidence-based filtering.",
+          "text": "Define explicit criteria for which issues to report (bugs, security) versus skip (minor style, local naming).",
           "correct": true,
           "explanation": "Explicit categorical criteria outperform vague instructions like \"be conservative.\" Defining exactly what to report and what to skip restores trust without suppressing accurate categories."
         },
         {
           "id": "B",
-          "text": "Add \"only report high-confidence findings\" to the prompt.",
+          "text": "Add a general instruction such as \"only report high-confidence findings and be conservative\" to the review prompt.",
           "correct": false,
           "explanation": "General confidence-based instructions fail to improve precision compared to specific categorical criteria."
         },
         {
           "id": "C",
-          "text": "Reduce the model temperature so it produces fewer findings overall.",
+          "text": "Reduce the model temperature so the review produces fewer findings overall on each run.",
           "correct": false,
           "explanation": "Temperature reduces variability, not the rate of low-value categories; it could also suppress accurate findings."
         },
@@ -312,7 +312,7 @@
         },
         {
           "id": "B",
-          "text": "Increase the generating session's effort level so it reasons harder when reviewing its own code.",
+          "text": "Increase the generating session's effort level so it reasons harder when reviewing the code it just authored.",
           "correct": false,
           "explanation": "Extra reasoning in the same session doesn't remove the bias of having authored the code."
         },
@@ -345,7 +345,7 @@
         },
         {
           "id": "B",
-          "text": "A same-session review always exceeds the context window and silently truncates the code.",
+          "text": "A same-session review always exceeds the context window and then silently truncates the code being reviewed.",
           "correct": false,
           "explanation": "Context exhaustion is a separate concern and not the reason self-review underperforms."
         },
@@ -390,7 +390,7 @@
         },
         {
           "id": "D",
-          "text": "Lower the severity threshold on every re-run so that far fewer findings appear in the comment overall.",
+          "text": "Lower the severity threshold on every re-run so that far fewer findings appear in the posted comment overall.",
           "correct": false,
           "explanation": "A blunt threshold change can hide genuine new issues and doesn't address the duplication."
         }
@@ -423,7 +423,7 @@
         },
         {
           "id": "D",
-          "text": "Delete and regenerate the entire existing test suite from scratch on every CI run for consistency.",
+          "text": "Delete and regenerate the entire existing test suite from scratch on every CI run to keep it fully consistent.",
           "correct": false,
           "explanation": "Regenerating everything is destructive and wasteful; supplying existing tests as context is targeted."
         }
@@ -450,7 +450,7 @@
         },
         {
           "id": "C",
-          "text": "The reviewing instance can edit the first instance's files automatically without permissions.",
+          "text": "The reviewing instance can automatically edit the first instance's files without any explicit permissions.",
           "correct": false,
           "explanation": "A reviewer should be read-only; it doesn't silently edit, and tools must be permitted explicitly."
         },
@@ -675,7 +675,7 @@
         },
         {
           "id": "B",
-          "text": "Yes; commands are only loaded at startup, so the session must be restarted.",
+          "text": "Yes; custom commands are only loaded at startup, so the running session must be fully restarted first.",
           "correct": false,
           "explanation": "Commands are picked up automatically without restarting."
         },
@@ -1104,7 +1104,7 @@
         },
         {
           "id": "B",
-          "text": "\"Check that all of the code comments are accurate and well written throughout the file.\"",
+          "text": "\"Check that all of the code comments are accurate and well written throughout every file in the diff.\"",
           "correct": false,
           "explanation": "This is still vague and invites tone/style nitpicking — the original problem."
         },

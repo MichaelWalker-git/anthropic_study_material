@@ -240,7 +240,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Split the content into topic files under `.claude/rules/`, one per concern (testing, API, deployment).",
+          "text": "Split the content into topic files under `.claude/rules/`, one per concern.",
           "correct": true,
           "explanation": "Splitting a monolithic CLAUDE.md into focused topic files in `.claude/rules/` improves maintainability and lets conventions be organized (and, with frontmatter, conditionally loaded)."
         },
@@ -339,7 +339,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Set `allowed-tools` in the skill's frontmatter to just the file ops.",
+          "text": "Set `allowed-tools` in the frontmatter to just the file ops.",
           "correct": true,
           "explanation": "The `allowed-tools` frontmatter restricts which tools a skill may use during execution, e.g., limiting it to file writes to prevent destructive shell actions."
         },
@@ -438,7 +438,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Create a `.claude/rules/` file with frontmatter `paths: [\"terraform/**/*\"]` so it activates only there.",
+          "text": "Create a `.claude/rules/` file with frontmatter `paths: [\"terraform/**/*\"]`.",
           "correct": true,
           "explanation": "Path-scoped rules use a `paths` frontmatter glob so the rule loads only when editing matching files, reducing irrelevant context and token usage."
         },
@@ -675,7 +675,7 @@
         },
         {
           "id": "B",
-          "text": "Tell Claude to just implement the caching now and that you will fix any problems that come up later.",
+          "text": "Tell Claude to just implement the caching layer right now and that you will track down and fix any invalidation problems that happen to come up later on.",
           "correct": false,
           "explanation": "Diving in without surfacing considerations invites avoidable rework in an unfamiliar domain."
         },
@@ -735,7 +735,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use `fork_session` to create independent branches from the shared analysis baseline.",
+          "text": "Use `fork_session` to branch independently from the shared baseline.",
           "correct": true,
           "explanation": "`fork_session` branches from a shared baseline so you can explore divergent approaches independently without one polluting the other."
         },
@@ -840,7 +840,7 @@
         },
         {
           "id": "B",
-          "text": "The underlying model has broken; you should restart your computer to fix it.",
+          "text": "The underlying model itself has become corrupted; you should restart your computer and reinstall the tool to clear the fault.",
           "correct": false,
           "explanation": "This is expected context degradation, not a system fault."
         },
@@ -900,13 +900,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Summarize the discovery phase's key findings and inject that summary into the next phase's context.",
+          "text": "Summarize the discovery phase's key findings and seed the next phase with that summary.",
           "correct": true,
           "explanation": "Summarizing one phase's findings and seeding the next phase with that summary preserves accuracy and counters degradation across phase boundaries."
         },
         {
           "id": "B",
-          "text": "Carry the entire raw discovery transcript forward into every single subagent you spawn next.",
+          "text": "Carry the entire raw, unedited discovery transcript forward into every single subagent that you happen to spawn next.",
           "correct": false,
           "explanation": "Dumping raw transcripts bloats context and accelerates degradation."
         },
@@ -933,13 +933,13 @@
       "options": [
         {
           "id": "A",
-          "text": "It runs the skill in an isolated sub-agent so its output doesn't pollute the main chat.",
+          "text": "It runs the skill in an isolated sub-agent so its output stays out of the main chat.",
           "correct": true,
           "explanation": "`context: fork` isolates a skill's execution in a subagent, keeping verbose or exploratory output out of the main session."
         },
         {
           "id": "B",
-          "text": "It grants the skill unrestricted access to every available tool in the environment.",
+          "text": "It grants the skill unrestricted access to every available tool present in the current environment.",
           "correct": false,
           "explanation": "Tool access is governed by `allowed-tools`, not `context: fork`."
         },
@@ -966,7 +966,7 @@
       "options": [
         {
           "id": "A",
-          "text": "User-level (`~/.claude/CLAUDE.md`) → project-level (root) → directory-level (subdirectory).",
+          "text": "User-level (`~/.claude/CLAUDE.md`) → project-level (root) → directory-level.",
           "correct": true,
           "explanation": "The hierarchy runs from user-level (all your projects), to project-level (the repo), to directory-level (a specific subtree)."
         },
@@ -999,7 +999,7 @@
       "options": [
         {
           "id": "A",
-          "text": "In `.claude/commands/` in the repo; user-scoped `~/.claude/commands/` isn't shared via version control.",
+          "text": "In `.claude/commands/` in the repo; user-scoped commands aren't shared.",
           "correct": true,
           "explanation": "Project-scoped commands are committed and shared automatically; user-scoped ones are personal and unshared."
         },
@@ -1032,7 +1032,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Plan mode for architecturally significant work; direct execution for simple, well-scoped changes.",
+          "text": "Plan mode for architecturally significant work; direct execution for simple changes.",
           "correct": true,
           "explanation": "Plan mode shines on complexity and architectural decisions; direct execution fits clear, contained changes."
         },
@@ -1296,7 +1296,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Tell the resumed session exactly which files changed so it performs targeted re-analysis.",
+          "text": "Tell the resumed session which files changed so it re-analyzes only those.",
           "correct": true,
           "explanation": "Informing a resumed session about specific file changes enables targeted re-analysis instead of costly full re-exploration."
         },
@@ -1362,7 +1362,7 @@
       "options": [
         {
           "id": "A",
-          "text": "It applies to all your projects on your machine but isn't shared with teammates via version control.",
+          "text": "It applies to all your projects on this machine but isn't shared with teammates.",
           "correct": true,
           "explanation": "User-level CLAUDE.md is personal and machine-wide across your projects, and isn't shared through the repo."
         },
@@ -1461,13 +1461,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Glob rules match by pattern across all directories; a subdirectory CLAUDE.md governs its subtree.",
+          "text": "Glob rules match by pattern across directories; a directory CLAUDE.md governs only its subtree.",
           "correct": true,
           "explanation": "A glob rule spans the whole tree by file type; a directory CLAUDE.md is bound to its location, so scattered files of that type wouldn't all be covered."
         },
         {
           "id": "B",
-          "text": "Glob-pattern rules consistently load much faster than directory-level CLAUDE.md files do.",
+          "text": "Glob-pattern rules consistently load much faster and use far less memory than directory-level CLAUDE.md files do.",
           "correct": false,
           "explanation": "The advantage is cross-directory coverage by pattern, not load speed."
         },
@@ -1638,7 +1638,7 @@
         },
         {
           "id": "C",
-          "text": "Avoid examples and tests; just describe it again at length.",
+          "text": "Avoid examples and tests entirely; just describe the desired output shape again at much greater length.",
           "correct": false,
           "explanation": "More prose is what's already failing; examples and tests are the reliable tools."
         },
@@ -1725,7 +1725,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use plan mode to map structure and high-impact areas into a prioritized plan, then execute it.",
+          "text": "Use plan mode to map structure and high-impact areas, then execute the plan.",
           "correct": true,
           "explanation": "Open-ended legacy work benefits from planning to map the code and prioritize, then executing the plan with adaptation — the canonical plan-then-execute pattern."
         },
@@ -1791,7 +1791,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Add an `argument-hint` so the missing parameter is prompted, and document the argument in the body.",
+          "text": "Add an `argument-hint` to prompt the parameter, and document it in the body.",
           "correct": true,
           "explanation": "`argument-hint` surfaces the required parameter at invocation, and documenting it in the body clarifies usage — directly addressing the missing-argument confusion."
         },
@@ -1830,7 +1830,7 @@
         },
         {
           "id": "B",
-          "text": "The rule loads for every file in the repository at all times.",
+          "text": "The rule loads for every single file in the repository at all times, regardless of type.",
           "correct": false,
           "explanation": "The `paths` globs restrict activation to matching files, not all files."
         },
@@ -1857,7 +1857,7 @@
       "options": [
         {
           "id": "A",
-          "text": "`--resume <name>` continues a specific prior conversation; `fork_session` branches from a shared baseline.",
+          "text": "`--resume <name>` continues a prior conversation; `fork_session` branches from a shared baseline.",
           "correct": true,
           "explanation": "Resume continues a named session in place; fork creates a divergent branch from a shared baseline for parallel exploration."
         },
@@ -1902,7 +1902,7 @@
         },
         {
           "id": "C",
-          "text": "Migrating a library across 45+ files with several competing approaches.",
+          "text": "Migrating a library across 45+ files with several competing integration approaches to weigh.",
           "correct": false,
           "explanation": "Large, decision-heavy migrations warrant plan mode first."
         },
@@ -1956,7 +1956,7 @@
       "options": [
         {
           "id": "A",
-          "text": "It preserves the main agent's context budget while still surfacing the key findings to proceed.",
+          "text": "It preserves the main agent's context budget while still surfacing the key findings.",
           "correct": true,
           "explanation": "Returning summaries instead of raw contents keeps the main conversation's context lean while conveying the essential findings."
         },
@@ -1989,7 +1989,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Move the shared instructions into the project-level `CLAUDE.md` committed to the repo for everyone.",
+          "text": "Move the shared instructions into the project-level `CLAUDE.md` committed to the repo.",
           "correct": true,
           "explanation": "Standardizing the team requires putting the instructions in the version-controlled project CLAUDE.md, which all developers load."
         },
@@ -2028,7 +2028,7 @@
         },
         {
           "id": "B",
-          "text": "The `argument-hint` option combined with setting `model: haiku` in the frontmatter.",
+          "text": "The `argument-hint` option combined with setting `model: haiku` in the skill's frontmatter to keep it fast and inexpensive.",
           "correct": false,
           "explanation": "Neither isolates output nor restricts file modification."
         },
@@ -2121,7 +2121,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A failing test is an executable specification of expected behavior, giving Claude a precise target.",
+          "text": "A failing test is an executable specification, giving Claude a precise target.",
           "correct": true,
           "explanation": "Tests encode exact expected behavior; sharing failures gives Claude an unambiguous target, unlike prose that can be interpreted loosely."
         },
@@ -2154,13 +2154,13 @@
       "options": [
         {
           "id": "A",
-          "text": "A concise, structured summary of the relevant findings from prior phases, not the raw transcript.",
+          "text": "A concise, structured summary of the relevant prior findings, not the raw transcript.",
           "correct": true,
           "explanation": "Seeding subagents with a focused summary of prior findings preserves needed context without bloating them with the full noisy transcript."
         },
         {
           "id": "B",
-          "text": "The complete, entirely unedited conversation history from all of the prior phases.",
+          "text": "The complete, entirely unedited conversation history accumulated across every one of the prior phases.",
           "correct": false,
           "explanation": "Dumping the whole transcript bloats each subagent's context and degrades performance."
         },
@@ -2319,7 +2319,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Only exit code 2 signals a blocking error to Claude; exit 1 is treated as non-blocking.",
+          "text": "Exit code 2 signals a blocking error; exit 1 is non-blocking.",
           "correct": true,
           "explanation": "Claude Code treats exit code 2 as a blocking error and feeds stderr back to Claude; exit 1 (and other nonzero codes) is a non-blocking error and execution continues."
         },
@@ -2337,7 +2337,7 @@
         },
         {
           "id": "D",
-          "text": "Exit code 1 is correct but the matcher field was missing.",
+          "text": "Exit code 1 is the correct blocking signal, but the hook's matcher field was missing or misconfigured, so it never ran.",
           "correct": false,
           "explanation": "Even with a matcher, exit 1 is non-blocking; the script must exit 2 to signal a blocking error."
         }
@@ -2391,7 +2391,7 @@
         },
         {
           "id": "B",
-          "text": "Set `user-invocable: false` to keep deploys under control.",
+          "text": "Set `user-invocable: false` to keep production deploys tightly under control.",
           "correct": false,
           "explanation": "`user-invocable: false` hides it from the `/` menu and lets only Claude invoke it, the opposite of what's wanted."
         },
@@ -2457,7 +2457,7 @@
         },
         {
           "id": "B",
-          "text": "In `~/.claude/CLAUDE.md`, your user-level file.",
+          "text": "In `~/.claude/CLAUDE.md`, your machine-wide user-level configuration file.",
           "correct": false,
           "explanation": "User-level config applies to all your projects, not scoped to this one; CLAUDE.local.md is the project-specific personal option."
         },
@@ -2490,7 +2490,7 @@
         },
         {
           "id": "B",
-          "text": "Run `/memory` to auto-generate the project CLAUDE.md from settings.",
+          "text": "Run `/memory`, which auto-generates the project CLAUDE.md by scanning your settings and discovered conventions.",
           "correct": false,
           "explanation": "`/memory` lists and lets you edit loaded memory files; it doesn't generate a project CLAUDE.md from the codebase."
         },
@@ -2562,7 +2562,7 @@
         },
         {
           "id": "C",
-          "text": "Nested subdirectory CLAUDE.md files are always re-injected immediately too.",
+          "text": "Every nested subdirectory CLAUDE.md file in the whole project is always re-read and re-injected immediately too.",
           "correct": false,
           "explanation": "Nested CLAUDE.md files are not re-injected automatically; they reload only the next time Claude reads a file in that subdirectory."
         },
