@@ -141,7 +141,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Each subagent runs with an isolated context and sees only what the coordinator explicitly passes into its invocation prompt.",
+          "text": "Each subagent runs with an isolated context and sees only what the coordinator passes into its prompt.",
           "correct": true,
           "explanation": "Subagents do not inherit the coordinator's conversation history or each other's context; the only context they have is what the coordinator passes in their prompt."
         },
@@ -153,7 +153,7 @@
         },
         {
           "id": "C",
-          "text": "Subagents automatically inherit the full conversation history of the coordinator when they are invoked.",
+          "text": "Subagents automatically inherit the entire full conversation history of the coordinator agent each and every time that they happen to be invoked by it.",
           "correct": false,
           "explanation": "Subagents do not inherit the coordinator's history; this is the misconception that caused the confusion."
         },
@@ -174,13 +174,13 @@
       "options": [
         {
           "id": "A",
-          "text": "The coordinator's `allowedTools` list does not include `Task`, so it has no mechanism to invoke the registered subagents.",
+          "text": "The coordinator's `allowedTools` list does not include `Task`, so it cannot invoke the subagents.",
           "correct": true,
           "explanation": "Subagents are invoked through the `Task` tool; if `Task` is not in the coordinator's `allowedTools`, the coordinator cannot delegate and falls back to doing the work itself."
         },
         {
           "id": "B",
-          "text": "The subagent `AgentDefinition` entries are missing a temperature field, so the runtime silently skips them.",
+          "text": "The subagent `AgentDefinition` entries are each missing a required temperature field, so the runtime silently skips over every one of them at delegation time.",
           "correct": false,
           "explanation": "A missing temperature does not disable a subagent; the blocker is the inability to call `Task`."
         },
@@ -207,7 +207,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Issue multiple `Task` calls for the three subtopics within a single coordinator response so the subagents run in parallel.",
+          "text": "Issue multiple `Task` calls for the three subtopics in a single response so they run in parallel.",
           "correct": true,
           "explanation": "Emitting multiple `Task` tool calls in one response launches the subagents in parallel, which collapses independent work from sequential to concurrent latency."
         },
@@ -219,7 +219,7 @@
         },
         {
           "id": "C",
-          "text": "Merge the three subtopics into one broad query and let the search subagent return everything at once.",
+          "text": "Merge the three distinct subtopics together into one single broad query and then let the search subagent return all of the results for everything at once in a single pass.",
           "correct": false,
           "explanation": "Collapsing distinct subtopics into one query risks shallow, incomplete coverage of each."
         },
@@ -240,7 +240,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use `fork_session` so each branch starts from a copy of the current context and then diverges independently.",
+          "text": "Use `fork_session` so each branch starts from a copy of the current context, then diverges.",
           "correct": true,
           "explanation": "`fork_session` creates divergent branches from a shared starting context, letting each hypothesis be explored without cross-contamination."
         },
@@ -252,7 +252,7 @@
         },
         {
           "id": "C",
-          "text": "Run both hypotheses in one prompt and ask the model to keep its reasoning streams separate.",
+          "text": "Run both competing hypotheses together in one single prompt and simply ask the model to please keep its two reasoning streams cleanly separate from each other throughout.",
           "correct": false,
           "explanation": "A single prompt risks cross-contamination between the two reasoning streams."
         },
@@ -306,7 +306,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Overly narrow decomposition leaves gaps because no single subtask owns the connective, cross-cutting parts of the topic.",
+          "text": "Overly narrow decomposition leaves gaps because no single subtask owns the connective, cross-cutting parts of the whole topic.",
           "correct": true,
           "explanation": "Decomposing too narrowly risks incomplete topic coverage: the slices may be deep but collectively miss themes no subtask owns."
         },
@@ -504,7 +504,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Pass each subagent only the scoped context its subtask requires rather than the entire coordinator brief.",
+          "text": "Pass each subagent only the scoped context its subtask requires, not the entire brief.",
           "correct": true,
           "explanation": "Since context must be explicitly passed and subagents are isolated, the coordinator should pass only the relevant slice per subagent to control cost and focus."
         },
@@ -516,7 +516,7 @@
         },
         {
           "id": "C",
-          "text": "Stop passing context entirely and rely on subagents inheriting the coordinator's history.",
+          "text": "Stop passing any context into the prompts entirely and instead rely on the subagents automatically inheriting the coordinator's full conversation history on their own.",
           "correct": false,
           "explanation": "Subagents do not inherit history; passing nothing would starve them of needed context."
         },
@@ -537,13 +537,13 @@
       "options": [
         {
           "id": "A",
-          "text": "The coordinator should collect both outputs after they finish and pass them together into a later reconciliation step.",
+          "text": "The coordinator collects both outputs after they finish and passes them into a later reconciliation step.",
           "correct": true,
           "explanation": "Parallel subagents have isolated context and cannot see each other; cross-references must be established by the coordinator combining their outputs afterward."
         },
         {
           "id": "B",
-          "text": "The two subagents should open a direct channel so each can poll the other's partial results live.",
+          "text": "The two subagents should open a direct peer-to-peer channel between themselves so that each one can continuously poll the other's partial results live as they are produced.",
           "correct": false,
           "explanation": "Subagents have isolated context and no direct channel; information flows through the coordinator."
         },
@@ -570,13 +570,13 @@
       "options": [
         {
           "id": "A",
-          "text": "The four successful subagents still return their results, and the coordinator handles the single failure on its own.",
+          "text": "The four successful subagents return their results, and the coordinator handles the lone failure.",
           "correct": true,
           "explanation": "Parallel `Task` calls are independent; one subagent failing does not invalidate the others, and the coordinator decides how to handle the lone failure."
         },
         {
           "id": "B",
-          "text": "All five results are discarded because any failure in a parallel batch poisons the entire batch.",
+          "text": "All five results are discarded, because any single failure in a parallel batch automatically poisons and invalidates the entire batch of invocations.",
           "correct": false,
           "explanation": "Independent parallel invocations do not poison one another on a single failure."
         },
@@ -603,7 +603,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Redefine the subtasks so their scopes are distinct and collectively cover the topic without overlap.",
+          "text": "Redefine the subtasks so their scopes are distinct and collectively cover the topic.",
           "correct": true,
           "explanation": "Good decomposition makes subtasks mutually distinct yet jointly exhaustive, eliminating redundant research and duplicated report sections."
         },
@@ -702,7 +702,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Cap the number of refinement iterations and require measurable coverage gain to justify another pass.",
+          "text": "Cap the number of refinement iterations and require measurable coverage gain per pass.",
           "correct": true,
           "explanation": "Bounding iterations and gating each pass on measurable improvement stops unproductive refinement loops while preserving the benefit of legitimate refinement."
         },
@@ -714,7 +714,7 @@
         },
         {
           "id": "C",
-          "text": "Switch the loop to run subagents in parallel so the loop completes faster each time.",
+          "text": "Switch the refinement loop to run all of its subagents in parallel so that each individual pass of the loop completes much faster every time.",
           "correct": false,
           "explanation": "Parallelism speeds each pass but does not stop an unbounded, non-improving loop."
         },
@@ -801,7 +801,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Keep hub-and-spoke for its coordination benefits and relieve the bottleneck by parallelizing independent work.",
+          "text": "Keep hub-and-spoke for its coordination benefits and relieve the bottleneck by parallelizing the independent work.",
           "correct": true,
           "explanation": "The bottleneck is addressable by running independent subagents in parallel; the coordinator's centralized control of coverage and synthesis is still worth keeping."
         },
@@ -834,7 +834,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Decomposition must assign the comparative, cross-cutting work to a subtask, not just per-item descriptions.",
+          "text": "Decomposition must assign the comparative, cross-cutting work to a subtask, not only per-item descriptions.",
           "correct": true,
           "explanation": "Splitting purely by item leaves the comparison itself unowned; decomposition must explicitly assign the cross-cutting synthesis dimension."
         },
@@ -867,13 +867,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Emit several `Task` calls together in one response and gather their results once all of them return.",
+          "text": "Emit several `Task` calls together in one response and gather results once they return.",
           "correct": true,
           "explanation": "Issuing multiple `Task` calls in a single response runs the subagents concurrently, and the coordinator collects results when they complete."
         },
         {
           "id": "B",
-          "text": "Emit one `Task` call, block fully, then emit the next only after the first finishes.",
+          "text": "Emit one single `Task` call, block on it fully and wait, and then emit the next `Task` call only after that first subagent has completely finished its work.",
           "correct": false,
           "explanation": "Strictly sequential calls defeat the goal of progressing while subagents run."
         },
@@ -900,7 +900,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Give each subagent a precise scope, deliverable format, and success criteria in its delegation prompt.",
+          "text": "Give each subagent a precise scope, deliverable format, and success criteria.",
           "correct": true,
           "explanation": "Explicit scope, format, and success criteria per subagent make outputs consistent and composable, since subagents act only on what the coordinator passes."
         },
@@ -912,7 +912,7 @@
         },
         {
           "id": "C",
-          "text": "Let each subagent ask the coordinator follow-up questions until it feels confident.",
+          "text": "Let each subagent repeatedly ask the coordinator open-ended follow-up questions until it personally feels confident enough to begin its research.",
           "correct": false,
           "explanation": "Open-ended back-and-forth adds latency and still lacks defined deliverables."
         },
@@ -999,7 +999,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Return a structured error whose `errorCategory` separates access failures from empty results.",
+          "text": "Return a structured error whose `errorCategory` field separates access failures from empty results.",
           "correct": true,
           "explanation": "A structured `errorCategory` lets the coordinator distinguish an access failure (worth different handling) from a valid empty result (not an error at all)."
         },
@@ -1065,13 +1065,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Subagents recover locally where they can and propagate only unresolved errors, along with any partial results.",
+          "text": "Subagents recover locally where they can and propagate only unresolved errors with partial results.",
           "correct": true,
           "explanation": "Subagents should perform local recovery for what they can handle and propagate only unresolved errors with partial results, keeping the coordinator focused."
         },
         {
           "id": "B",
-          "text": "Subagents should forward every error immediately so the coordinator has full visibility at all times.",
+          "text": "Subagents should forward every single error to the coordinator immediately so that it always retains complete and full visibility into everything at all times.",
           "correct": false,
           "explanation": "Forwarding everything floods the coordinator and wastes its decision capacity."
         },
@@ -1098,7 +1098,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Remove web-search tools from the synthesis subagent so it works only from findings the coordinator provides.",
+          "text": "Remove web-search tools from the synthesis subagent so it works only from provided findings.",
           "correct": true,
           "explanation": "A synthesis agent shouldn't have web-search tools; scoping it to provided findings keeps synthesis consistent and respects role boundaries."
         },
@@ -1116,7 +1116,7 @@
         },
         {
           "id": "D",
-          "text": "Give the search subagent the synthesis tools too so both stay perfectly in sync.",
+          "text": "Give the search subagent the synthesis tools as well, so that both agents share an identical tool set and therefore stay perfectly in sync with one another.",
           "correct": false,
           "explanation": "Over-provisioning both agents worsens role confusion rather than fixing it."
         }
@@ -1131,7 +1131,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Force the call by setting `tool_choice` to that specific tool so the model must invoke it.",
+          "text": "Set `tool_choice` to that specific tool so the model must invoke it.",
           "correct": true,
           "explanation": "Setting `tool_choice` to a specific (forced) tool guarantees the model invokes exactly that tool rather than replying in prose."
         },
@@ -1164,7 +1164,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use `tool_choice` auto so the model may call a tool or answer directly as it judges best.",
+          "text": "Use `tool_choice` auto so the model may call a tool or answer directly.",
           "correct": true,
           "explanation": "The auto setting lets the model freely choose between calling an available tool and responding directly, which matches the coordinator's needs."
         },
@@ -1296,7 +1296,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Scope each subagent's tools to its role, so report-generation keeps only what it needs to format output.",
+          "text": "Scope each subagent's tools to its role, so report-generation keeps only formatting tools.",
           "correct": true,
           "explanation": "Scoped tool distribution per role means the formatting agent should hold only formatting-relevant tools, not research tools it never legitimately uses."
         },
@@ -1314,7 +1314,7 @@
         },
         {
           "id": "D",
-          "text": "Grant the same tool set to every subagent to keep configuration uniform and simple.",
+          "text": "Grant the exact same complete tool set to every subagent in the system, so that the overall configuration stays perfectly uniform and simpler to maintain.",
           "correct": false,
           "explanation": "Uniform over-provisioning violates least privilege and invites misuse."
         }
@@ -1329,7 +1329,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A valid empty result was treated as an error instead of a successful response with no matches.",
+          "text": "A valid empty result was treated as an error rather than a success with no matches.",
           "correct": true,
           "explanation": "Distinguishing a valid empty result from an access failure prevents pointless retries; an empty result is a success, not an error."
         },
@@ -1347,7 +1347,7 @@
         },
         {
           "id": "D",
-          "text": "The coordinator lacked enough max_tokens to record the documents that were returned.",
+          "text": "The coordinator simply lacked enough max_tokens available to properly record all of the documents that the source had actually returned to it.",
           "correct": false,
           "explanation": "There were no documents to record; the issue is treating empty as failure."
         }
@@ -1395,13 +1395,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Stop retrying and propagate the unresolved access failure upward with whatever partial results exist.",
+          "text": "Stop retrying and propagate the unresolved access failure upward with any partial results.",
           "correct": true,
           "explanation": "A non-retryable access failure shouldn't be retried; the subagent should propagate it as unresolved with any partial results for the coordinator to handle."
         },
         {
           "id": "B",
-          "text": "Continue retrying with longer backoff until the source eventually restores access.",
+          "text": "Continue retrying the same revoked source with progressively longer exponential backoff intervals until it eventually decides to restore the subagent's access.",
           "correct": false,
           "explanation": "`isRetryable: false` signals retries are futile; backoff won't restore revoked access."
         },
@@ -1494,7 +1494,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Present both figures, each annotated with its source, rather than silently picking one.",
+          "text": "Present both figures, each annotated with its source.",
           "correct": true,
           "explanation": "Conflicting statistics should be annotated with source attribution and presented together, not silently resolved by picking a single figure."
         },
@@ -1527,7 +1527,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Require publication or collection dates on findings so temporal differences aren't read as contradictions.",
+          "text": "Require publication or collection dates on all findings so temporal differences aren't read as contradictions.",
           "correct": true,
           "explanation": "Requiring publication/collection dates lets the synthesis agent see that differing figures reflect different time periods rather than genuine contradiction."
         },
@@ -1593,7 +1593,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Coverage annotations marking which findings are well-supported versus which remain gaps.",
+          "text": "Coverage annotations marking which findings are well-supported versus gaps.",
           "correct": true,
           "explanation": "Coverage annotations that show which findings are well-supported versus gaps make the evidentiary strength of each conclusion explicit to readers."
         },
@@ -1659,13 +1659,13 @@
       "options": [
         {
           "id": "A",
-          "text": "A per-finding relevance score so synthesis can rank and keep the most important ones.",
+          "text": "A per-finding relevance score so synthesis can rank and keep the top ones.",
           "correct": true,
           "explanation": "Returning relevance scores with each finding lets the synthesis agent prioritize the highest-value items within a limited context budget."
         },
         {
           "id": "B",
-          "text": "The full HTML of each page so synthesis can re-evaluate importance itself.",
+          "text": "The full raw HTML of each and every page, so that synthesis can then re-evaluate the importance of all of it entirely by itself.",
           "correct": false,
           "explanation": "Full HTML worsens the budget problem instead of helping prioritization."
         },
@@ -1692,13 +1692,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Carry a structured claim-source mapping alongside the prose at every hop so attribution survives.",
+          "text": "Carry a structured claim-source mapping alongside the prose at every hop.",
           "correct": true,
           "explanation": "Keeping a structured claim-source mapping attached through each hop prevents provenance loss that occurs when prose is repeatedly summarized."
         },
         {
           "id": "B",
-          "text": "Forbid any summarization between hops so the full text always travels intact.",
+          "text": "Forbid any summarization at all between the hops, so that the complete full source text always travels through every stage of the pipeline intact.",
           "correct": false,
           "explanation": "Banning summarization explodes context cost; structured mappings preserve provenance without that."
         },
@@ -1725,7 +1725,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Return partial results together with a clear note on what failed, so the report can proceed and flag the gap.",
+          "text": "Return partial results with a clear note on what failed, so the report can proceed and flag the gap.",
           "correct": true,
           "explanation": "Propagating partial results with an explicit failure note lets the coordinator finish a useful report while honestly annotating the unresolved gap."
         },
@@ -1743,7 +1743,7 @@
         },
         {
           "id": "D",
-          "text": "Block the whole report until the failed subtopic can be fully re-researched.",
+          "text": "Block the entire report from being produced at all until the one failed subtopic can be completely and fully re-researched from scratch.",
           "correct": false,
           "explanation": "Blocking on full re-research sacrifices a timely, honestly-annotated report."
         }
@@ -1758,7 +1758,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Structured records each holding a key fact, its citation, and a relevance score for ranking.",
+          "text": "Structured records, each holding a key fact, its citation, and a relevance score.",
           "correct": true,
           "explanation": "Compact structured records of key fact plus citation plus relevance score keep budgets in check while preserving citation and prioritization ability."
         },
@@ -1791,13 +1791,13 @@
       "options": [
         {
           "id": "A",
-          "text": "The mapping from each claim to its originating source, kept intact through the merge into prose.",
+          "text": "The mapping from each claim to its originating source, kept intact through the merge.",
           "correct": true,
           "explanation": "Provenance requires the claim-source mapping to be preserved through merging; fluent prose alone loses which source backs which sentence."
         },
         {
           "id": "B",
-          "text": "The exact word order of each source so origins can be reconstructed by matching text.",
+          "text": "The exact original word order of every source, so that the origins can later be reconstructed by matching the text back against each one.",
           "correct": false,
           "explanation": "Text matching is brittle and breaks once content is paraphrased in the merge."
         },
@@ -1890,7 +1890,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Bind each claim to its source in one structured record so they cannot be separated downstream.",
+          "text": "Bind each claim to its source in one structured record.",
           "correct": true,
           "explanation": "Binding claim and source together in a single structured record keeps them paired, preventing the shuffling that caused misattribution."
         },
@@ -1977,6 +1977,402 @@
           "text": "Return the full text but rely on each downstream agent in the pipeline to just summarize it all over again itself.",
           "correct": false,
           "explanation": "Re-summarizing at every hop wastes tokens and risks provenance loss."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-029",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "The coordinator never picks the document-analysis subagent on its own; engineers always have to name it explicitly in the prompt. Its `AgentDefinition` has a valid prompt and tools, but its `description` reads only \"document agent.\" What change most improves automatic delegation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rewrite the `description` to state clearly when the subagent should be used.",
+          "correct": true,
+          "explanation": "Claude decides whether to invoke a subagent based on its `description`; a vague one prevents task matching, so a clear description of when to use it enables automatic delegation."
+        },
+        {
+          "id": "B",
+          "text": "Move the usage guidance out of `description` and into the subagent's `prompt` field instead.",
+          "correct": false,
+          "explanation": "The `prompt` shapes behavior once invoked but is not what Claude matches against to decide invocation; the `description` drives that choice."
+        },
+        {
+          "id": "C",
+          "text": "Lower the subagent's temperature so the coordinator selects it more deterministically.",
+          "correct": false,
+          "explanation": "Temperature does not affect whether the coordinator matches a task to this subagent."
+        },
+        {
+          "id": "D",
+          "text": "Add more tools to the subagent so the coordinator sees it as more capable.",
+          "correct": false,
+          "explanation": "Tool count does not drive delegation; the `description` is the matching signal."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-030",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "While streaming messages, an engineer wants to tag every message that originated inside a particular subagent's execution so the UI can group them. Which message property identifies that a message came from within a subagent's context?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Check whether the message itself carries a `parent_tool_use_id` field.",
+          "correct": true,
+          "explanation": "Messages produced from within a subagent's execution include a `parent_tool_use_id` linking them to the invoking Agent tool call."
+        },
+        {
+          "id": "B",
+          "text": "Check whether the message's `role` is set to the value \"subagent\".",
+          "correct": false,
+          "explanation": "There is no \"subagent\" role; subagent provenance is signaled by `parent_tool_use_id`."
+        },
+        {
+          "id": "C",
+          "text": "Check whether the message's `session_id` differs from the main one.",
+          "correct": false,
+          "explanation": "Subagent transcripts persist in their own files but are not distinguished here by a differing live `session_id`; `parent_tool_use_id` is the field to inspect."
+        },
+        {
+          "id": "D",
+          "text": "Check whether the message contains a top-level `agentId` field.",
+          "correct": false,
+          "explanation": "`agentId` appears in the Agent tool result text for resuming, not as a per-message origin tag."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-031",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "A long document-analysis subagent stopped midway and the coordinator wants to continue it later with its full prior tool calls and reasoning intact, rather than restarting it. According to the SDK, what two values must be captured to resume that specific subagent?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `session_id` from the run plus the `agentId` parsed from the Agent tool result.",
+          "correct": true,
+          "explanation": "Resuming a subagent requires resuming the same session (`session_id`) and referencing the subagent's `agentId` extracted from its Agent tool result text."
+        },
+        {
+          "id": "B",
+          "text": "The subagent's `description` string and the coordinator's system prompt text.",
+          "correct": false,
+          "explanation": "These configure the agent but do not locate a prior subagent transcript to resume."
+        },
+        {
+          "id": "C",
+          "text": "The `parent_tool_use_id` and the subagent's allowed-tools list.",
+          "correct": false,
+          "explanation": "`parent_tool_use_id` tags message origin; resuming needs the session ID and the agentId."
+        },
+        {
+          "id": "D",
+          "text": "Only the `agentId`, since the SDK reattaches it to any new session automatically.",
+          "correct": false,
+          "explanation": "You must resume the same session; a new session cannot reach the subagent's transcript by agentId alone."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-032",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "The main conversation just underwent compaction to free context, and an engineer fears the research subagents' detailed transcripts were collapsed along with it. What is the actual relationship between main-conversation compaction and subagent transcripts?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Subagent transcripts are stored separately and are unaffected by main-conversation compaction.",
+          "correct": true,
+          "explanation": "Subagent transcripts persist in their own files, so compacting the main conversation leaves them intact."
+        },
+        {
+          "id": "B",
+          "text": "Compaction summarizes the main thread and every subagent transcript together in one pass.",
+          "correct": false,
+          "explanation": "Subagent transcripts are separate and not folded into main-conversation compaction."
+        },
+        {
+          "id": "C",
+          "text": "Subagent transcripts are deleted immediately whenever the parent compacts.",
+          "correct": false,
+          "explanation": "They are not deleted on compaction; cleanup follows the retention period, not compaction."
+        },
+        {
+          "id": "D",
+          "text": "Compaction blocks until all subagents flush their transcripts into the main thread.",
+          "correct": false,
+          "explanation": "There is no such flush; the transcripts live in separate files independent of the main thread."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-033",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "The research run now coordinates well over a hundred subtopic agents per job, and turn-by-turn subagent delegation through the conversation is straining the coordinator's context. The team wants orchestration that runs outside the conversation context. What does the SDK recommend at this scale?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Move orchestration into the `Workflow` tool, run outside the conversation.",
+          "correct": true,
+          "explanation": "Subagents suit a few delegated tasks per turn; for dozens to hundreds of agents the `Workflow` tool moves orchestration into a script run outside the conversation context."
+        },
+        {
+          "id": "B",
+          "text": "Raise the coordinator's `maxTurns` so it can keep delegating turn by turn for longer.",
+          "correct": false,
+          "explanation": "More turns does not move orchestration out of the conversation; it keeps the straining pattern."
+        },
+        {
+          "id": "C",
+          "text": "Give the coordinator a larger context window and continue per-turn delegation as is.",
+          "correct": false,
+          "explanation": "A bigger window defers, not solves, the scaling limit of turn-by-turn delegation."
+        },
+        {
+          "id": "D",
+          "text": "Fork the session once per subtopic and run each fork independently.",
+          "correct": false,
+          "explanation": "Forking branches history for divergent exploration; it is not the large-scale orchestration mechanism."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-034",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "The team wants the synthesis subagent to have its citation-formatting Skill already loaded into its context the moment it starts, rather than discovering it through the Skill tool mid-run. Which `AgentDefinition` field accomplishes this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "List the skill name in the subagent's `skills` field to preload it at startup.",
+          "correct": true,
+          "explanation": "The `skills` field preloads named skills into the agent's context at startup; unlisted skills remain invocable via the Skill tool."
+        },
+        {
+          "id": "B",
+          "text": "Add the skill to the subagent's `tools` array so it loads on launch.",
+          "correct": false,
+          "explanation": "`tools` controls allowed tool access, not skill preloading; `skills` does the preload."
+        },
+        {
+          "id": "C",
+          "text": "Reference the skill in the subagent's `description` so the runtime loads it.",
+          "correct": false,
+          "explanation": "`description` drives invocation matching, not skill preloading."
+        },
+        {
+          "id": "D",
+          "text": "Set the subagent's `memory` to `project` so the skill loads from disk.",
+          "correct": false,
+          "explanation": "`memory` selects a memory source, not which skills are preloaded."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-015",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "A research source MCP server already exposes documents as resources, and the coordinator must re-run a report whenever a tracked policy document changes upstream. The team wants the server to notify the client of changes to that one document. Which resources capability must the server support?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `subscribe` capability, so clients can be notified when that resource changes.",
+          "correct": true,
+          "explanation": "The `subscribe` resources capability lets a client subscribe to a specific resource and receive `notifications/resources/updated` when it changes."
+        },
+        {
+          "id": "B",
+          "text": "The `listChanged` capability, which signals when individual resource contents change.",
+          "correct": false,
+          "explanation": "`listChanged` notifies when the set of available resources changes, not when an individual resource's contents change."
+        },
+        {
+          "id": "C",
+          "text": "The `tools` capability, since change notifications are delivered as tool results.",
+          "correct": false,
+          "explanation": "Resource change notifications are part of the resources capability, not delivered via tools."
+        },
+        {
+          "id": "D",
+          "text": "Resource templates, because parameterized URIs are required for any updates.",
+          "correct": false,
+          "explanation": "Templates expose parameterized resources; they are unrelated to change subscriptions."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-016",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "The document-analysis tool returns weather-like structured records, and the team wants clients to validate the returned object's shape automatically. Per the MCP tool spec, which addition lets clients validate the structured result?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define an `outputSchema` on the tool that the structured result must conform to.",
+          "correct": true,
+          "explanation": "An `outputSchema` lets servers guarantee and clients validate that structured results conform to a declared shape."
+        },
+        {
+          "id": "B",
+          "text": "Expand the `inputSchema` to also describe the expected output fields.",
+          "correct": false,
+          "explanation": "`inputSchema` constrains arguments, not the result; `outputSchema` validates output."
+        },
+        {
+          "id": "C",
+          "text": "Set `isError` to false on every successful response so clients infer the shape.",
+          "correct": false,
+          "explanation": "`isError` flags execution errors; it does not describe or validate output structure."
+        },
+        {
+          "id": "D",
+          "text": "Add `annotations` describing the audience and priority of the output.",
+          "correct": false,
+          "explanation": "Annotations convey usage hints, not a validatable schema for the result."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-017",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "A web-search tool returns large documents. The team debates whether to embed full document text in each tool result or return a pointer the client can fetch on demand. Which MCP content type lets the tool reference a resource without inlining its full contents?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A `resource_link` content item carrying the resource's URI for the client to fetch.",
+          "correct": true,
+          "explanation": "A `resource_link` returns a URI the client can fetch or subscribe to, providing a reference without inlining the full resource contents."
+        },
+        {
+          "id": "B",
+          "text": "An embedded `resource` block, which is the only way to reference any resource.",
+          "correct": false,
+          "explanation": "An embedded resource inlines the contents; a `resource_link` is the reference-only option."
+        },
+        {
+          "id": "C",
+          "text": "A `text` content item holding the resource's full body inline.",
+          "correct": false,
+          "explanation": "Text content inlines the body, which is exactly what the team wants to avoid."
+        },
+        {
+          "id": "D",
+          "text": "A `structuredContent` field, which substitutes for any resource reference.",
+          "correct": false,
+          "explanation": "`structuredContent` carries a JSON object result, not a fetchable resource reference."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-018",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "The synthesis MCP server returns many candidate sources, and the coordinator wants the server to hint which sources are most important so it can prioritize them under a tight budget. Which resource annotation conveys relative importance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `priority` annotation, a 0.0-to-1.0 value indicating importance.",
+          "correct": true,
+          "explanation": "The `priority` annotation ranges from 0.0 to 1.0, letting clients prioritize which resources to include in context."
+        },
+        {
+          "id": "B",
+          "text": "The `audience` annotation, which ranks resources from most to least important.",
+          "correct": false,
+          "explanation": "`audience` indicates intended audience (user/assistant), not importance ranking."
+        },
+        {
+          "id": "C",
+          "text": "The `lastModified` annotation, since newer resources are always higher priority.",
+          "correct": false,
+          "explanation": "`lastModified` is a timestamp for recency, not a measure of importance."
+        },
+        {
+          "id": "D",
+          "text": "The `mimeType` field, which encodes a default importance per content type.",
+          "correct": false,
+          "explanation": "`mimeType` describes format; it carries no importance signal."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-019",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A stateless one-shot research call runs per incoming request, and the team does not want any conversation transcript written to disk for these throwaway runs. In the TypeScript SDK, which option keeps the session in memory only for the call's duration?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `persistSession: false` so the session stays in memory only.",
+          "correct": true,
+          "explanation": "In the TypeScript SDK, `persistSession: false` keeps the session in memory for the duration of the call and writes nothing to disk."
+        },
+        {
+          "id": "B",
+          "text": "Set `continue: false` so the SDK skips resuming and avoids persistence.",
+          "correct": false,
+          "explanation": "`continue` controls whether to pick up the most recent session, not whether the session is persisted."
+        },
+        {
+          "id": "C",
+          "text": "Set `fork_session: true` so the throwaway run stays isolated from disk.",
+          "correct": false,
+          "explanation": "Forking branches history into a new session; it does not prevent disk persistence."
+        },
+        {
+          "id": "D",
+          "text": "Set `maxTurns: 1` so a single-turn run is never persisted.",
+          "correct": false,
+          "explanation": "`maxTurns` bounds turns, not persistence; a one-turn run is still written to disk by default."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-020",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A batch worker resumes a research session by ID from a different directory than the original run, but instead of the prior context it gets a fresh session every time. The session file exists. What is the most likely cause?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The resume call runs from a different `cwd`, so the SDK looks in the wrong location.",
+          "correct": true,
+          "explanation": "Sessions are stored under an encoded `cwd` path; resuming from a different working directory makes the SDK look in the wrong place and start fresh."
+        },
+        {
+          "id": "B",
+          "text": "The session ID expired, so resume always returns a new session after some time.",
+          "correct": false,
+          "explanation": "Session IDs do not silently expire into fresh sessions; the cwd mismatch is the documented cause."
+        },
+        {
+          "id": "C",
+          "text": "Resume requires `continue: true` as well, or it ignores the captured ID.",
+          "correct": false,
+          "explanation": "`resume` works on its own with a specific ID; the problem here is the mismatched directory."
+        },
+        {
+          "id": "D",
+          "text": "The session must be forked before it can be resumed across processes.",
+          "correct": false,
+          "explanation": "Forking is unrelated; resume needs the matching cwd and an existing file on the host."
         }
       ]
     }

@@ -9,7 +9,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Define an extraction tool with a JSON schema as its input parameters and extract structured data from the `tool_use` response.",
+          "text": "Define an extraction tool with a JSON schema as its input parameters and read the structured data from the returned `tool_use` response block.",
           "correct": true,
           "explanation": "Tool use with JSON schemas is the most reliable approach for guaranteed schema-compliant output, eliminating JSON syntax errors entirely."
         },
@@ -48,7 +48,7 @@
         },
         {
           "id": "B",
-          "text": "Trust the `stated_total` as authoritative and discard the individual line items whenever the two happen to disagree with each other.",
+          "text": "Trust the `stated_total` as authoritative and quietly discard the individual line items whenever the two figures happen to disagree with each other.",
           "correct": false,
           "explanation": "Silently discarding data hides genuine discrepancies that downstream systems need to know about."
         },
@@ -108,7 +108,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Set `tool_choice` to `{\"type\":\"tool\",\"name\":\"extract_invoice\"}` so the model is required to call that specific tool.",
+          "text": "Set `tool_choice` to `{\"type\":\"tool\",\"name\":\"extract_invoice\"}` so the model is required to call that one specific named tool.",
           "correct": true,
           "explanation": "Forcing a named tool guarantees the model invokes `extract_invoice` and returns schema-shaped input rather than free text."
         },
@@ -141,7 +141,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use `{\"type\":\"any\"}`, which requires the model to use one of the available tools but lets it choose which.",
+          "text": "Use `{\"type\":\"any\"}`, which requires the model to call one of the available tools on every request but still lets it choose which one.",
           "correct": true,
           "explanation": "`any` forces some tool call while leaving the selection among the defined tools to the model."
         },
@@ -153,7 +153,7 @@
         },
         {
           "id": "C",
-          "text": "Use a forced named tool so the model is locked to exactly one specific schema on every single request it receives.",
+          "text": "Use a forced named tool so the model is locked to exactly one specific tool and its schema on every single request it receives.",
           "correct": false,
           "explanation": "A named force removes the model's freedom to pick among the three tools."
         },
@@ -207,7 +207,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Keep the known enum values but add an `other` member plus a free-text `other_detail` field for the model to describe novel types.",
+          "text": "Keep the known enum values, add an `other` member, and pair it with a free-text `other_detail` field.",
           "correct": true,
           "explanation": "An `other`+detail pattern keeps clean categories for known types while capturing extensible cases without mis-binning."
         },
@@ -273,7 +273,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Schemas enforce structure and types, but cannot verify that a captured value actually matches what the document says — that is a semantic error.",
+          "text": "Schemas enforce structure and types but cannot verify a captured value matches the document — a semantic error.",
           "correct": true,
           "explanation": "Strict schemas eliminate syntax and type errors, yet semantic mistakes like a misread amount still pass validation."
         },
@@ -357,7 +357,7 @@
         },
         {
           "id": "D",
-          "text": "Run the extraction twice and then write code to merge the two flat outputs together into a single nested structure afterward.",
+          "text": "Run the extraction twice and then write custom downstream code to merge the two separate flat outputs together into a single nested structure afterward.",
           "correct": false,
           "explanation": "Merging duplicate runs is wasteful and does not address the schema definition."
         }
@@ -372,13 +372,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Tool use validates output against a declared schema, so structural and type guarantees are enforced rather than merely encouraged.",
+          "text": "Tool use validates output against a declared schema, enforcing structure and types.",
           "correct": true,
           "explanation": "Prefill+stop coaxes raw JSON but offers no schema validation; tool use enforces the declared structure and types."
         },
         {
           "id": "B",
-          "text": "Prefilling cannot produce JSON at all, so tool use is the only option.",
+          "text": "Prefilling an assistant message cannot produce any JSON at all, leaving tool use as the only technically possible option.",
           "correct": false,
           "explanation": "Prefilling can produce JSON; the difference is enforcement, not capability."
         },
@@ -471,7 +471,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Format validation passed, so the failure is semantic; you need cross-checks or human review, not a stricter date pattern.",
+          "text": "Format validation passed, so the failure is semantic; you need external cross-checks or human review, not a stricter date format pattern.",
           "correct": true,
           "explanation": "A well-formatted but incorrect date is a semantic error that schema format rules cannot catch; verification beyond the schema is needed."
         },
@@ -537,13 +537,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Spend retries on format and structural errors with error feedback, and stop retrying when the field is genuinely absent from the source.",
+          "text": "Spend retries with error feedback on format and structural errors, and stop retrying when the field is genuinely absent.",
           "correct": true,
           "explanation": "Retries are effective for recoverable format/structural issues but ineffective when the information is simply not present, so the budget should follow that distinction."
         },
         {
           "id": "B",
-          "text": "Split the retry budget evenly across both subsets to be fair.",
+          "text": "Split the limited retry budget evenly across both subsets so each gets a fair share.",
           "correct": false,
           "explanation": "Even splitting wastes retries on documents that can never produce the missing field."
         },
@@ -570,7 +570,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Add a `detected_pattern` field where the model records the layout or cue it used, so dismissal patterns can be analyzed.",
+          "text": "Add a `detected_pattern` field where the model records the layout or cue it relied on, so the dismissal patterns can later be analyzed.",
           "correct": true,
           "explanation": "Capturing a `detected_pattern` lets you analyze why the model dismissed values, revealing systematic layout-related failures."
         },
@@ -603,13 +603,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Extract `calculated_total` and `stated_total` plus a `conflict_detected` flag, so a mismatch points to inconsistent source data.",
+          "text": "Extract `calculated_total`, `stated_total`, and a `conflict_detected` flag.",
           "correct": true,
           "explanation": "Capturing both totals and a conflict flag lets reconciliation see that the source itself disagrees, separating document errors from extraction errors."
         },
         {
           "id": "B",
-          "text": "Extract only the `stated_total` and trust it as authoritative.",
+          "text": "Extract only the single `stated_total` value and trust it as the authoritative figure.",
           "correct": false,
           "explanation": "With only one total there is nothing to compare, so the distinction is lost."
         },
@@ -636,13 +636,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Stop retrying and mark the field as genuinely absent, since feedback cannot recover information that is not in the source.",
+          "text": "Stop retrying and mark the field as genuinely absent.",
           "correct": true,
           "explanation": "Retries are ineffective for absent information; the right outcome is to record the field as missing rather than burn more attempts."
         },
         {
           "id": "B",
-          "text": "Continue retrying with stronger wording until the clause appears.",
+          "text": "Continue retrying with progressively stronger wording until the missing clause finally appears.",
           "correct": false,
           "explanation": "No wording can extract a clause that is not present in the document."
         },
@@ -687,7 +687,7 @@
         },
         {
           "id": "D",
-          "text": "Add the full JSON schema into the retry prompt again, but still include no details about which specific field actually failed.",
+          "text": "Add the full JSON schema into the retry prompt again, but include no detail about which specific field failed.",
           "correct": false,
           "explanation": "Re-stating the schema without telling the model what failed is far less effective than specific errors."
         }
@@ -735,7 +735,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Include examples that demonstrate handling both clean tables and messy free-form structures so the model generalizes across them.",
+          "text": "Include examples covering both clean tables and messy free-form structures.",
           "correct": true,
           "explanation": "Demonstrating varied document structures teaches the model to handle the full range, including the messy cases it currently fails."
         },
@@ -801,7 +801,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Add few-shot examples where unusually phrased values are correctly extracted, showing the model the value really is present.",
+          "text": "Add few-shot examples where unusually phrased values are correctly extracted, showing the model that the value really is present.",
           "correct": true,
           "explanation": "Examples demonstrating extraction from unusual phrasing reduce hallucinated emptiness by showing the model the value exists."
         },
@@ -834,7 +834,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Use clearly fictitious example values and wrap examples in distinct tags so the model treats them as patterns, not data to copy.",
+          "text": "Use clearly fictitious example values and wrap the examples in distinct delimiting tags so the model treats them as patterns, not as data to copy.",
           "correct": true,
           "explanation": "Clearly delimited, obviously fake examples teach the pattern while signaling they are not the document to extract from."
         },
@@ -867,7 +867,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Include an example where a field is genuinely absent and the ideal output leaves it null, demonstrating restraint.",
+          "text": "Include an example where a field is absent and the ideal output leaves it null.",
           "correct": true,
           "explanation": "Showing a correct null output for an absent field teaches the model that omission is the right behavior, reducing hallucination."
         },
@@ -1038,7 +1038,7 @@
         },
         {
           "id": "B",
-          "text": "Batch processing simply cannot use tool-use schemas at all, so the structured data feeding the dashboard would always come back malformed.",
+          "text": "Batch processing cannot use tool-use schemas, so the dashboard's structured data would always come back malformed.",
           "correct": false,
           "explanation": "Batches can use tool-use schemas; the real issue is latency, not schema support."
         },
@@ -1098,13 +1098,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Write explicit extraction criteria defining exactly how to identify the primary vendor, then encode them in the prompt.",
+          "text": "Write explicit criteria for identifying the primary vendor and encode them in the prompt.",
           "correct": true,
           "explanation": "Ambiguous, undefined criteria cause inconsistency; stating explicit, unambiguous rules is the foundational fix before tuning anything else."
         },
         {
           "id": "B",
-          "text": "Let the model decide the primary vendor however it sees fit each time.",
+          "text": "Let the model decide the primary vendor however it sees fit on each individual document.",
           "correct": false,
           "explanation": "Leaving the definition implicit perpetuates the inconsistency."
         },
@@ -1164,7 +1164,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A semantic business-rule check caught it; the retry should include that specific rule violation as feedback.",
+          "text": "A semantic business-rule check is what caught it; the retry should include that specific rule violation back to the model as concrete actionable feedback.",
           "correct": true,
           "explanation": "Format was fine, so a semantic/business-rule validator flagged it; feeding that specific violation back makes the retry actionable."
         },
@@ -1176,7 +1176,7 @@
         },
         {
           "id": "C",
-          "text": "A schema type check is what caught it, and so the retry should respond by loosening the declared type on the date field.",
+          "text": "A schema type check is what caught it, and so the retry should respond by loosening the declared type constraint on the date field to let it pass.",
           "correct": false,
           "explanation": "The type was valid; loosening it would let bad dates through."
         },
@@ -1197,7 +1197,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Define the five regions as enum values plus an `other` option, paired with an optional `region_detail` string.",
+          "text": "Define the five known regions as enum values plus an `other` option, paired with an optional free-text `region_detail` string.",
           "correct": true,
           "explanation": "Enum-plus-`other`-with-detail keeps the common cases clean while extensibly capturing rare territories without constant schema edits."
         },
@@ -1230,7 +1230,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Flag a conflict only when the difference exceeds a defined tolerance, so trivial rounding does not trigger review.",
+          "text": "Flag a conflict only when the difference exceeds a defined tolerance threshold, so trivial rounding-cent gaps do not trigger review.",
           "correct": true,
           "explanation": "A tolerance threshold keeps the conflict flag meaningful, surfacing real discrepancies while ignoring negligible rounding noise."
         },
@@ -1281,7 +1281,7 @@
         },
         {
           "id": "D",
-          "text": "Reorder the fields in every incoming document to exactly match the example's order before running the extraction.",
+          "text": "Pre-process and reorder the fields in every incoming document to exactly match the example's fixed order before running the extraction.",
           "correct": false,
           "explanation": "Pre-reordering documents is costly and brittle compared to varying examples."
         }
@@ -1308,7 +1308,7 @@
         },
         {
           "id": "C",
-          "text": "The schema validates the top and bottom fields of the object first and then simply times out before it reaches the middle ones.",
+          "text": "The schema validates the top and bottom fields of the object first and then simply times out before it ever reaches the ones defined in the middle.",
           "correct": false,
           "explanation": "Schema validation is not positional and does not time out by location."
         },
@@ -1401,7 +1401,7 @@
         },
         {
           "id": "B",
-          "text": "The schema expires after a fixed number of seconds on the server.",
+          "text": "The schema expires automatically after a fixed number of seconds have elapsed on the server side.",
           "correct": false,
           "explanation": "There is no server-side schema timer; the cause is statelessness, not expiry."
         },
@@ -1494,7 +1494,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Require a publication or collection date for each figure so temporal differences are not misread as contradictions.",
+          "text": "Require a publication or collection date for each extracted figure so temporal differences are not misread as contradictions.",
           "correct": true,
           "explanation": "Capturing dates lets consumers see the figures describe different periods rather than conflicting facts."
         },
@@ -1560,7 +1560,7 @@
       "options": [
         {
           "id": "A",
-          "text": "An aggregate accuracy figure can mask poor performance on specific document types or fields that are rarer in the mix.",
+          "text": "An aggregate accuracy figure can mask poor performance on specific document types or fields that are rarer in the overall mix.",
           "correct": true,
           "explanation": "A high overall number can hide systematically poor results on a minority document type, which is exactly what the client is hitting."
         },
@@ -1593,25 +1593,25 @@
       "options": [
         {
           "id": "A",
-          "text": "Use stratified random sampling so each document type's error rate is measurable.",
+          "text": "Use stratified random sampling across types.",
           "correct": true,
           "explanation": "Stratified random sampling ensures each document type is measured, surfacing per-type error rates that a simple aggregate would hide."
         },
         {
           "id": "B",
-          "text": "Hand-pick the documents that look hardest to extract.",
+          "text": "Hand-pick the documents that look hardest to extract and label only those, assuming they bound the worst-case error.",
           "correct": false,
           "explanation": "Cherry-picking hard cases biases the estimate and is not representative."
         },
         {
           "id": "C",
-          "text": "Sample only the most common document type to save effort.",
+          "text": "Sample only the single most common document type to save labeling effort, then apply its rate to the whole corpus.",
           "correct": false,
           "explanation": "Ignoring rarer types leaves their error rates unmeasured."
         },
         {
           "id": "D",
-          "text": "Review the first 100 documents from the queue in order.",
+          "text": "Review the first 100 documents from the queue in arrival order.",
           "correct": false,
           "explanation": "Sequential sampling can reflect arrival order, not the true type distribution."
         }
@@ -1626,19 +1626,19 @@
       "options": [
         {
           "id": "A",
-          "text": "Calibrate field-level confidence scores against a labeled validation set.",
+          "text": "Calibrate the field-level scores against a labeled validation set.",
           "correct": true,
           "explanation": "Calibrating confidence on a labeled validation set aligns the scores with observed correctness, making them actionable."
         },
         {
           "id": "B",
-          "text": "Multiply every raw confidence by a fixed constant to scale it.",
+          "text": "Multiply every raw confidence value by a single fixed constant to rescale the whole range.",
           "correct": false,
           "explanation": "An arbitrary scaling factor does not align scores with actual accuracy."
         },
         {
           "id": "C",
-          "text": "Trust the raw scores as-is since the model produced them.",
+          "text": "Trust the raw scores exactly as-is, since the model itself produced them.",
           "correct": false,
           "explanation": "Uncalibrated model confidence is known to be unreliable on its own."
         },
@@ -1665,7 +1665,7 @@
         },
         {
           "id": "B",
-          "text": "Auto-process everything and correct mistakes after they reach finance.",
+          "text": "Auto-process every extraction and correct any mistakes after they reach the finance systems.",
           "correct": false,
           "explanation": "Letting wrong data flow downstream and fixing it later is costly and risky."
         },
@@ -1698,19 +1698,19 @@
         },
         {
           "id": "B",
-          "text": "Add even more policy text so the model is fully informed.",
+          "text": "Prepend even more company policy text so the model is as fully informed as possible.",
           "correct": false,
           "explanation": "More irrelevant text worsens the dilution and context pressure."
         },
         {
           "id": "C",
-          "text": "Place the policy text in the exact middle of the prompt.",
+          "text": "Relocate the policy text to sit in the exact middle of the prompt.",
           "correct": false,
           "explanation": "Relocating irrelevant text does not solve the underlying bloat."
         },
         {
           "id": "D",
-          "text": "Raise max_tokens so the larger prompt is accepted.",
+          "text": "Raise the max_tokens limit so the larger prompt is accepted.",
           "correct": false,
           "explanation": "max_tokens controls output length, not input attention or prompt size handling."
         }
@@ -1725,13 +1725,13 @@
       "options": [
         {
           "id": "A",
-          "text": "Store claim-source mappings tying each value to its supporting passage.",
+          "text": "Store claim-source mappings tying each value to its passage.",
           "correct": true,
           "explanation": "Provenance via claim-source mappings lets you immediately show where a value came from, settling disputes."
         },
         {
           "id": "B",
-          "text": "Logging only the model's overall response time per document.",
+          "text": "Logging only the model's overall response time for each processed document.",
           "correct": false,
           "explanation": "Timing logs say nothing about where a value originated."
         },
@@ -1758,7 +1758,7 @@
       "options": [
         {
           "id": "A",
-          "text": "A single number can hide that some types or fields perform far worse.",
+          "text": "A single headline number can hide that some document types or individual fields perform far worse than all the rest.",
           "correct": true,
           "explanation": "Stratified reporting exposes per-type weaknesses that an aggregate conceals, giving an honest risk picture."
         },
@@ -1770,7 +1770,7 @@
         },
         {
           "id": "C",
-          "text": "Stratified results always look better, so they market the system more favorably.",
+          "text": "Stratified results always look better than the aggregate, so they market the system to leadership more favorably.",
           "correct": false,
           "explanation": "The point is honesty about weak spots, not making numbers look better."
         },
@@ -1797,13 +1797,13 @@
         },
         {
           "id": "B",
-          "text": "Move all instructions to the exact middle of the document.",
+          "text": "Move all of the extraction instructions to the exact middle of the document body.",
           "correct": false,
           "explanation": "The middle is the weakest position for recall in long contexts."
         },
         {
           "id": "C",
-          "text": "Delete the extraction instructions to shorten the prompt.",
+          "text": "Delete the extraction instructions entirely to shorten the prompt.",
           "correct": false,
           "explanation": "Removing instructions leaves the model without guidance entirely."
         },
@@ -1857,7 +1857,7 @@
       "options": [
         {
           "id": "A",
-          "text": "The scores are poorly calibrated; re-fit them on labeled data.",
+          "text": "The scores are poorly calibrated; re-fit them on a labeled dataset.",
           "correct": true,
           "explanation": "If low scores land on obviously correct items, the scores do not reflect real accuracy and need calibration."
         },
@@ -1923,25 +1923,25 @@
       "options": [
         {
           "id": "A",
-          "text": "A collection date on each percentage, so the year gap explains it.",
+          "text": "A collection date on each percentage.",
           "correct": true,
           "explanation": "Recording when each datum was collected lets consumers attribute the difference to time rather than contradiction."
         },
         {
           "id": "B",
-          "text": "A combined average of the two percentages with no dates.",
+          "text": "A single combined average of the two percentages, reported with no accompanying dates at all.",
           "correct": false,
           "explanation": "Averaging hides the temporal difference and invents a non-reported figure."
         },
         {
           "id": "C",
-          "text": "A flag marking one survey as the official one.",
+          "text": "A flag that marks one of the two surveys as the official one to use.",
           "correct": false,
           "explanation": "Arbitrarily privileging one survey discards valid data without explaining the gap."
         },
         {
           "id": "D",
-          "text": "A note saying the two numbers are unreliable.",
+          "text": "A note stating that the two numbers are unreliable.",
           "correct": false,
           "explanation": "The numbers are reliable for their respective dates; the missing piece is the date itself."
         }
@@ -1956,7 +1956,7 @@
       "options": [
         {
           "id": "A",
-          "text": "Calibrate field scores on labeled data; route low ones to review.",
+          "text": "Calibrate the field scores on labeled data; route low ones to review.",
           "correct": true,
           "explanation": "Calibrated field-level confidence plus threshold-based human routing turns scores into a dependable triage mechanism."
         },
@@ -1995,19 +1995,19 @@
         },
         {
           "id": "B",
-          "text": "Add a longer preamble explaining the task in more detail.",
+          "text": "Add an even longer preamble that explains the task in more exhaustive detail so nothing is left ambiguous.",
           "correct": false,
           "explanation": "Lengthening the preamble worsens the context pressure rather than easing it."
         },
         {
           "id": "C",
-          "text": "Keep all context but lower the temperature to 0.",
+          "text": "Keep all of the context in place but lower the sampling temperature to 0 for stability.",
           "correct": false,
           "explanation": "Temperature does not relieve context crowding or positional attention loss."
         },
         {
           "id": "D",
-          "text": "Move the document to the middle to balance the prompt.",
+          "text": "Move the document into the exact middle of the prompt to balance it.",
           "correct": false,
           "explanation": "Centering the document places key content in the weakest attention zone."
         }
@@ -2028,21 +2028,417 @@
         },
         {
           "id": "B",
-          "text": "Resolve conflicts internally and emit one clean value per figure.",
+          "text": "Resolve any conflicts internally during extraction and emit a single clean reconciled value per figure.",
           "correct": false,
           "explanation": "Silent resolution violates the requirement to not hide conflicting claims."
         },
         {
           "id": "C",
-          "text": "Emit figures without sources but log the prompt for auditing.",
+          "text": "Emit the figures without per-value sources but log the full prompt for later auditing.",
           "correct": false,
           "explanation": "A prompt log does not tie each figure to its supporting source."
         },
         {
           "id": "D",
-          "text": "Keep only the highest-confidence figure and drop the rest.",
+          "text": "Keep only the single highest-confidence figure and drop the rest.",
           "correct": false,
           "explanation": "Dropping conflicting figures silently resolves the conflict, which is forbidden."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-039",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Even with a tool's JSON schema in place, occasional tool calls still come back with an extra undeclared field that breaks the downstream parser. What setting most directly guarantees the calls match your schema exactly?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `strict: true` on the tool.",
+          "correct": true,
+          "explanation": "Strict tool use forces Claude's tool calls to conform exactly to the declared schema, eliminating undeclared or extra fields."
+        },
+        {
+          "id": "B",
+          "text": "Force the tool with `tool_choice`.",
+          "correct": false,
+          "explanation": "Forcing the tool guarantees it is called, but not that the call's fields match the schema exactly."
+        },
+        {
+          "id": "C",
+          "text": "Raise `max_tokens` for headroom.",
+          "correct": false,
+          "explanation": "Token headroom does not affect whether the output conforms to the schema."
+        },
+        {
+          "id": "D",
+          "text": "Drop the temperature to zero.",
+          "correct": false,
+          "explanation": "Temperature reduces variability but does not enforce exact schema conformance."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-040",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your extraction tool defines a `status` enum of `paid`, `pending`, `overdue`. A reviewer asks how to stop the model from ever returning a value outside that set. Which mechanism enforces it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A prose hint in the prompt that simply lists the three allowed values.",
+          "correct": false,
+          "explanation": "Prose guidance is probabilistic and does not strictly prevent out-of-set values."
+        },
+        {
+          "id": "B",
+          "text": "An enum constraint in the schema.",
+          "correct": true,
+          "explanation": "Declaring the field as an enum in the tool's input_schema constrains output to the allowed members and rejects anything else."
+        },
+        {
+          "id": "C",
+          "text": "Setting tool_choice to any.",
+          "correct": false,
+          "explanation": "`any` forces a tool call but places no constraint on which enum value the field takes."
+        },
+        {
+          "id": "D",
+          "text": "Lowering temperature to zero.",
+          "correct": false,
+          "explanation": "Temperature affects sampling variability, not the set of permissible enum values."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-041",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "A field should hold either a numeric amount or be explicitly absent when the document omits it. The team keeps debating between a required number and a placeholder. What schema type best models true optionality?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Required number, default zero.",
+          "correct": false,
+          "explanation": "Defaulting to zero injects a fabricated value that downstream systems cannot distinguish from a real zero."
+        },
+        {
+          "id": "B",
+          "text": "Required string \"none\".",
+          "correct": false,
+          "explanation": "A string placeholder both breaks numeric typing and masks genuine absence with fake data."
+        },
+        {
+          "id": "C",
+          "text": "A nullable number field.",
+          "correct": true,
+          "explanation": "A nullable number lets the model emit a real numeric value when present and explicit null when the document omits it, modeling true optionality."
+        },
+        {
+          "id": "D",
+          "text": "Required number, always guess.",
+          "correct": false,
+          "explanation": "Forcing a guessed number fabricates data rather than representing absence."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-042",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "You want every extracted record to carry the original currency symbol so downstream conversion works, but the model sometimes drops it. The currency is one of a fixed known set. What is the most reliable enforcement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a required enum field for the currency code.",
+          "correct": true,
+          "explanation": "A required enum field for currency forces the model to always emit one of the known codes, preventing dropped or invalid currencies."
+        },
+        {
+          "id": "B",
+          "text": "Mention currency in the prompt.",
+          "correct": false,
+          "explanation": "A prose mention does not enforce presence; the field can still be omitted."
+        },
+        {
+          "id": "C",
+          "text": "Parse currency downstream from text.",
+          "correct": false,
+          "explanation": "Downstream text parsing is brittle and abandons the guarantee the schema can provide."
+        },
+        {
+          "id": "D",
+          "text": "Infer currency from the amount.",
+          "correct": false,
+          "explanation": "An amount alone cannot reliably determine its currency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-043",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "An exhaustive extraction of a 600-page filing must return far more structured output than the model's standard single-turn limit allows, and it can run overnight. What approach fits?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set temperature to maximum.",
+          "correct": false,
+          "explanation": "Temperature has no effect on the maximum output length the model can return."
+        },
+        {
+          "id": "B",
+          "text": "Use the extended-output beta header on a batch job.",
+          "correct": true,
+          "explanation": "The extended-output beta header raises the batch max_tokens cap to 300k, which suits exhaustive structured extraction in a latency-tolerant overnight batch."
+        },
+        {
+          "id": "C",
+          "text": "Stream the response and then stop it early.",
+          "correct": false,
+          "explanation": "Stopping early truncates the exhaustive output you need and streaming is unsupported in batch."
+        },
+        {
+          "id": "D",
+          "text": "Lower max_tokens to be safe.",
+          "correct": false,
+          "explanation": "Lowering max_tokens cuts the output short, the opposite of an exhaustive extraction."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-044",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your batch shares a large identical instruction-and-schema preamble across thousands of documents, and batches can take far longer than five minutes to complete. What raises your cache hit rate for that shared content?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Disable caching inside batches.",
+          "correct": false,
+          "explanation": "Disabling caching forgoes the cost and time savings the shared preamble could provide."
+        },
+        {
+          "id": "B",
+          "text": "Put the schema after each document.",
+          "correct": false,
+          "explanation": "Placing shared content after variable content reduces the cacheable prefix and hurts hit rates."
+        },
+        {
+          "id": "C",
+          "text": "Use the 1-hour cache duration.",
+          "correct": true,
+          "explanation": "Because batches can exceed the 5-minute cache lifetime, the 1-hour cache duration improves hit rates on shared batch context."
+        },
+        {
+          "id": "D",
+          "text": "Vary the preamble per request.",
+          "correct": false,
+          "explanation": "Varying the shared content defeats caching, which depends on identical cached blocks."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-045",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "A new contract clause requires extracting the \"governing law\" jurisdiction, but documents express it in many phrasings and the model is inconsistent about what qualifies. What is the most effective first step in the prompt?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define what counts as governing law.",
+          "correct": true,
+          "explanation": "Stating explicit, unambiguous criteria for what qualifies as the governing-law jurisdiction is the foundational fix for inconsistent extraction."
+        },
+        {
+          "id": "B",
+          "text": "Tell the model to just extract the relevant legal stuff from the clause.",
+          "correct": false,
+          "explanation": "A vague instruction leaves the model guessing what qualifies, perpetuating inconsistency."
+        },
+        {
+          "id": "C",
+          "text": "Add three more retries to the pipeline.",
+          "correct": false,
+          "explanation": "Retries cannot resolve criteria that were never defined."
+        },
+        {
+          "id": "D",
+          "text": "Raise temperature for coverage.",
+          "correct": false,
+          "explanation": "Higher temperature increases variability, worsening the inconsistency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-025",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Your extraction prompt places the JSON schema first, then thousands of tokens of reference glossary, then the document at the very end. Accuracy on document fields is weak. Reordering aside, what is the core issue?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The schema is too strict for long input.",
+          "correct": false,
+          "explanation": "Schema strictness is unrelated to positional recall of document content."
+        },
+        {
+          "id": "B",
+          "text": "Bulky middle content weakens attention.",
+          "correct": true,
+          "explanation": "A large glossary in the middle creates the lost-in-the-middle effect and crowds the context, weakening attention on the key content."
+        },
+        {
+          "id": "C",
+          "text": "Temperature is dropping middle tokens.",
+          "correct": false,
+          "explanation": "Temperature applies uniformly and does not drop tokens by position."
+        },
+        {
+          "id": "D",
+          "text": "The model forgot the prior call's schema.",
+          "correct": false,
+          "explanation": "This is a single self-contained call; cross-call memory is not the issue."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-026",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Auditors must trace every extracted clause to its exact location, but your output only stores a confidence score per clause. What output change satisfies the traceability requirement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Raise all confidence scores higher.",
+          "correct": false,
+          "explanation": "Higher scores say nothing about where a clause came from."
+        },
+        {
+          "id": "B",
+          "text": "Add a source page reference and a supporting quote for each extracted clause.",
+          "correct": true,
+          "explanation": "Linking each clause to its source location and quote provides the claim-source mapping auditors need for traceability."
+        },
+        {
+          "id": "C",
+          "text": "Append the entire raw source document after the extracted output.",
+          "correct": false,
+          "explanation": "Dumping the whole document does not tie a specific clause to a specific location."
+        },
+        {
+          "id": "D",
+          "text": "Store the model temperature used.",
+          "correct": false,
+          "explanation": "Temperature metadata cannot establish where a clause originated."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-027",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Two extraction prompt variants both report 95% aggregate accuracy, but you must choose the one that performs better on the rare high-value contract type. How should you compare them?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pick whichever finished its run faster.",
+          "correct": false,
+          "explanation": "Speed is irrelevant to per-type extraction accuracy."
+        },
+        {
+          "id": "B",
+          "text": "Trust the tied aggregate score and just pick either one of the two variants.",
+          "correct": false,
+          "explanation": "A tied aggregate can hide divergent performance on the rare type that matters here."
+        },
+        {
+          "id": "C",
+          "text": "Compare stratified accuracy on that type.",
+          "correct": true,
+          "explanation": "Stratified per-type accuracy surfaces which variant performs better on the rare high-value type that the aggregate conceals."
+        },
+        {
+          "id": "D",
+          "text": "Choose the one with lower temperature.",
+          "correct": false,
+          "explanation": "Temperature is not a measure of accuracy on a document type."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-028",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Your pipeline auto-accepts any extraction above a confidence threshold, yet a costly error slipped through on a high-confidence record. Before changing the threshold, what should you verify about the scores?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Whether the confidence scores are actually calibrated to accuracy.",
+          "correct": true,
+          "explanation": "If a high-confidence record was wrong, the scores may be miscalibrated; verifying calibration against labeled data comes before retuning the threshold."
+        },
+        {
+          "id": "B",
+          "text": "Whether the model was given a high enough output token limit.",
+          "correct": false,
+          "explanation": "Token usage does not explain whether confidence reflects real accuracy."
+        },
+        {
+          "id": "C",
+          "text": "Whether temperature was set to zero.",
+          "correct": false,
+          "explanation": "Temperature does not determine whether confidence scores track correctness."
+        },
+        {
+          "id": "D",
+          "text": "Whether the schema was strict.",
+          "correct": false,
+          "explanation": "A strict schema validates structure, not the trustworthiness of confidence scores."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-029",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "One document states a figure as a firm audited number while another states it as a forward-looking estimate, yet both flow into the dataset as plain values. Consumers treat them as equally certain. What output practice fixes this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Average the two figures into one value.",
+          "correct": false,
+          "explanation": "Averaging conflates an audited number with an estimate and erases their differing certainty."
+        },
+        {
+          "id": "B",
+          "text": "Keep only the firm audited figure and discard the forward-looking estimate.",
+          "correct": false,
+          "explanation": "Dropping the estimate loses information consumers may legitimately need."
+        },
+        {
+          "id": "C",
+          "text": "Capture each value's claim type and source.",
+          "correct": true,
+          "explanation": "Recording whether each figure is audited or an estimate, with its source, lets consumers weight certainty correctly instead of treating values as equal."
+        },
+        {
+          "id": "D",
+          "text": "Flag both figures as unreliable.",
+          "correct": false,
+          "explanation": "Neither figure is unreliable; they differ in certainty type, which attribution captures."
         }
       ]
     }

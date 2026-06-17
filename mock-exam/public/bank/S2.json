@@ -7,10 +7,30 @@
       "task_statement": "3.2",
       "stem": "You want to create a custom `/review` slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?",
       "options": [
-        { "id": "A", "text": "In the `.claude/commands/` directory in the project repository.", "correct": true, "explanation": "Project-scoped custom slash commands live in `.claude/commands/` within the repo. They are version-controlled and automatically available to everyone who clones or pulls." },
-        { "id": "B", "text": "In the `~/.claude/commands/` directory in each developer's own home directory.", "correct": false, "explanation": "User-scoped commands aren't shared via version control — each developer would have to create them manually." },
-        { "id": "C", "text": "In the `CLAUDE.md` file located at the root of the project repository.", "correct": false, "explanation": "CLAUDE.md is for project instructions and context, not command definitions." },
-        { "id": "D", "text": "In a dedicated `.claude/config.json` file containing a `commands` array.", "correct": false, "explanation": "This describes a configuration mechanism that doesn't exist in Claude Code." }
+        {
+          "id": "A",
+          "text": "In the `.claude/commands/` directory in the project repository.",
+          "correct": true,
+          "explanation": "Project-scoped custom slash commands live in `.claude/commands/` within the repo. They are version-controlled and automatically available to everyone who clones or pulls."
+        },
+        {
+          "id": "B",
+          "text": "In the `~/.claude/commands/` directory in each developer's own home directory.",
+          "correct": false,
+          "explanation": "User-scoped commands aren't shared via version control — each developer would have to create them manually."
+        },
+        {
+          "id": "C",
+          "text": "In the `CLAUDE.md` file located at the root of the project repository.",
+          "correct": false,
+          "explanation": "CLAUDE.md is for project instructions and context, not command definitions."
+        },
+        {
+          "id": "D",
+          "text": "In a dedicated `.claude/config.json` file containing a `commands` array.",
+          "correct": false,
+          "explanation": "This describes a configuration mechanism that doesn't exist in Claude Code."
+        }
       ]
     },
     {
@@ -20,10 +40,30 @@
       "task_statement": "3.4",
       "stem": "You've been assigned to restructure the team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?",
       "options": [
-        { "id": "A", "text": "Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes.", "correct": true, "explanation": "Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, and architectural decisions — exactly what this restructuring requires. It enables safe exploration before committing to changes." },
-        { "id": "B", "text": "Start with direct execution and make all the changes incrementally, letting the implementation itself reveal the natural service boundaries.", "correct": false, "explanation": "This risks costly rework when dependencies are discovered late." },
-        { "id": "C", "text": "Use direct execution with comprehensive upfront instructions detailing exactly how every single service ought to be structured.", "correct": false, "explanation": "This assumes you already know the right structure without exploring the code." },
-        { "id": "D", "text": "Begin in direct execution mode and only switch over to plan mode if you happen to encounter unexpected complexity during implementation.", "correct": false, "explanation": "The complexity is already stated in the requirements, not something that might emerge later." }
+        {
+          "id": "A",
+          "text": "Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes.",
+          "correct": true,
+          "explanation": "Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, and architectural decisions — exactly what this restructuring requires. It enables safe exploration before committing to changes."
+        },
+        {
+          "id": "B",
+          "text": "Start with direct execution and make all the changes incrementally, letting the implementation itself reveal the natural service boundaries.",
+          "correct": false,
+          "explanation": "This risks costly rework when dependencies are discovered late."
+        },
+        {
+          "id": "C",
+          "text": "Use direct execution with comprehensive upfront instructions detailing exactly how every single service ought to be structured.",
+          "correct": false,
+          "explanation": "This assumes you already know the right structure without exploring the code."
+        },
+        {
+          "id": "D",
+          "text": "Begin in direct execution mode and only switch over to plan mode if you happen to encounter unexpected complexity during implementation.",
+          "correct": false,
+          "explanation": "The complexity is already stated in the requirements, not something that might emerge later."
+        }
       ]
     },
     {
@@ -33,10 +73,30 @@
       "task_statement": "3.3",
       "stem": "Your codebase has distinct areas with different coding conventions, and test files are spread throughout the codebase alongside the code they test (e.g., `Button.test.tsx` next to `Button.tsx`). You want all tests to follow the same conventions regardless of location. What's the most maintainable way to ensure Claude automatically applies the correct conventions when generating code?",
       "options": [
-        { "id": "A", "text": "Create rule files in `.claude/rules/` with frontmatter glob patterns to apply conventions by file path.", "correct": true, "explanation": "`.claude/rules/` with glob patterns (e.g., `**/*.test.tsx`) applies conventions automatically based on file path regardless of directory location — essential for files spread throughout the codebase." },
-        { "id": "B", "text": "Consolidate all conventions in the root `CLAUDE.md` under headers per area, relying on Claude to infer which section applies.", "correct": false, "explanation": "This relies on inference rather than explicit matching, making it unreliable." },
-        { "id": "C", "text": "Create skills in `.claude/skills/` for each code type, including the relevant conventions in their SKILL.md files.", "correct": false, "explanation": "Skills require manual invocation or rely on Claude choosing to load them, contradicting the need for deterministic automatic application based on file paths." },
-        { "id": "D", "text": "Place a separate CLAUDE.md file in each subdirectory that contains that particular area's specific conventions.", "correct": false, "explanation": "Directory-bound CLAUDE.md files can't easily handle files of the same type spread across many directories." }
+        {
+          "id": "A",
+          "text": "Create rule files in `.claude/rules/` with frontmatter glob patterns to apply conventions by file path.",
+          "correct": true,
+          "explanation": "`.claude/rules/` with glob patterns (e.g., `**/*.test.tsx`) applies conventions automatically based on file path regardless of directory location — essential for files spread throughout the codebase."
+        },
+        {
+          "id": "B",
+          "text": "Consolidate all conventions in the root `CLAUDE.md` under headers per area, relying on Claude to infer which section applies.",
+          "correct": false,
+          "explanation": "This relies on inference rather than explicit matching, making it unreliable."
+        },
+        {
+          "id": "C",
+          "text": "Create skills in `.claude/skills/` for each code type, including the relevant conventions in their SKILL.md files.",
+          "correct": false,
+          "explanation": "Skills require manual invocation or rely on Claude choosing to load them, contradicting the need for deterministic automatic application based on file paths."
+        },
+        {
+          "id": "D",
+          "text": "Place a separate CLAUDE.md file in each subdirectory that contains that particular area's specific conventions.",
+          "correct": false,
+          "explanation": "Directory-bound CLAUDE.md files can't easily handle files of the same type spread across many directories."
+        }
       ]
     },
     {
@@ -46,10 +106,30 @@
       "task_statement": "3.2",
       "stem": "Your team created an `/analyze-codebase` skill that performs comprehensive code analysis — dependency scanning, test coverage calculation, and code quality metrics. After running this command, team members report that Claude becomes less responsive in the session and loses track of their original task. What's the most effective way to address this while preserving full analysis capability?",
       "options": [
-        { "id": "A", "text": "Add `context: fork` to the skill's frontmatter to run the analysis in an isolated sub-agent context.", "correct": true, "explanation": "`context: fork` runs the skill in an isolated sub-agent context so its verbose output doesn't pollute the main conversation, preserving the user's original task focus while keeping full analysis capability." },
-        { "id": "B", "text": "Split the skill into three smaller separate skills that each generate considerably less analysis output.", "correct": false, "explanation": "This fragments a coherent workflow and still pollutes the main context with whichever skill runs." },
-        { "id": "C", "text": "Add `model: haiku` to the frontmatter so the analysis uses a faster, more efficient underlying model.", "correct": false, "explanation": "Model choice affects speed/cost, not context pollution — the verbose output still floods the main session." },
-        { "id": "D", "text": "Add instructions to the skill to compress all outputs into a brief summary before displaying.", "correct": false, "explanation": "Prompt-based compression is unreliable and still mixes analysis output into the main conversation context." }
+        {
+          "id": "A",
+          "text": "Add `context: fork` to the skill's frontmatter to run the analysis in an isolated sub-agent context.",
+          "correct": true,
+          "explanation": "`context: fork` runs the skill in an isolated sub-agent context so its verbose output doesn't pollute the main conversation, preserving the user's original task focus while keeping full analysis capability."
+        },
+        {
+          "id": "B",
+          "text": "Split the skill into three smaller separate skills that each generate considerably less analysis output.",
+          "correct": false,
+          "explanation": "This fragments a coherent workflow and still pollutes the main context with whichever skill runs."
+        },
+        {
+          "id": "C",
+          "text": "Add `model: haiku` to the frontmatter so the analysis uses a faster, more efficient underlying model.",
+          "correct": false,
+          "explanation": "Model choice affects speed/cost, not context pollution — the verbose output still floods the main session."
+        },
+        {
+          "id": "D",
+          "text": "Add instructions to the skill to compress all outputs into a brief summary before displaying.",
+          "correct": false,
+          "explanation": "Prompt-based compression is unreliable and still mixes analysis output into the main conversation context."
+        }
       ]
     },
     {
@@ -59,10 +139,30 @@
       "task_statement": "1.7",
       "stem": "You paused an investigation session yesterday after Claude analyzed several modules. Overnight, a teammate refactored two of those files. You want to resume the named session today. What's the most reliable approach?",
       "options": [
-        { "id": "A", "text": "Resume with `--resume <session-name>` and tell the agent which files changed for re-analysis.", "correct": true, "explanation": "Resuming and informing the agent about specific file changes enables targeted re-analysis rather than full re-exploration, while keeping the mostly-valid prior context." },
-        { "id": "B", "text": "Resume the named session today and simply proceed exactly as if nothing at all had changed overnight by the teammate.", "correct": false, "explanation": "Stale tool results for the refactored files would mislead the agent." },
-        { "id": "C", "text": "Start a completely fresh session today and re-explore every single one of the modules again from scratch.", "correct": false, "explanation": "Wasteful when most prior context is still valid; only two files changed." },
-        { "id": "D", "text": "Use `fork_session` to branch and hope that the branch automatically picks up the new file contents on its own.", "correct": false, "explanation": "Forking branches from a shared baseline but does not automatically refresh stale tool results, and isn't the tool for this need." }
+        {
+          "id": "A",
+          "text": "Resume with `--resume <session-name>` and tell the agent which files changed for re-analysis.",
+          "correct": true,
+          "explanation": "Resuming and informing the agent about specific file changes enables targeted re-analysis rather than full re-exploration, while keeping the mostly-valid prior context."
+        },
+        {
+          "id": "B",
+          "text": "Resume the named session today and simply proceed exactly as if nothing at all had changed overnight by the teammate.",
+          "correct": false,
+          "explanation": "Stale tool results for the refactored files would mislead the agent."
+        },
+        {
+          "id": "C",
+          "text": "Start a completely fresh session today and re-explore every single one of the modules again from scratch.",
+          "correct": false,
+          "explanation": "Wasteful when most prior context is still valid; only two files changed."
+        },
+        {
+          "id": "D",
+          "text": "Use `fork_session` to branch and hope that the branch automatically picks up the new file contents on its own.",
+          "correct": false,
+          "explanation": "Forking branches from a shared baseline but does not automatically refresh stale tool results, and isn't the tool for this need."
+        }
       ]
     },
     {
@@ -72,10 +172,30 @@
       "task_statement": "3.1",
       "stem": "A new team member reports that Claude isn't following the team's documented coding standards, even though you added them to your own setup months ago. You discover you put them in `~/.claude/CLAUDE.md`. Why aren't they reaching the new hire?",
       "options": [
-        { "id": "A", "text": "User-level `~/.claude/CLAUDE.md` is machine-local and not version-controlled; team standards belong in the repo `CLAUDE.md`.", "correct": true, "explanation": "User-level configuration is personal and machine-local. Standards that should reach all developers must live in the project-level `CLAUDE.md` committed to the repo." },
-        { "id": "B", "text": "The new hire simply needs to run the `/init` command once to regenerate the missing user-level configuration file.", "correct": false, "explanation": "`/init` generates a project CLAUDE.md by analyzing the codebase; it doesn't copy your personal user-level file to them." },
-        { "id": "C", "text": "User-level configuration files only ever stay active for the first 30 days after they are first created.", "correct": false, "explanation": "There is no such expiry; the issue is scope, not time." },
-        { "id": "D", "text": "The standards must first be placed in the `.claude/commands/` directory before they can ever be shared with the whole team.", "correct": false, "explanation": "`.claude/commands/` holds slash commands, not always-loaded project standards; those go in the project CLAUDE.md." }
+        {
+          "id": "A",
+          "text": "User-level `~/.claude/CLAUDE.md` is machine-local and not version-controlled; team standards belong in the repo `CLAUDE.md`.",
+          "correct": true,
+          "explanation": "User-level configuration is personal and machine-local. Standards that should reach all developers must live in the project-level `CLAUDE.md` committed to the repo."
+        },
+        {
+          "id": "B",
+          "text": "The new hire simply needs to run the `/init` command once to regenerate the missing user-level configuration file.",
+          "correct": false,
+          "explanation": "`/init` generates a project CLAUDE.md by analyzing the codebase; it doesn't copy your personal user-level file to them."
+        },
+        {
+          "id": "C",
+          "text": "User-level configuration files only ever stay active for the first 30 days after they are first created.",
+          "correct": false,
+          "explanation": "There is no such expiry; the issue is scope, not time."
+        },
+        {
+          "id": "D",
+          "text": "The standards must first be placed in the `.claude/commands/` directory before they can ever be shared with the whole team.",
+          "correct": false,
+          "explanation": "`.claude/commands/` holds slash commands, not always-loaded project standards; those go in the project CLAUDE.md."
+        }
       ]
     },
     {
@@ -85,10 +205,30 @@
       "task_statement": "3.1",
       "stem": "Your root `CLAUDE.md` has grown huge as you've pasted in coding standards for many different packages. It's now hard to maintain and bloats every request. What's the recommended way to keep it modular?",
       "options": [
-        { "id": "A", "text": "Use `@import` syntax to reference focused external standards files, keeping each CLAUDE.md lean.", "correct": true, "explanation": "The `@import` syntax lets a CLAUDE.md pull in specific external files, so you can break a monolith into focused, maintainable pieces referenced where relevant." },
-        { "id": "B", "text": "Delete most of the accumulated standards and simply rely on Claude's built-in defaults instead.", "correct": false, "explanation": "Dropping standards loses needed guidance; modularization, not deletion, is the fix." },
-        { "id": "C", "text": "Move all of the package standards into a single giant slash command instead of the file.", "correct": false, "explanation": "Slash commands are on-demand actions, not a replacement for always-loaded modular standards." },
-        { "id": "D", "text": "Duplicate the entire root CLAUDE.md into every package subdirectory of the repository.", "correct": false, "explanation": "Duplication worsens maintainability and bloat rather than modularizing." }
+        {
+          "id": "A",
+          "text": "Use `@import` syntax to reference focused external standards files, keeping each CLAUDE.md lean.",
+          "correct": true,
+          "explanation": "The `@import` syntax lets a CLAUDE.md pull in specific external files, so you can break a monolith into focused, maintainable pieces referenced where relevant."
+        },
+        {
+          "id": "B",
+          "text": "Delete most of the accumulated standards and simply rely on Claude's built-in defaults instead.",
+          "correct": false,
+          "explanation": "Dropping standards loses needed guidance; modularization, not deletion, is the fix."
+        },
+        {
+          "id": "C",
+          "text": "Move all of the package standards into a single giant slash command instead of the file.",
+          "correct": false,
+          "explanation": "Slash commands are on-demand actions, not a replacement for always-loaded modular standards."
+        },
+        {
+          "id": "D",
+          "text": "Duplicate the entire root CLAUDE.md into every package subdirectory of the repository.",
+          "correct": false,
+          "explanation": "Duplication worsens maintainability and bloat rather than modularizing."
+        }
       ]
     },
     {
@@ -98,10 +238,30 @@
       "task_statement": "3.1",
       "stem": "Your monolithic `CLAUDE.md` mixes testing rules, API conventions, and deployment notes. You want focused, topic-specific files instead of one large document. What's an appropriate organization?",
       "options": [
-        { "id": "A", "text": "Split the content into topic files under `.claude/rules/`, one per concern (testing, API, deployment).", "correct": true, "explanation": "Splitting a monolithic CLAUDE.md into focused topic files in `.claude/rules/` improves maintainability and lets conventions be organized (and, with frontmatter, conditionally loaded)." },
-        { "id": "B", "text": "Put each separate topic into its own slash command that users must remember to run before editing.", "correct": false, "explanation": "Conventions should apply automatically, not depend on users invoking commands." },
-        { "id": "C", "text": "Keep one file but add more headers and hope Claude scrolls to the right section.", "correct": false, "explanation": "Header reliance keeps the bloat and depends on inference rather than structured organization." },
-        { "id": "D", "text": "Move the rules to `~/.claude/CLAUDE.md` so they're shorter per project.", "correct": false, "explanation": "User-level files aren't shared and don't solve organizing project conventions." }
+        {
+          "id": "A",
+          "text": "Split the content into topic files under `.claude/rules/`, one per concern.",
+          "correct": true,
+          "explanation": "Splitting a monolithic CLAUDE.md into focused topic files in `.claude/rules/` improves maintainability and lets conventions be organized (and, with frontmatter, conditionally loaded)."
+        },
+        {
+          "id": "B",
+          "text": "Put each separate topic into its own slash command that users must remember to run before editing.",
+          "correct": false,
+          "explanation": "Conventions should apply automatically, not depend on users invoking commands."
+        },
+        {
+          "id": "C",
+          "text": "Keep one file but add more headers and hope Claude scrolls to the right section.",
+          "correct": false,
+          "explanation": "Header reliance keeps the bloat and depends on inference rather than structured organization."
+        },
+        {
+          "id": "D",
+          "text": "Move the rules to `~/.claude/CLAUDE.md` so they're shorter per project.",
+          "correct": false,
+          "explanation": "User-level files aren't shared and don't solve organizing project conventions."
+        }
       ]
     },
     {
@@ -111,10 +271,30 @@
       "task_statement": "3.1",
       "stem": "Developers report inconsistent behavior across sessions and suspect the wrong memory files are loading. Which command helps you verify which memory files are actually in effect?",
       "options": [
-        { "id": "A", "text": "`/memory` — to inspect and verify which memory files are loaded.", "correct": true, "explanation": "The `/memory` command shows and lets you edit the loaded memory files, helping diagnose configuration-hierarchy issues causing inconsistent behavior." },
-        { "id": "B", "text": "`/clear` — to wipe all memory and start fresh.", "correct": false, "explanation": "`/clear` resets the conversation; it doesn't reveal which memory files are loaded." },
-        { "id": "C", "text": "`/compact` — to summarize the loaded files.", "correct": false, "explanation": "`/compact` summarizes conversation history, not memory-file loading." },
-        { "id": "D", "text": "`/init` — to regenerate all of the project's configuration files from scratch.", "correct": false, "explanation": "`/init` creates a project CLAUDE.md; it doesn't diagnose which memory files are active." }
+        {
+          "id": "A",
+          "text": "`/memory` — to inspect and verify which memory files are loaded.",
+          "correct": true,
+          "explanation": "The `/memory` command shows and lets you edit the loaded memory files, helping diagnose configuration-hierarchy issues causing inconsistent behavior."
+        },
+        {
+          "id": "B",
+          "text": "`/clear` — to wipe all memory and start fresh.",
+          "correct": false,
+          "explanation": "`/clear` resets the conversation; it doesn't reveal which memory files are loaded."
+        },
+        {
+          "id": "C",
+          "text": "`/compact` — to summarize the loaded files.",
+          "correct": false,
+          "explanation": "`/compact` summarizes conversation history, not memory-file loading."
+        },
+        {
+          "id": "D",
+          "text": "`/init` — to regenerate all of the project's configuration files from scratch.",
+          "correct": false,
+          "explanation": "`/init` creates a project CLAUDE.md; it doesn't diagnose which memory files are active."
+        }
       ]
     },
     {
@@ -124,10 +304,30 @@
       "task_statement": "3.2",
       "stem": "You want a personal variant of a shared `/deploy-notes` command with extra steps you prefer, without affecting teammates who use the project command. How should you do this?",
       "options": [
-        { "id": "A", "text": "Create a differently-named personal command in `~/.claude/commands/`.", "correct": true, "explanation": "User-scoped commands in `~/.claude/commands/` are personal; giving yours a different name avoids overriding or affecting the shared project command." },
-        { "id": "B", "text": "Edit the project's `.claude/commands/deploy-notes.md` directly with your personal steps.", "correct": false, "explanation": "Editing the shared command changes behavior for the whole team." },
-        { "id": "C", "text": "Add your steps to the root `CLAUDE.md`.", "correct": false, "explanation": "CLAUDE.md isn't where command definitions live, and changes there are shared." },
-        { "id": "D", "text": "Delete the project command and recreate it as a personal one.", "correct": false, "explanation": "Deleting the shared command removes it for everyone." }
+        {
+          "id": "A",
+          "text": "Create a differently-named personal command in `~/.claude/commands/`.",
+          "correct": true,
+          "explanation": "User-scoped commands in `~/.claude/commands/` are personal; giving yours a different name avoids overriding or affecting the shared project command."
+        },
+        {
+          "id": "B",
+          "text": "Edit the project's `.claude/commands/deploy-notes.md` directly with your personal steps.",
+          "correct": false,
+          "explanation": "Editing the shared command changes behavior for the whole team."
+        },
+        {
+          "id": "C",
+          "text": "Add your steps to the root `CLAUDE.md`.",
+          "correct": false,
+          "explanation": "CLAUDE.md isn't where command definitions live, and changes there are shared."
+        },
+        {
+          "id": "D",
+          "text": "Delete the project command and recreate it as a personal one.",
+          "correct": false,
+          "explanation": "Deleting the shared command removes it for everyone."
+        }
       ]
     },
     {
@@ -137,10 +337,30 @@
       "task_statement": "3.2",
       "stem": "You're building a `/scaffold-component` skill that can write files. You want to ensure it can only perform file-write operations and cannot run arbitrary shell commands. What's the right mechanism?",
       "options": [
-        { "id": "A", "text": "Set `allowed-tools` in the skill's frontmatter to just the file ops.", "correct": true, "explanation": "The `allowed-tools` frontmatter restricts which tools a skill may use during execution, e.g., limiting it to file writes to prevent destructive shell actions." },
-        { "id": "B", "text": "Add a sentence to the skill body saying \"do not run shell commands.\"", "correct": false, "explanation": "Prose instructions are probabilistic; `allowed-tools` enforces the restriction deterministically." },
-        { "id": "C", "text": "Set `context: fork` so it can't access tools.", "correct": false, "explanation": "`context: fork` isolates context, not tool access; it doesn't restrict which tools run." },
-        { "id": "D", "text": "Put the skill in `~/.claude/skills/` so it has fewer permissions.", "correct": false, "explanation": "Scope (user vs project) doesn't restrict tool access; `allowed-tools` does." }
+        {
+          "id": "A",
+          "text": "Set `allowed-tools` in the frontmatter to just the file ops.",
+          "correct": true,
+          "explanation": "The `allowed-tools` frontmatter restricts which tools a skill may use during execution, e.g., limiting it to file writes to prevent destructive shell actions."
+        },
+        {
+          "id": "B",
+          "text": "Add a sentence to the skill body saying \"do not run shell commands.\"",
+          "correct": false,
+          "explanation": "Prose instructions are probabilistic; `allowed-tools` enforces the restriction deterministically."
+        },
+        {
+          "id": "C",
+          "text": "Set `context: fork` so it can't access tools.",
+          "correct": false,
+          "explanation": "`context: fork` isolates context, not tool access; it doesn't restrict which tools run."
+        },
+        {
+          "id": "D",
+          "text": "Put the skill in `~/.claude/skills/` so it has fewer permissions.",
+          "correct": false,
+          "explanation": "Scope (user vs project) doesn't restrict tool access; `allowed-tools` does."
+        }
       ]
     },
     {
@@ -150,10 +370,30 @@
       "task_statement": "3.2",
       "stem": "A skill is frequently invoked without the parameter it needs, and developers forget the expected argument. Which frontmatter option best addresses this?",
       "options": [
-        { "id": "A", "text": "`argument-hint` — to surface the required parameter when the skill is invoked without it.", "correct": true, "explanation": "`argument-hint` frontmatter surfaces the expected argument to developers when they invoke the skill without it, reducing misuse." },
-        { "id": "B", "text": "`allowed-tools` — to make the missing argument a strictly required input for the skill.", "correct": false, "explanation": "`allowed-tools` restricts tool access, not argument prompting." },
-        { "id": "C", "text": "`context: fork` — to ask the developer for the arguments inside an isolated subagent.", "correct": false, "explanation": "`context: fork` isolates context; it doesn't prompt for arguments." },
-        { "id": "D", "text": "`model` — to pick a model capable of inferring the argument the developer forgot.", "correct": false, "explanation": "`model` selects the model; it doesn't hint required parameters to the developer." }
+        {
+          "id": "A",
+          "text": "`argument-hint` — to surface the required parameter when the skill is invoked without it.",
+          "correct": true,
+          "explanation": "`argument-hint` frontmatter surfaces the expected argument to developers when they invoke the skill without it, reducing misuse."
+        },
+        {
+          "id": "B",
+          "text": "`allowed-tools` — to make the missing argument a strictly required input for the skill.",
+          "correct": false,
+          "explanation": "`allowed-tools` restricts tool access, not argument prompting."
+        },
+        {
+          "id": "C",
+          "text": "`context: fork` — to ask the developer for the arguments inside an isolated subagent.",
+          "correct": false,
+          "explanation": "`context: fork` isolates context; it doesn't prompt for arguments."
+        },
+        {
+          "id": "D",
+          "text": "`model` — to pick a model capable of inferring the argument the developer forgot.",
+          "correct": false,
+          "explanation": "`model` selects the model; it doesn't hint required parameters to the developer."
+        }
       ]
     },
     {
@@ -163,10 +403,30 @@
       "task_statement": "3.2",
       "stem": "Your team is deciding between encoding a workflow as a custom slash command/skill versus adding it to `CLAUDE.md`. Which guideline best informs the choice?",
       "options": [
-        { "id": "A", "text": "Skills/commands for on-demand workflows; CLAUDE.md for universal standards.", "correct": true, "explanation": "Skills and commands are invoked on demand for specific tasks; CLAUDE.md holds universal context loaded into every request. Match the mechanism to whether the guidance is always-on or on-demand." },
-        { "id": "B", "text": "Always use CLAUDE.md because it's loaded every time, which is more reliable.", "correct": false, "explanation": "Always-loading task-specific workflows bloats context; on-demand skills are the right tool for those." },
-        { "id": "C", "text": "Always use skills because CLAUDE.md is deprecated.", "correct": false, "explanation": "CLAUDE.md is not deprecated; it's the right place for universal standards." },
-        { "id": "D", "text": "It doesn't matter; the two are functionally identical.", "correct": false, "explanation": "They differ: one is always-loaded context, the other is on-demand invocation." }
+        {
+          "id": "A",
+          "text": "Skills/commands for on-demand workflows; CLAUDE.md for universal standards.",
+          "correct": true,
+          "explanation": "Skills and commands are invoked on demand for specific tasks; CLAUDE.md holds universal context loaded into every request. Match the mechanism to whether the guidance is always-on or on-demand."
+        },
+        {
+          "id": "B",
+          "text": "Always use CLAUDE.md because it's loaded every time, which is more reliable.",
+          "correct": false,
+          "explanation": "Always-loading task-specific workflows bloats context; on-demand skills are the right tool for those."
+        },
+        {
+          "id": "C",
+          "text": "Always use skills because CLAUDE.md is deprecated.",
+          "correct": false,
+          "explanation": "CLAUDE.md is not deprecated; it's the right place for universal standards."
+        },
+        {
+          "id": "D",
+          "text": "It doesn't matter; the two are functionally identical.",
+          "correct": false,
+          "explanation": "They differ: one is always-loaded context, the other is on-demand invocation."
+        }
       ]
     },
     {
@@ -176,10 +436,30 @@
       "task_statement": "3.3",
       "stem": "You want Terraform-specific conventions to load only when Claude edits files under `terraform/`. How do you express that with a rule file?",
       "options": [
-        { "id": "A", "text": "Create a `.claude/rules/` file with frontmatter `paths: [\"terraform/**/*\"]` so it activates only there.", "correct": true, "explanation": "Path-scoped rules use a `paths` frontmatter glob so the rule loads only when editing matching files, reducing irrelevant context and token usage." },
-        { "id": "B", "text": "Put the Terraform conventions in the root CLAUDE.md file so that they always load on every request.", "correct": false, "explanation": "Always-loading Terraform rules wastes context when editing unrelated files; path scoping is more efficient." },
-        { "id": "C", "text": "Name a slash command `/terraform` and require every user to run it first before editing those files.", "correct": false, "explanation": "Conventions should apply automatically based on file path, not depend on users invoking a command." },
-        { "id": "D", "text": "Place a CLAUDE.md inside `terraform/` and hope that it also covers the deeply nested files.", "correct": false, "explanation": "A directory CLAUDE.md is acceptable for one directory, but path-glob rules are the precise mechanism for conditional, glob-based activation across a subtree." }
+        {
+          "id": "A",
+          "text": "Create a `.claude/rules/` file with frontmatter `paths: [\"terraform/**/*\"]`.",
+          "correct": true,
+          "explanation": "Path-scoped rules use a `paths` frontmatter glob so the rule loads only when editing matching files, reducing irrelevant context and token usage."
+        },
+        {
+          "id": "B",
+          "text": "Put the Terraform conventions in the root CLAUDE.md file so that they always load on every request.",
+          "correct": false,
+          "explanation": "Always-loading Terraform rules wastes context when editing unrelated files; path scoping is more efficient."
+        },
+        {
+          "id": "C",
+          "text": "Name a slash command `/terraform` and require every user to run it first before editing those files.",
+          "correct": false,
+          "explanation": "Conventions should apply automatically based on file path, not depend on users invoking a command."
+        },
+        {
+          "id": "D",
+          "text": "Place a CLAUDE.md inside `terraform/` and hope that it also covers the deeply nested files.",
+          "correct": false,
+          "explanation": "A directory CLAUDE.md is acceptable for one directory, but path-glob rules are the precise mechanism for conditional, glob-based activation across a subtree."
+        }
       ]
     },
     {
@@ -189,10 +469,30 @@
       "task_statement": "3.3",
       "stem": "Test files (`*.test.tsx`) live in many directories. You want test conventions applied to all of them regardless of folder. Why are path-scoped rules better than per-directory CLAUDE.md files here?",
       "options": [
-        { "id": "A", "text": "A single glob like `**/*.test.tsx` applies conventions by file type across the whole tree.", "correct": true, "explanation": "Glob-based rules span directories by matching file patterns, ideal for file types scattered across the codebase; directory-bound CLAUDE.md files can't easily do this." },
-        { "id": "B", "text": "Directory-level CLAUDE.md files are known to load noticeably faster than path-scoped rule files.", "correct": false, "explanation": "Load speed isn't the issue; coverage across scattered files is." },
-        { "id": "C", "text": "Path-scoped rules automatically disable all of the other conventions whenever they are active.", "correct": false, "explanation": "Rules don't disable other conventions; they add conditional ones for matching paths." },
-        { "id": "D", "text": "A CLAUDE.md file is not permitted to contain any testing-related conventions at all.", "correct": false, "explanation": "CLAUDE.md can contain such conventions; the point is directory binding vs glob coverage." }
+        {
+          "id": "A",
+          "text": "A single glob like `**/*.test.tsx` applies conventions by file type across the whole tree.",
+          "correct": true,
+          "explanation": "Glob-based rules span directories by matching file patterns, ideal for file types scattered across the codebase; directory-bound CLAUDE.md files can't easily do this."
+        },
+        {
+          "id": "B",
+          "text": "Directory-level CLAUDE.md files are known to load noticeably faster than path-scoped rule files.",
+          "correct": false,
+          "explanation": "Load speed isn't the issue; coverage across scattered files is."
+        },
+        {
+          "id": "C",
+          "text": "Path-scoped rules automatically disable all of the other conventions whenever they are active.",
+          "correct": false,
+          "explanation": "Rules don't disable other conventions; they add conditional ones for matching paths."
+        },
+        {
+          "id": "D",
+          "text": "A CLAUDE.md file is not permitted to contain any testing-related conventions at all.",
+          "correct": false,
+          "explanation": "CLAUDE.md can contain such conventions; the point is directory binding vs glob coverage."
+        }
       ]
     },
     {
@@ -202,10 +502,30 @@
       "task_statement": "3.4",
       "stem": "You need to add a single null-check to one validation function with a clear stack trace pointing to the exact line. Which approach is appropriate?",
       "options": [
-        { "id": "A", "text": "Direct execution — the change is small, well-scoped, and well-understood.", "correct": true, "explanation": "Direct execution suits simple, well-scoped changes; plan mode would be unnecessary overhead for a one-line, clearly understood fix." },
-        { "id": "B", "text": "Plan mode, because every change should be planned first.", "correct": false, "explanation": "Plan mode is for complex, multi-file, or architectural work; a single clear fix doesn't need it." },
-        { "id": "C", "text": "Spawn multiple subagents to debate the fix among themselves before applying it.", "correct": false, "explanation": "Multi-agent orchestration is wildly out of proportion to a one-line change." },
-        { "id": "D", "text": "Raise the effort level to max before editing one line.", "correct": false, "explanation": "Max effort is for hard reasoning problems, not a trivial, well-understood fix." }
+        {
+          "id": "A",
+          "text": "Direct execution — the change is small, well-scoped, and well-understood.",
+          "correct": true,
+          "explanation": "Direct execution suits simple, well-scoped changes; plan mode would be unnecessary overhead for a one-line, clearly understood fix."
+        },
+        {
+          "id": "B",
+          "text": "Plan mode, because every change should be planned first.",
+          "correct": false,
+          "explanation": "Plan mode is for complex, multi-file, or architectural work; a single clear fix doesn't need it."
+        },
+        {
+          "id": "C",
+          "text": "Spawn multiple subagents to debate the fix among themselves before applying it.",
+          "correct": false,
+          "explanation": "Multi-agent orchestration is wildly out of proportion to a one-line change."
+        },
+        {
+          "id": "D",
+          "text": "Raise the effort level to max before editing one line.",
+          "correct": false,
+          "explanation": "Max effort is for hard reasoning problems, not a trivial, well-understood fix."
+        }
       ]
     },
     {
@@ -215,10 +535,30 @@
       "task_statement": "3.4",
       "stem": "A library migration will touch 45+ files and you must choose between two integration approaches with different infrastructure implications. What's the best use of plan vs direct execution?",
       "options": [
-        { "id": "A", "text": "Use plan mode to investigate and design the migration, then direct execution for the approved plan.", "correct": true, "explanation": "Combine plan mode for investigation/architectural decisions with direct execution for implementation — exactly the pattern for a large, decision-heavy migration." },
-        { "id": "B", "text": "Use direct execution only, switching over to plan mode later if and when something happens to break.", "correct": false, "explanation": "The complexity and competing approaches are known upfront, warranting planning first." },
-        { "id": "C", "text": "Use plan mode only and never actually execute anything, in order to completely avoid risk.", "correct": false, "explanation": "Planning without execution doesn't deliver the migration; you plan, then execute." },
-        { "id": "D", "text": "Neither mode; just raise the effort level to maximum and edit all the files directly.", "correct": false, "explanation": "Effort level tunes reasoning depth, not the breadth-of-codebase investigation that plan mode provides." }
+        {
+          "id": "A",
+          "text": "Use plan mode to investigate and design the migration, then direct execution for the approved plan.",
+          "correct": true,
+          "explanation": "Combine plan mode for investigation/architectural decisions with direct execution for implementation — exactly the pattern for a large, decision-heavy migration."
+        },
+        {
+          "id": "B",
+          "text": "Use direct execution only, switching over to plan mode later if and when something happens to break.",
+          "correct": false,
+          "explanation": "The complexity and competing approaches are known upfront, warranting planning first."
+        },
+        {
+          "id": "C",
+          "text": "Use plan mode only and never actually execute anything, in order to completely avoid risk.",
+          "correct": false,
+          "explanation": "Planning without execution doesn't deliver the migration; you plan, then execute."
+        },
+        {
+          "id": "D",
+          "text": "Neither mode; just raise the effort level to maximum and edit all the files directly.",
+          "correct": false,
+          "explanation": "Effort level tunes reasoning depth, not the breadth-of-codebase investigation that plan mode provides."
+        }
       ]
     },
     {
@@ -228,10 +568,30 @@
       "task_statement": "3.4",
       "stem": "During a large refactor, the discovery phase generates a flood of file dumps that crowd the main conversation. How can you keep verbose exploration from exhausting your main context?",
       "options": [
-        { "id": "A", "text": "Use the Explore subagent to isolate verbose discovery and return concise summaries to the main chat.", "correct": true, "explanation": "The Explore subagent isolates noisy discovery output and returns summaries, preserving the main conversation's context for the actual work." },
-        { "id": "B", "text": "Paste every single explored file into the main chat so that absolutely nothing is missed.", "correct": false, "explanation": "Dumping all files into the main context is exactly what exhausts it." },
-        { "id": "C", "text": "Disable plan mode entirely so that Claude is forced to read far fewer files overall.", "correct": false, "explanation": "Reading fewer files weakens the investigation; isolating output via a subagent is the right fix." },
-        { "id": "D", "text": "Raise the `max_tokens` setting so that the conversation's context window can never fill up at all.", "correct": false, "explanation": "max_tokens governs output length, not context window capacity for accumulated discovery." }
+        {
+          "id": "A",
+          "text": "Use the Explore subagent to isolate verbose discovery and return concise summaries to the main chat.",
+          "correct": true,
+          "explanation": "The Explore subagent isolates noisy discovery output and returns summaries, preserving the main conversation's context for the actual work."
+        },
+        {
+          "id": "B",
+          "text": "Paste every single explored file into the main chat so that absolutely nothing is missed.",
+          "correct": false,
+          "explanation": "Dumping all files into the main context is exactly what exhausts it."
+        },
+        {
+          "id": "C",
+          "text": "Disable plan mode entirely so that Claude is forced to read far fewer files overall.",
+          "correct": false,
+          "explanation": "Reading fewer files weakens the investigation; isolating output via a subagent is the right fix."
+        },
+        {
+          "id": "D",
+          "text": "Raise the `max_tokens` setting so that the conversation's context window can never fill up at all.",
+          "correct": false,
+          "explanation": "max_tokens governs output length, not context window capacity for accumulated discovery."
+        }
       ]
     },
     {
@@ -241,10 +601,30 @@
       "task_statement": "3.5",
       "stem": "When you describe a desired data transformation in prose, Claude implements it slightly differently each time. What's the most effective way to pin down the expected behavior?",
       "options": [
-        { "id": "A", "text": "Provide 2-3 concrete input/output examples illustrating the exact transformation.", "correct": true, "explanation": "Concrete input/output examples communicate expected transformations far more reliably than prose, which can be interpreted inconsistently." },
-        { "id": "B", "text": "Rewrite the prose description to be considerably longer and far more emphatic in tone.", "correct": false, "explanation": "More prose still leaves room for inconsistent interpretation; examples are the reliable fix." },
-        { "id": "C", "text": "Lower the temperature to 0 and keep the prose-only description.", "correct": false, "explanation": "Temperature reduces variability but doesn't resolve ambiguity in what the transformation should be." },
-        { "id": "D", "text": "Ask Claude to guess and then correct it repeatedly until it's right.", "correct": false, "explanation": "Trial-and-error is inefficient compared to providing examples that anchor the behavior upfront." }
+        {
+          "id": "A",
+          "text": "Provide 2-3 concrete input/output examples illustrating the exact transformation.",
+          "correct": true,
+          "explanation": "Concrete input/output examples communicate expected transformations far more reliably than prose, which can be interpreted inconsistently."
+        },
+        {
+          "id": "B",
+          "text": "Rewrite the prose description to be considerably longer and far more emphatic in tone.",
+          "correct": false,
+          "explanation": "More prose still leaves room for inconsistent interpretation; examples are the reliable fix."
+        },
+        {
+          "id": "C",
+          "text": "Lower the temperature to 0 and keep the prose-only description.",
+          "correct": false,
+          "explanation": "Temperature reduces variability but doesn't resolve ambiguity in what the transformation should be."
+        },
+        {
+          "id": "D",
+          "text": "Ask Claude to guess and then correct it repeatedly until it's right.",
+          "correct": false,
+          "explanation": "Trial-and-error is inefficient compared to providing examples that anchor the behavior upfront."
+        }
       ]
     },
     {
@@ -254,10 +634,30 @@
       "task_statement": "3.5",
       "stem": "You're implementing a tricky date-handling utility and want to drive Claude toward a correct, robust implementation. Which iterative technique fits best?",
       "options": [
-        { "id": "A", "text": "Write tests covering expected behavior and edge cases first, then iterate by sharing failing tests.", "correct": true, "explanation": "Test-driven iteration — writing tests first and feeding failures back — progressively guides Claude toward a correct, edge-case-robust implementation." },
-        { "id": "B", "text": "Ask Claude to write the date-handling code and simply assume that it is correct without any tests.", "correct": false, "explanation": "Skipping tests forgoes the feedback signal that drives reliable iteration on tricky logic." },
-        { "id": "C", "text": "Only add tests later, after the date utility feature has already shipped to production users.", "correct": false, "explanation": "Post-hoc tests miss the chance to guide implementation and catch edge cases early." },
-        { "id": "D", "text": "Raise the effort level to maximum and simply hope it gets all the dates right in one shot.", "correct": false, "explanation": "Effort helps reasoning but doesn't replace the concrete feedback loop of failing tests." }
+        {
+          "id": "A",
+          "text": "Write tests covering expected behavior and edge cases first, then iterate by sharing failing tests.",
+          "correct": true,
+          "explanation": "Test-driven iteration — writing tests first and feeding failures back — progressively guides Claude toward a correct, edge-case-robust implementation."
+        },
+        {
+          "id": "B",
+          "text": "Ask Claude to write the date-handling code and simply assume that it is correct without any tests.",
+          "correct": false,
+          "explanation": "Skipping tests forgoes the feedback signal that drives reliable iteration on tricky logic."
+        },
+        {
+          "id": "C",
+          "text": "Only add tests later, after the date utility feature has already shipped to production users.",
+          "correct": false,
+          "explanation": "Post-hoc tests miss the chance to guide implementation and catch edge cases early."
+        },
+        {
+          "id": "D",
+          "text": "Raise the effort level to maximum and simply hope it gets all the dates right in one shot.",
+          "correct": false,
+          "explanation": "Effort helps reasoning but doesn't replace the concrete feedback loop of failing tests."
+        }
       ]
     },
     {
@@ -267,10 +667,30 @@
       "task_statement": "3.5",
       "stem": "You're about to implement caching in an unfamiliar subsystem and worry about invalidation pitfalls you haven't anticipated. Which technique surfaces hidden considerations before coding?",
       "options": [
-        { "id": "A", "text": "Use the interview pattern: have Claude ask you clarifying questions to surface design considerations first.", "correct": true, "explanation": "The interview pattern has Claude probe for considerations (e.g., invalidation strategy, failure modes) you may not have anticipated, improving the design before code is written." },
-        { "id": "B", "text": "Tell Claude to just implement the caching now and that you will fix any problems that come up later.", "correct": false, "explanation": "Diving in without surfacing considerations invites avoidable rework in an unfamiliar domain." },
-        { "id": "C", "text": "Provide Claude with no context at all and simply grade the resulting implementation afterward.", "correct": false, "explanation": "Withholding context makes a good first implementation unlikely; the interview pattern elicits the missing context." },
-        { "id": "D", "text": "Switch to a larger, more capable model and skip the design discussion entirely.", "correct": false, "explanation": "Model size doesn't substitute for clarifying the design's hidden requirements." }
+        {
+          "id": "A",
+          "text": "Use the interview pattern: have Claude ask you clarifying questions to surface design considerations first.",
+          "correct": true,
+          "explanation": "The interview pattern has Claude probe for considerations (e.g., invalidation strategy, failure modes) you may not have anticipated, improving the design before code is written."
+        },
+        {
+          "id": "B",
+          "text": "Tell Claude to just implement the caching layer right now and that you will track down and fix any invalidation problems that happen to come up later on.",
+          "correct": false,
+          "explanation": "Diving in without surfacing considerations invites avoidable rework in an unfamiliar domain."
+        },
+        {
+          "id": "C",
+          "text": "Provide Claude with no context at all and simply grade the resulting implementation afterward.",
+          "correct": false,
+          "explanation": "Withholding context makes a good first implementation unlikely; the interview pattern elicits the missing context."
+        },
+        {
+          "id": "D",
+          "text": "Switch to a larger, more capable model and skip the design discussion entirely.",
+          "correct": false,
+          "explanation": "Model size doesn't substitute for clarifying the design's hidden requirements."
+        }
       ]
     },
     {
@@ -280,10 +700,30 @@
       "task_statement": "3.5",
       "stem": "You found several review issues in a generated module. Some interact (fixing one changes another); others are independent. How should you communicate them to Claude?",
       "options": [
-        { "id": "A", "text": "Send interacting issues together; fix independent ones in sequence.", "correct": true, "explanation": "Interacting problems should be addressed together so the fix accounts for their interplay; independent problems can be handled one at a time." },
-        { "id": "B", "text": "Always send all issues one at a time regardless of interaction.", "correct": false, "explanation": "Splitting interacting issues prevents Claude from reconciling their interplay in a single coherent fix." },
-        { "id": "C", "text": "Always dump every issue at once regardless of independence.", "correct": false, "explanation": "Batching independent issues can muddy focus; the distinction is whether they interact." },
-        { "id": "D", "text": "Only report the first issue and ignore the rest.", "correct": false, "explanation": "Ignoring issues leaves defects unaddressed." }
+        {
+          "id": "A",
+          "text": "Send interacting issues together; fix independent ones in sequence.",
+          "correct": true,
+          "explanation": "Interacting problems should be addressed together so the fix accounts for their interplay; independent problems can be handled one at a time."
+        },
+        {
+          "id": "B",
+          "text": "Always send all issues one at a time regardless of interaction.",
+          "correct": false,
+          "explanation": "Splitting interacting issues prevents Claude from reconciling their interplay in a single coherent fix."
+        },
+        {
+          "id": "C",
+          "text": "Always dump every issue at once regardless of independence.",
+          "correct": false,
+          "explanation": "Batching independent issues can muddy focus; the distinction is whether they interact."
+        },
+        {
+          "id": "D",
+          "text": "Only report the first issue and ignore the rest.",
+          "correct": false,
+          "explanation": "Ignoring issues leaves defects unaddressed."
+        }
       ]
     },
     {
@@ -293,10 +733,30 @@
       "task_statement": "1.7",
       "stem": "You want to compare two refactoring strategies starting from the same analyzed baseline of the codebase, exploring each independently. Which session mechanism fits?",
       "options": [
-        { "id": "A", "text": "Use `fork_session` to create independent branches from the shared analysis baseline.", "correct": true, "explanation": "`fork_session` branches from a shared baseline so you can explore divergent approaches independently without one polluting the other." },
-        { "id": "B", "text": "Use `--resume` repeatedly on the same session for both strategies.", "correct": false, "explanation": "Resuming the same session mixes the two explorations into one history rather than isolating them." },
-        { "id": "C", "text": "Run `/clear` between the two strategies and re-analyze the whole codebase each time.", "correct": false, "explanation": "Clearing discards the shared baseline, forcing wasteful re-analysis for each branch." },
-        { "id": "D", "text": "Open two unrelated fresh sessions with no shared baseline.", "correct": false, "explanation": "Fresh sessions lose the common analyzed baseline that makes the comparison fair and efficient." }
+        {
+          "id": "A",
+          "text": "Use `fork_session` to branch independently from the shared baseline.",
+          "correct": true,
+          "explanation": "`fork_session` branches from a shared baseline so you can explore divergent approaches independently without one polluting the other."
+        },
+        {
+          "id": "B",
+          "text": "Use `--resume` repeatedly on the same session for both strategies.",
+          "correct": false,
+          "explanation": "Resuming the same session mixes the two explorations into one history rather than isolating them."
+        },
+        {
+          "id": "C",
+          "text": "Run `/clear` between the two strategies and re-analyze the whole codebase each time.",
+          "correct": false,
+          "explanation": "Clearing discards the shared baseline, forcing wasteful re-analysis for each branch."
+        },
+        {
+          "id": "D",
+          "text": "Open two unrelated fresh sessions with no shared baseline.",
+          "correct": false,
+          "explanation": "Fresh sessions lose the common analyzed baseline that makes the comparison fair and efficient."
+        }
       ]
     },
     {
@@ -306,10 +766,30 @@
       "task_statement": "1.7",
       "stem": "You're returning to a long investigation you named yesterday and most of the prior context is still valid. What's the best way to continue exactly where you left off?",
       "options": [
-        { "id": "A", "text": "Use `--resume <session-name>` to continue that specific named conversation.", "correct": true, "explanation": "Named session resumption (`--resume <session-name>`) continues a specific prior conversation, ideal when prior context is mostly valid." },
-        { "id": "B", "text": "Start fresh and paste yesterday's transcript manually.", "correct": false, "explanation": "Manual transcript pasting is error-prone and unnecessary when you can resume the named session." },
-        { "id": "C", "text": "Use `fork_session` to pull in the prior conversation's context and continue there.", "correct": false, "explanation": "Forking creates a divergent branch; to simply continue the same investigation, resume it." },
-        { "id": "D", "text": "Run `/compact` on an empty session to recover the context.", "correct": false, "explanation": "`/compact` summarizes the current conversation; it can't recover a prior session's context from nothing." }
+        {
+          "id": "A",
+          "text": "Use `--resume <session-name>` to continue that specific named conversation.",
+          "correct": true,
+          "explanation": "Named session resumption (`--resume <session-name>`) continues a specific prior conversation, ideal when prior context is mostly valid."
+        },
+        {
+          "id": "B",
+          "text": "Start fresh and paste yesterday's transcript manually.",
+          "correct": false,
+          "explanation": "Manual transcript pasting is error-prone and unnecessary when you can resume the named session."
+        },
+        {
+          "id": "C",
+          "text": "Use `fork_session` to pull in the prior conversation's context and continue there.",
+          "correct": false,
+          "explanation": "Forking creates a divergent branch; to simply continue the same investigation, resume it."
+        },
+        {
+          "id": "D",
+          "text": "Run `/compact` on an empty session to recover the context.",
+          "correct": false,
+          "explanation": "`/compact` summarizes the current conversation; it can't recover a prior session's context from nothing."
+        }
       ]
     },
     {
@@ -319,10 +799,30 @@
       "task_statement": "1.7",
       "stem": "A session you'd like to resume contains many stale tool results because the codebase changed substantially after that session ran. Why might starting a new session with an injected summary be more reliable than resuming?",
       "options": [
-        { "id": "A", "text": "Resuming carries stale tool results that mislead; a fresh, summary-seeded session avoids that.", "correct": true, "explanation": "When prior tool results are stale, resuming risks reasoning over outdated data; starting fresh with a current structured summary is more reliable." },
-        { "id": "B", "text": "Resuming any prior session becomes completely impossible the moment one of its underlying files has changed.", "correct": false, "explanation": "Resuming is possible; it's just less reliable when results are heavily stale." },
-        { "id": "C", "text": "Starting a completely fresh session is always strictly cheaper than resuming an existing one.", "correct": false, "explanation": "Cost isn't the deciding factor; staleness of prior context is." },
-        { "id": "D", "text": "Injected summaries are a mandatory requirement imposed by the API for every session.", "correct": false, "explanation": "No such requirement exists; the summary approach is a reliability choice for stale-context cases." }
+        {
+          "id": "A",
+          "text": "Resuming carries stale tool results that mislead; a fresh, summary-seeded session avoids that.",
+          "correct": true,
+          "explanation": "When prior tool results are stale, resuming risks reasoning over outdated data; starting fresh with a current structured summary is more reliable."
+        },
+        {
+          "id": "B",
+          "text": "Resuming any prior session becomes completely impossible the moment one of its underlying files has changed.",
+          "correct": false,
+          "explanation": "Resuming is possible; it's just less reliable when results are heavily stale."
+        },
+        {
+          "id": "C",
+          "text": "Starting a completely fresh session is always strictly cheaper than resuming an existing one.",
+          "correct": false,
+          "explanation": "Cost isn't the deciding factor; staleness of prior context is."
+        },
+        {
+          "id": "D",
+          "text": "Injected summaries are a mandatory requirement imposed by the API for every session.",
+          "correct": false,
+          "explanation": "No such requirement exists; the summary approach is a reliability choice for stale-context cases."
+        }
       ]
     },
     {
@@ -332,10 +832,30 @@
       "task_statement": "5.4",
       "stem": "In a long Claude Code session, you notice it starts giving inconsistent answers and references \"typical patterns\" instead of the specific classes it analyzed earlier. What is happening and what helps?",
       "options": [
-        { "id": "A", "text": "Context degradation in long sessions; have the agent keep a scratchpad of key findings to reference later.", "correct": true, "explanation": "Extended sessions degrade, causing generic answers; persisting key findings to a scratchpad the agent re-reads counteracts the drift." },
-        { "id": "B", "text": "The underlying model has broken; you should restart your computer to fix it.", "correct": false, "explanation": "This is expected context degradation, not a system fault." },
-        { "id": "C", "text": "Raise the temperature setting so that the answers become more specific again.", "correct": false, "explanation": "Temperature doesn't restore lost specifics from a degraded context." },
-        { "id": "D", "text": "Simply ignore the behavior, because inconsistent generic answers are perfectly normal and harmless.", "correct": false, "explanation": "Inconsistent, generic answers undermine the work and should be mitigated." }
+        {
+          "id": "A",
+          "text": "Context degradation in long sessions; have the agent keep a scratchpad of key findings to reference later.",
+          "correct": true,
+          "explanation": "Extended sessions degrade, causing generic answers; persisting key findings to a scratchpad the agent re-reads counteracts the drift."
+        },
+        {
+          "id": "B",
+          "text": "The underlying model itself has become corrupted; you should restart your computer and reinstall the tool to clear the fault.",
+          "correct": false,
+          "explanation": "This is expected context degradation, not a system fault."
+        },
+        {
+          "id": "C",
+          "text": "Raise the temperature setting so that the answers become more specific again.",
+          "correct": false,
+          "explanation": "Temperature doesn't restore lost specifics from a degraded context."
+        },
+        {
+          "id": "D",
+          "text": "Simply ignore the behavior, because inconsistent generic answers are perfectly normal and harmless.",
+          "correct": false,
+          "explanation": "Inconsistent, generic answers undermine the work and should be mitigated."
+        }
       ]
     },
     {
@@ -345,10 +865,30 @@
       "task_statement": "5.4",
       "stem": "Your exploration session's context is filling with verbose discovery output, and you want to keep going on the same task while reducing context usage. Which command is designed for this?",
       "options": [
-        { "id": "A", "text": "`/compact` — to summarize the conversation while keeping key learned context.", "correct": true, "explanation": "`/compact` condenses the conversation, preserving important learnings, which reduces context usage during extended exploration on a continuing task." },
-        { "id": "B", "text": "`/clear` — to wipe out everything in the session and then continue working.", "correct": false, "explanation": "`/clear` discards the valuable context you want to keep for the continuing task." },
-        { "id": "C", "text": "`/init` — to regenerate the project's CLAUDE.md documentation file.", "correct": false, "explanation": "`/init` creates project docs; it doesn't manage conversation context." },
-        { "id": "D", "text": "`/memory` — to view which memory files are currently loaded.", "correct": false, "explanation": "`/memory` inspects memory files, not conversation context size." }
+        {
+          "id": "A",
+          "text": "`/compact` — to summarize the conversation while keeping key learned context.",
+          "correct": true,
+          "explanation": "`/compact` condenses the conversation, preserving important learnings, which reduces context usage during extended exploration on a continuing task."
+        },
+        {
+          "id": "B",
+          "text": "`/clear` — to wipe out everything in the session and then continue working.",
+          "correct": false,
+          "explanation": "`/clear` discards the valuable context you want to keep for the continuing task."
+        },
+        {
+          "id": "C",
+          "text": "`/init` — to regenerate the project's CLAUDE.md documentation file.",
+          "correct": false,
+          "explanation": "`/init` creates project docs; it doesn't manage conversation context."
+        },
+        {
+          "id": "D",
+          "text": "`/memory` — to view which memory files are currently loaded.",
+          "correct": false,
+          "explanation": "`/memory` inspects memory files, not conversation context size."
+        }
       ]
     },
     {
@@ -358,10 +898,30 @@
       "task_statement": "5.4",
       "stem": "Before moving from a discovery phase into spawning subagents for the next phase, what reduces the risk that context degradation corrupts the downstream work?",
       "options": [
-        { "id": "A", "text": "Summarize the discovery phase's key findings and inject that summary into the next phase's context.", "correct": true, "explanation": "Summarizing one phase's findings and seeding the next phase with that summary preserves accuracy and counters degradation across phase boundaries." },
-        { "id": "B", "text": "Carry the entire raw discovery transcript forward into every single subagent you spawn next.", "correct": false, "explanation": "Dumping raw transcripts bloats context and accelerates degradation." },
-        { "id": "C", "text": "Skip the summarization step entirely in order to save yourself some time.", "correct": false, "explanation": "Skipping summary risks the downstream phase working from degraded or missing context." },
-        { "id": "D", "text": "Lower the effort level for the next phase of the work.", "correct": false, "explanation": "Effort level doesn't address context preservation across phases." }
+        {
+          "id": "A",
+          "text": "Summarize the discovery phase's key findings and seed the next phase with that summary.",
+          "correct": true,
+          "explanation": "Summarizing one phase's findings and seeding the next phase with that summary preserves accuracy and counters degradation across phase boundaries."
+        },
+        {
+          "id": "B",
+          "text": "Carry the entire raw, unedited discovery transcript forward into every single subagent that you happen to spawn next.",
+          "correct": false,
+          "explanation": "Dumping raw transcripts bloats context and accelerates degradation."
+        },
+        {
+          "id": "C",
+          "text": "Skip the summarization step entirely in order to save yourself some time.",
+          "correct": false,
+          "explanation": "Skipping summary risks the downstream phase working from degraded or missing context."
+        },
+        {
+          "id": "D",
+          "text": "Lower the effort level for the next phase of the work.",
+          "correct": false,
+          "explanation": "Effort level doesn't address context preservation across phases."
+        }
       ]
     },
     {
@@ -371,10 +931,30 @@
       "task_statement": "3.2",
       "stem": "What does adding `context: fork` to a skill's frontmatter accomplish?",
       "options": [
-        { "id": "A", "text": "It runs the skill in an isolated sub-agent so its output doesn't pollute the main chat.", "correct": true, "explanation": "`context: fork` isolates a skill's execution in a subagent, keeping verbose or exploratory output out of the main session." },
-        { "id": "B", "text": "It grants the skill unrestricted access to every available tool in the environment.", "correct": false, "explanation": "Tool access is governed by `allowed-tools`, not `context: fork`." },
-        { "id": "C", "text": "It makes the skill run on a noticeably faster and more efficient model.", "correct": false, "explanation": "Model selection is the `model` option, not `context: fork`." },
-        { "id": "D", "text": "It automatically shares the skill with all of your teammates.", "correct": false, "explanation": "Sharing depends on project vs user scope, not this option." }
+        {
+          "id": "A",
+          "text": "It runs the skill in an isolated sub-agent so its output stays out of the main chat.",
+          "correct": true,
+          "explanation": "`context: fork` isolates a skill's execution in a subagent, keeping verbose or exploratory output out of the main session."
+        },
+        {
+          "id": "B",
+          "text": "It grants the skill unrestricted access to every available tool present in the current environment.",
+          "correct": false,
+          "explanation": "Tool access is governed by `allowed-tools`, not `context: fork`."
+        },
+        {
+          "id": "C",
+          "text": "It makes the skill run on a noticeably faster and more efficient model.",
+          "correct": false,
+          "explanation": "Model selection is the `model` option, not `context: fork`."
+        },
+        {
+          "id": "D",
+          "text": "It automatically shares the skill with all of your teammates.",
+          "correct": false,
+          "explanation": "Sharing depends on project vs user scope, not this option."
+        }
       ]
     },
     {
@@ -384,10 +964,30 @@
       "task_statement": "3.1",
       "stem": "Which list correctly orders the CLAUDE.md configuration hierarchy from broadest to most specific?",
       "options": [
-        { "id": "A", "text": "User-level (`~/.claude/CLAUDE.md`) → project-level (root) → directory-level (subdirectory).", "correct": true, "explanation": "The hierarchy runs from user-level (all your projects), to project-level (the repo), to directory-level (a specific subtree)." },
-        { "id": "B", "text": "Directory-level → project-level → user-level, applied in exactly that order of priority.", "correct": false, "explanation": "This reverses the broad-to-specific ordering of the hierarchy." },
-        { "id": "C", "text": "Only a single root CLAUDE.md file ever exists, so there is no hierarchy at all.", "correct": false, "explanation": "There are user, project, and directory levels, not a single file." },
-        { "id": "D", "text": "Slash commands → skills → rules, applied broadest to most specific.", "correct": false, "explanation": "Those are different mechanisms, not the CLAUDE.md hierarchy." }
+        {
+          "id": "A",
+          "text": "User-level (`~/.claude/CLAUDE.md`) → project-level (root) → directory-level.",
+          "correct": true,
+          "explanation": "The hierarchy runs from user-level (all your projects), to project-level (the repo), to directory-level (a specific subtree)."
+        },
+        {
+          "id": "B",
+          "text": "Directory-level → project-level → user-level, applied in exactly that order of priority.",
+          "correct": false,
+          "explanation": "This reverses the broad-to-specific ordering of the hierarchy."
+        },
+        {
+          "id": "C",
+          "text": "Only a single root CLAUDE.md file ever exists, so there is no hierarchy at all.",
+          "correct": false,
+          "explanation": "There are user, project, and directory levels, not a single file."
+        },
+        {
+          "id": "D",
+          "text": "Slash commands → skills → rules, applied broadest to most specific.",
+          "correct": false,
+          "explanation": "Those are different mechanisms, not the CLAUDE.md hierarchy."
+        }
       ]
     },
     {
@@ -397,10 +997,30 @@
       "task_statement": "3.2",
       "stem": "Your team wants a `/gen-migration` command shared via version control so it's available to everyone after a pull. Where does it belong, and why not the user scope?",
       "options": [
-        { "id": "A", "text": "In `.claude/commands/` in the repo; user-scoped `~/.claude/commands/` isn't shared via version control.", "correct": true, "explanation": "Project-scoped commands are committed and shared automatically; user-scoped ones are personal and unshared." },
-        { "id": "B", "text": "In `~/.claude/commands/`, because user-scoped commands are automatically synced to teammates.", "correct": false, "explanation": "User commands are not synced to teammates; they're local to your machine." },
-        { "id": "C", "text": "In the root CLAUDE.md file, since that file is already shared across the whole team via the repo.", "correct": false, "explanation": "CLAUDE.md holds context/instructions, not command definitions." },
-        { "id": "D", "text": "In the `.claude/rules/` directory, because rule files are also shared with the team.", "correct": false, "explanation": "`.claude/rules/` holds conventions, not slash command definitions." }
+        {
+          "id": "A",
+          "text": "In `.claude/commands/` in the repo; user-scoped commands aren't shared.",
+          "correct": true,
+          "explanation": "Project-scoped commands are committed and shared automatically; user-scoped ones are personal and unshared."
+        },
+        {
+          "id": "B",
+          "text": "In `~/.claude/commands/`, because user-scoped commands are automatically synced to teammates.",
+          "correct": false,
+          "explanation": "User commands are not synced to teammates; they're local to your machine."
+        },
+        {
+          "id": "C",
+          "text": "In the root CLAUDE.md file, since that file is already shared across the whole team via the repo.",
+          "correct": false,
+          "explanation": "CLAUDE.md holds context/instructions, not command definitions."
+        },
+        {
+          "id": "D",
+          "text": "In the `.claude/rules/` directory, because rule files are also shared with the team.",
+          "correct": false,
+          "explanation": "`.claude/rules/` holds conventions, not slash command definitions."
+        }
       ]
     },
     {
@@ -410,10 +1030,30 @@
       "task_statement": "3.4",
       "stem": "Which best summarizes when plan mode is the right choice versus direct execution?",
       "options": [
-        { "id": "A", "text": "Plan mode for architecturally significant work; direct execution for simple, well-scoped changes.", "correct": true, "explanation": "Plan mode shines on complexity and architectural decisions; direct execution fits clear, contained changes." },
-        { "id": "B", "text": "Use plan mode for absolutely every task, since careful upfront planning never actually hurts.", "correct": false, "explanation": "Planning adds overhead that's wasteful for trivial changes." },
-        { "id": "C", "text": "Use direct execution for absolutely everything, since it is consistently faster.", "correct": false, "explanation": "Direct execution on complex work risks costly rework when dependencies surface late." },
-        { "id": "D", "text": "The choice depends only on the chosen model's size, never on the task itself.", "correct": false, "explanation": "Task complexity, not model size, determines the right mode." }
+        {
+          "id": "A",
+          "text": "Plan mode for architecturally significant work; direct execution for simple changes.",
+          "correct": true,
+          "explanation": "Plan mode shines on complexity and architectural decisions; direct execution fits clear, contained changes."
+        },
+        {
+          "id": "B",
+          "text": "Use plan mode for absolutely every task, since careful upfront planning never actually hurts.",
+          "correct": false,
+          "explanation": "Planning adds overhead that's wasteful for trivial changes."
+        },
+        {
+          "id": "C",
+          "text": "Use direct execution for absolutely everything, since it is consistently faster.",
+          "correct": false,
+          "explanation": "Direct execution on complex work risks costly rework when dependencies surface late."
+        },
+        {
+          "id": "D",
+          "text": "The choice depends only on the chosen model's size, never on the task itself.",
+          "correct": false,
+          "explanation": "Task complexity, not model size, determines the right mode."
+        }
       ]
     },
     {
@@ -423,10 +1063,30 @@
       "task_statement": "3.3",
       "stem": "A rule file applies React-hook conventions but you notice it's loading even when editing backend Python files, wasting context. What's the likely cause and fix?",
       "options": [
-        { "id": "A", "text": "Its `paths` glob is too broad; tighten it to match fewer files.", "correct": true, "explanation": "Path-scoped rules load only for files matching their `paths` glob; an overly broad glob loads the rule for irrelevant files, so narrowing it fixes the waste." },
-        { "id": "B", "text": "Rules always load for every file; nothing can be done.", "correct": false, "explanation": "Path-scoped rules are conditional by design; the glob controls activation." },
-        { "id": "C", "text": "Move the rule to CLAUDE.md so it loads less often.", "correct": false, "explanation": "CLAUDE.md always loads; that's broader, not narrower." },
-        { "id": "D", "text": "Delete the rule file entirely so that it stops wasting any context at all.", "correct": false, "explanation": "Deletion loses needed React conventions; scoping the glob is the targeted fix." }
+        {
+          "id": "A",
+          "text": "Its `paths` glob is too broad; tighten it to match fewer files.",
+          "correct": true,
+          "explanation": "Path-scoped rules load only for files matching their `paths` glob; an overly broad glob loads the rule for irrelevant files, so narrowing it fixes the waste."
+        },
+        {
+          "id": "B",
+          "text": "Rules always load for every file; nothing can be done.",
+          "correct": false,
+          "explanation": "Path-scoped rules are conditional by design; the glob controls activation."
+        },
+        {
+          "id": "C",
+          "text": "Move the rule to CLAUDE.md so it loads less often.",
+          "correct": false,
+          "explanation": "CLAUDE.md always loads; that's broader, not narrower."
+        },
+        {
+          "id": "D",
+          "text": "Delete the rule file entirely so that it stops wasting any context at all.",
+          "correct": false,
+          "explanation": "Deletion loses needed React conventions; scoping the glob is the targeted fix."
+        }
       ]
     },
     {
@@ -436,10 +1096,30 @@
       "task_statement": "3.2",
       "stem": "You want a custom command that takes a filename argument and runs your team's test-writing template against it. How are arguments passed into a custom command?",
       "options": [
-        { "id": "A", "text": "Reference the `$ARGUMENTS` placeholder in the command body, substituted with what the user passes.", "correct": true, "explanation": "Custom commands use the `$ARGUMENTS` placeholder in their body, replaced by the text the user supplies when invoking the command." },
-        { "id": "B", "text": "Arguments are read from a hidden `args.json` file that sits next to the command file.", "correct": false, "explanation": "No such file mechanism exists; `$ARGUMENTS` is the placeholder." },
-        { "id": "C", "text": "Custom slash commands are not able to accept any arguments from the user at all.", "correct": false, "explanation": "Commands accept arguments via the `$ARGUMENTS` placeholder." },
-        { "id": "D", "text": "Arguments must be hard-coded directly into the slash command's own file name when you create it.", "correct": false, "explanation": "Arguments are passed at invocation and substituted via `$ARGUMENTS`, not encoded in the name." }
+        {
+          "id": "A",
+          "text": "Reference the `$ARGUMENTS` placeholder in the command body, substituted with what the user passes.",
+          "correct": true,
+          "explanation": "Custom commands use the `$ARGUMENTS` placeholder in their body, replaced by the text the user supplies when invoking the command."
+        },
+        {
+          "id": "B",
+          "text": "Arguments are read from a hidden `args.json` file that sits next to the command file.",
+          "correct": false,
+          "explanation": "No such file mechanism exists; `$ARGUMENTS` is the placeholder."
+        },
+        {
+          "id": "C",
+          "text": "Custom slash commands are not able to accept any arguments from the user at all.",
+          "correct": false,
+          "explanation": "Commands accept arguments via the `$ARGUMENTS` placeholder."
+        },
+        {
+          "id": "D",
+          "text": "Arguments must be hard-coded directly into the slash command's own file name when you create it.",
+          "correct": false,
+          "explanation": "Arguments are passed at invocation and substituted via `$ARGUMENTS`, not encoded in the name."
+        }
       ]
     },
     {
@@ -449,10 +1129,30 @@
       "task_statement": "5.4",
       "stem": "Across a multi-hour exploration, you want crash recovery so you can resume if the session dies. Which approach aligns with sound context management?",
       "options": [
-        { "id": "A", "text": "Export key findings to a known manifest that can be reloaded on resume.", "correct": true, "explanation": "Persisting structured state to a known location and reloading it on resume enables crash recovery and counters context loss." },
-        { "id": "B", "text": "Rely on the model itself to simply remember everything if the session happens to restart.", "correct": false, "explanation": "The model has no cross-session memory; state must be persisted externally." },
-        { "id": "C", "text": "Keep all of the state only in the live conversation, with no external record at all.", "correct": false, "explanation": "Live-only state is lost on crash; a persisted manifest is needed for recovery." },
-        { "id": "D", "text": "Increase the `max_tokens` setting so that the running session becomes unable to ever crash.", "correct": false, "explanation": "max_tokens has nothing to do with crash recovery or persistence." }
+        {
+          "id": "A",
+          "text": "Export key findings to a known manifest that can be reloaded on resume.",
+          "correct": true,
+          "explanation": "Persisting structured state to a known location and reloading it on resume enables crash recovery and counters context loss."
+        },
+        {
+          "id": "B",
+          "text": "Rely on the model itself to simply remember everything if the session happens to restart.",
+          "correct": false,
+          "explanation": "The model has no cross-session memory; state must be persisted externally."
+        },
+        {
+          "id": "C",
+          "text": "Keep all of the state only in the live conversation, with no external record at all.",
+          "correct": false,
+          "explanation": "Live-only state is lost on crash; a persisted manifest is needed for recovery."
+        },
+        {
+          "id": "D",
+          "text": "Increase the `max_tokens` setting so that the running session becomes unable to ever crash.",
+          "correct": false,
+          "explanation": "max_tokens has nothing to do with crash recovery or persistence."
+        }
       ]
     },
     {
@@ -462,10 +1162,30 @@
       "task_statement": "3.2",
       "stem": "A skill that brainstorms multiple alternative designs tends to flood the main session with exploratory text. Which frontmatter setting best contains it while preserving the brainstorming capability?",
       "options": [
-        { "id": "A", "text": "`context: fork`, to run the brainstorming in an isolated subagent and return just the result.", "correct": true, "explanation": "`context: fork` isolates verbose/exploratory skills so their output doesn't pollute the main session, while still producing the brainstorming result." },
-        { "id": "B", "text": "`allowed-tools`, to carefully limit which tools the brainstorming skill is permitted to use.", "correct": false, "explanation": "Tool restriction doesn't address context pollution from exploratory text." },
-        { "id": "C", "text": "`argument-hint`, to prompt the developer for the inputs the skill expects.", "correct": false, "explanation": "Argument hints help with invocation, not output isolation." },
-        { "id": "D", "text": "`model`, to choose a cheaper model for the brainstorming work.", "correct": false, "explanation": "Model choice affects cost/speed, not whether output pollutes the main context." }
+        {
+          "id": "A",
+          "text": "`context: fork`, to run the brainstorming in an isolated subagent and return just the result.",
+          "correct": true,
+          "explanation": "`context: fork` isolates verbose/exploratory skills so their output doesn't pollute the main session, while still producing the brainstorming result."
+        },
+        {
+          "id": "B",
+          "text": "`allowed-tools`, to carefully limit which tools the brainstorming skill is permitted to use.",
+          "correct": false,
+          "explanation": "Tool restriction doesn't address context pollution from exploratory text."
+        },
+        {
+          "id": "C",
+          "text": "`argument-hint`, to prompt the developer for the inputs the skill expects.",
+          "correct": false,
+          "explanation": "Argument hints help with invocation, not output isolation."
+        },
+        {
+          "id": "D",
+          "text": "`model`, to choose a cheaper model for the brainstorming work.",
+          "correct": false,
+          "explanation": "Model choice affects cost/speed, not whether output pollutes the main context."
+        }
       ]
     },
     {
@@ -475,10 +1195,30 @@
       "task_statement": "3.1",
       "stem": "You want a database schema file's contents available to Claude in every request without it having to search for the file each time. What's the recommended approach in CLAUDE.md?",
       "options": [
-        { "id": "A", "text": "Reference the schema file with `@` import syntax in CLAUDE.md so it loads into every request.", "correct": true, "explanation": "Mentioning a file via `@` in CLAUDE.md includes its contents automatically in each request, so Claude can answer schema questions without searching." },
-        { "id": "B", "text": "Paste the entire database schema into the body of a custom slash command instead.", "correct": false, "explanation": "A slash command is on-demand; the goal is always-available context, which the `@` import provides." },
-        { "id": "C", "text": "Add a rule with a `paths` glob that points at the schema file's location.", "correct": false, "explanation": "Path-scoped rules load when editing matching files, not to always include a specific file's contents." },
-        { "id": "D", "text": "Tell Claude in a prose instruction to memorize the entire schema file just one single time.", "correct": false, "explanation": "The model can't memorize across requests; importing the file keeps it in context." }
+        {
+          "id": "A",
+          "text": "Reference the schema file with `@` import syntax in CLAUDE.md so it loads into every request.",
+          "correct": true,
+          "explanation": "Mentioning a file via `@` in CLAUDE.md includes its contents automatically in each request, so Claude can answer schema questions without searching."
+        },
+        {
+          "id": "B",
+          "text": "Paste the entire database schema into the body of a custom slash command instead.",
+          "correct": false,
+          "explanation": "A slash command is on-demand; the goal is always-available context, which the `@` import provides."
+        },
+        {
+          "id": "C",
+          "text": "Add a rule with a `paths` glob that points at the schema file's location.",
+          "correct": false,
+          "explanation": "Path-scoped rules load when editing matching files, not to always include a specific file's contents."
+        },
+        {
+          "id": "D",
+          "text": "Tell Claude in a prose instruction to memorize the entire schema file just one single time.",
+          "correct": false,
+          "explanation": "The model can't memorize across requests; importing the file keeps it in context."
+        }
       ]
     },
     {
@@ -488,10 +1228,30 @@
       "task_statement": "3.4",
       "stem": "A teammate argues plan mode is pointless because \"you can always fix mistakes afterward.\" In the context of a 45-file architectural change, what's the strongest counterpoint?",
       "options": [
-        { "id": "A", "text": "Plan mode enables safe design first, preventing costly rework at this scale.", "correct": true, "explanation": "For large architectural changes, planning first avoids expensive rework; fixing afterward is far more costly than designing the approach upfront." },
-        { "id": "B", "text": "Plan mode is reliably faster than direct execution for absolutely every kind of task you might face.", "correct": false, "explanation": "Plan mode adds overhead and isn't faster for simple tasks; its value is for complex work." },
-        { "id": "C", "text": "Direct execution is simply incapable of modifying any more than one single file at a time.", "correct": false, "explanation": "Direct execution can modify many files; the point is planning reduces rework risk on complex changes." },
-        { "id": "D", "text": "Plan mode flatly guarantees that the resulting code will be completely bug-free.", "correct": false, "explanation": "No mode guarantees bug-free code; plan mode reduces rework risk, it doesn't eliminate all bugs." }
+        {
+          "id": "A",
+          "text": "Plan mode enables safe design first, preventing costly rework at this scale.",
+          "correct": true,
+          "explanation": "For large architectural changes, planning first avoids expensive rework; fixing afterward is far more costly than designing the approach upfront."
+        },
+        {
+          "id": "B",
+          "text": "Plan mode is reliably faster than direct execution for absolutely every kind of task you might face.",
+          "correct": false,
+          "explanation": "Plan mode adds overhead and isn't faster for simple tasks; its value is for complex work."
+        },
+        {
+          "id": "C",
+          "text": "Direct execution is simply incapable of modifying any more than one single file at a time.",
+          "correct": false,
+          "explanation": "Direct execution can modify many files; the point is planning reduces rework risk on complex changes."
+        },
+        {
+          "id": "D",
+          "text": "Plan mode flatly guarantees that the resulting code will be completely bug-free.",
+          "correct": false,
+          "explanation": "No mode guarantees bug-free code; plan mode reduces rework risk, it doesn't eliminate all bugs."
+        }
       ]
     },
     {
@@ -501,10 +1261,30 @@
       "task_statement": "3.3",
       "stem": "You have a convention that must apply to all `*.proto` files spread across `services/` and `shared/`. Which option applies it precisely without loading for unrelated files?",
       "options": [
-        { "id": "A", "text": "A `.claude/rules/` file with `paths: [\"**/*.proto\"]` frontmatter.", "correct": true, "explanation": "A glob-scoped rule (`**/*.proto`) applies the convention to all proto files across directories while staying inactive for other file types." },
-        { "id": "B", "text": "A root CLAUDE.md section, loaded for every file.", "correct": false, "explanation": "Always-loading wastes context on unrelated files; a path glob is precise." },
-        { "id": "C", "text": "Two directory CLAUDE.md files, one each in `services/` and `shared/`.", "correct": false, "explanation": "Directory files miss proto files elsewhere and duplicate the convention; a single glob covers them all." },
-        { "id": "D", "text": "A slash command `/proto` run before editing.", "correct": false, "explanation": "Conventions should apply automatically by path, not depend on a manual command." }
+        {
+          "id": "A",
+          "text": "A `.claude/rules/` file with `paths: [\"**/*.proto\"]` frontmatter.",
+          "correct": true,
+          "explanation": "A glob-scoped rule (`**/*.proto`) applies the convention to all proto files across directories while staying inactive for other file types."
+        },
+        {
+          "id": "B",
+          "text": "A root CLAUDE.md section, loaded for every file.",
+          "correct": false,
+          "explanation": "Always-loading wastes context on unrelated files; a path glob is precise."
+        },
+        {
+          "id": "C",
+          "text": "Two directory CLAUDE.md files, one each in `services/` and `shared/`.",
+          "correct": false,
+          "explanation": "Directory files miss proto files elsewhere and duplicate the convention; a single glob covers them all."
+        },
+        {
+          "id": "D",
+          "text": "A slash command `/proto` run before editing.",
+          "correct": false,
+          "explanation": "Conventions should apply automatically by path, not depend on a manual command."
+        }
       ]
     },
     {
@@ -514,10 +1294,30 @@
       "task_statement": "1.7",
       "stem": "After resuming a session, you want Claude to re-analyze only the two files that changed rather than re-reading the whole codebase. What's the best practice?",
       "options": [
-        { "id": "A", "text": "Tell the resumed session exactly which files changed so it performs targeted re-analysis.", "correct": true, "explanation": "Informing a resumed session about specific file changes enables targeted re-analysis instead of costly full re-exploration." },
-        { "id": "B", "text": "Force a complete full re-exploration of every single file in the project just to be safe.", "correct": false, "explanation": "Full re-exploration is wasteful when only two files changed and prior context is mostly valid." },
-        { "id": "C", "text": "Avoid mentioning the changes and let Claude detect them automatically.", "correct": false, "explanation": "Claude won't reliably detect external file changes on its own; you should point them out." },
-        { "id": "D", "text": "Start a brand-new session from scratch to force Claude to re-read every file.", "correct": false, "explanation": "A new session discards still-valid context unnecessarily; resume and target the changed files." }
+        {
+          "id": "A",
+          "text": "Tell the resumed session which files changed so it re-analyzes only those.",
+          "correct": true,
+          "explanation": "Informing a resumed session about specific file changes enables targeted re-analysis instead of costly full re-exploration."
+        },
+        {
+          "id": "B",
+          "text": "Force a complete full re-exploration of every single file in the project just to be safe.",
+          "correct": false,
+          "explanation": "Full re-exploration is wasteful when only two files changed and prior context is mostly valid."
+        },
+        {
+          "id": "C",
+          "text": "Avoid mentioning the changes and let Claude detect them automatically.",
+          "correct": false,
+          "explanation": "Claude won't reliably detect external file changes on its own; you should point them out."
+        },
+        {
+          "id": "D",
+          "text": "Start a brand-new session from scratch to force Claude to re-read every file.",
+          "correct": false,
+          "explanation": "A new session discards still-valid context unnecessarily; resume and target the changed files."
+        }
       ]
     },
     {
@@ -527,10 +1327,30 @@
       "task_statement": "3.5",
       "stem": "Claude keeps producing a CSV-to-JSON conversion that handles the common rows but mishandles quoted commas and empty fields. What's the most effective way to close these gaps?",
       "options": [
-        { "id": "A", "text": "Provide concrete input/output examples covering the quoted-comma and empty-field edge cases.", "correct": true, "explanation": "Examples that explicitly include the edge cases communicate the exact expected handling far better than prose, closing the gaps." },
-        { "id": "B", "text": "Tell Claude to simply 'handle all of the edge cases' without giving any examples.", "correct": false, "explanation": "Vague instructions don't pin down specific edge-case behavior; concrete examples do." },
-        { "id": "C", "text": "Lower the temperature setting and then re-run the exact same prompt again.", "correct": false, "explanation": "Temperature doesn't teach the missing edge-case behavior." },
-        { "id": "D", "text": "Switch the output format over to XML entirely in order to sidestep the quoted-comma issues.", "correct": false, "explanation": "Changing format dodges rather than fixes correct CSV parsing, and isn't what's asked." }
+        {
+          "id": "A",
+          "text": "Provide concrete input/output examples covering the quoted-comma and empty-field edge cases.",
+          "correct": true,
+          "explanation": "Examples that explicitly include the edge cases communicate the exact expected handling far better than prose, closing the gaps."
+        },
+        {
+          "id": "B",
+          "text": "Tell Claude to simply 'handle all of the edge cases' without giving any examples.",
+          "correct": false,
+          "explanation": "Vague instructions don't pin down specific edge-case behavior; concrete examples do."
+        },
+        {
+          "id": "C",
+          "text": "Lower the temperature setting and then re-run the exact same prompt again.",
+          "correct": false,
+          "explanation": "Temperature doesn't teach the missing edge-case behavior."
+        },
+        {
+          "id": "D",
+          "text": "Switch the output format over to XML entirely in order to sidestep the quoted-comma issues.",
+          "correct": false,
+          "explanation": "Changing format dodges rather than fixes correct CSV parsing, and isn't what's asked."
+        }
       ]
     },
     {
@@ -540,10 +1360,30 @@
       "task_statement": "3.1",
       "stem": "Which statement about user-level (`~/.claude/CLAUDE.md`) configuration is correct?",
       "options": [
-        { "id": "A", "text": "It applies to all your projects on your machine but isn't shared with teammates via version control.", "correct": true, "explanation": "User-level CLAUDE.md is personal and machine-wide across your projects, and isn't shared through the repo." },
-        { "id": "B", "text": "It is automatically committed to each repository and shared with the entire development team.", "correct": false, "explanation": "It's personal and machine-local; project-level CLAUDE.md is the shared, committed one." },
-        { "id": "C", "text": "It overrides project-level files for all teammates.", "correct": false, "explanation": "It affects only your machine and doesn't reach teammates at all." },
-        { "id": "D", "text": "It can only contain slash command definitions.", "correct": false, "explanation": "It contains instructions/standards; commands live in `commands/` directories." }
+        {
+          "id": "A",
+          "text": "It applies to all your projects on this machine but isn't shared with teammates.",
+          "correct": true,
+          "explanation": "User-level CLAUDE.md is personal and machine-wide across your projects, and isn't shared through the repo."
+        },
+        {
+          "id": "B",
+          "text": "It is automatically committed to each repository and shared with the entire development team.",
+          "correct": false,
+          "explanation": "It's personal and machine-local; project-level CLAUDE.md is the shared, committed one."
+        },
+        {
+          "id": "C",
+          "text": "It overrides project-level files for all teammates.",
+          "correct": false,
+          "explanation": "It affects only your machine and doesn't reach teammates at all."
+        },
+        {
+          "id": "D",
+          "text": "It can only contain slash command definitions.",
+          "correct": false,
+          "explanation": "It contains instructions/standards; commands live in `commands/` directories."
+        }
       ]
     },
     {
@@ -553,10 +1393,30 @@
       "task_statement": "3.2",
       "stem": "When does it make sense to choose a skill over adding the same guidance to CLAUDE.md?",
       "options": [
-        { "id": "A", "text": "When it supports an on-demand workflow you invoke deliberately, not always-loaded context.", "correct": true, "explanation": "Skills suit on-demand, task-specific workflows; CLAUDE.md suits universal, always-loaded context. Choose by whether it's invoked deliberately or always needed." },
-        { "id": "B", "text": "Whenever the guidance happens to be fairly short, since CLAUDE.md can only ever hold longer content.", "correct": false, "explanation": "Length isn't the criterion; on-demand vs always-loaded is." },
-        { "id": "C", "text": "Never, because CLAUDE.md can already do everything that skills are able to do.", "correct": false, "explanation": "Skills offer on-demand invocation, isolation, and tool restriction that always-loaded CLAUDE.md doesn't." },
-        { "id": "D", "text": "Only in the specific case where teammates are not supposed to be able to see the guidance at all.", "correct": false, "explanation": "Visibility is a scope concern (user vs project), not the skill-vs-CLAUDE.md decision." }
+        {
+          "id": "A",
+          "text": "When it supports an on-demand workflow you invoke deliberately, not always-loaded context.",
+          "correct": true,
+          "explanation": "Skills suit on-demand, task-specific workflows; CLAUDE.md suits universal, always-loaded context. Choose by whether it's invoked deliberately or always needed."
+        },
+        {
+          "id": "B",
+          "text": "Whenever the guidance happens to be fairly short, since CLAUDE.md can only ever hold longer content.",
+          "correct": false,
+          "explanation": "Length isn't the criterion; on-demand vs always-loaded is."
+        },
+        {
+          "id": "C",
+          "text": "Never, because CLAUDE.md can already do everything that skills are able to do.",
+          "correct": false,
+          "explanation": "Skills offer on-demand invocation, isolation, and tool restriction that always-loaded CLAUDE.md doesn't."
+        },
+        {
+          "id": "D",
+          "text": "Only in the specific case where teammates are not supposed to be able to see the guidance at all.",
+          "correct": false,
+          "explanation": "Visibility is a scope concern (user vs project), not the skill-vs-CLAUDE.md decision."
+        }
       ]
     },
     {
@@ -566,10 +1426,30 @@
       "task_statement": "5.4",
       "stem": "While exploring a large codebase, you want the main agent to keep a high-level coordinating view while details of specific questions are investigated elsewhere. What approach helps?",
       "options": [
-        { "id": "A", "text": "Spawn subagents to investigate specific questions while the main agent keeps high-level coordination.", "correct": true, "explanation": "Delegating focused investigations to subagents keeps verbose detail out of the main context, letting the main agent coordinate at a high level." },
-        { "id": "B", "text": "Have the main agent itself read every single file in order to stay fully and continuously informed.", "correct": false, "explanation": "Reading everything in the main agent floods its context and causes degradation." },
-        { "id": "C", "text": "Disable subagents entirely so that all of the reasoning stays in one single place.", "correct": false, "explanation": "Centralizing all detail defeats the context-preservation benefit of delegation." },
-        { "id": "D", "text": "Increase the temperature setting in order to improve the coordination.", "correct": false, "explanation": "Temperature doesn't affect context coordination strategy." }
+        {
+          "id": "A",
+          "text": "Spawn subagents to investigate specific questions while the main agent keeps high-level coordination.",
+          "correct": true,
+          "explanation": "Delegating focused investigations to subagents keeps verbose detail out of the main context, letting the main agent coordinate at a high level."
+        },
+        {
+          "id": "B",
+          "text": "Have the main agent itself read every single file in order to stay fully and continuously informed.",
+          "correct": false,
+          "explanation": "Reading everything in the main agent floods its context and causes degradation."
+        },
+        {
+          "id": "C",
+          "text": "Disable subagents entirely so that all of the reasoning stays in one single place.",
+          "correct": false,
+          "explanation": "Centralizing all detail defeats the context-preservation benefit of delegation."
+        },
+        {
+          "id": "D",
+          "text": "Increase the temperature setting in order to improve the coordination.",
+          "correct": false,
+          "explanation": "Temperature doesn't affect context coordination strategy."
+        }
       ]
     },
     {
@@ -579,10 +1459,30 @@
       "task_statement": "3.3",
       "stem": "Why might glob-pattern rules be preferable to a subdirectory CLAUDE.md when a convention must apply to files of one type that appear throughout the codebase?",
       "options": [
-        { "id": "A", "text": "Glob rules match by pattern across all directories; a subdirectory CLAUDE.md governs its subtree.", "correct": true, "explanation": "A glob rule spans the whole tree by file type; a directory CLAUDE.md is bound to its location, so scattered files of that type wouldn't all be covered." },
-        { "id": "B", "text": "Glob-pattern rules consistently load much faster than directory-level CLAUDE.md files do.", "correct": false, "explanation": "The advantage is cross-directory coverage by pattern, not load speed." },
-        { "id": "C", "text": "Subdirectory-level CLAUDE.md files are simply not a supported mechanism at all.", "correct": false, "explanation": "Directory-level CLAUDE.md files are supported; they're just directory-bound." },
-        { "id": "D", "text": "Glob-pattern rules are only ever capable of matching files within one single directory.", "correct": false, "explanation": "Globs like `**/*.ext` match across directories, which is precisely their advantage." }
+        {
+          "id": "A",
+          "text": "Glob rules match by pattern across directories; a directory CLAUDE.md governs only its subtree.",
+          "correct": true,
+          "explanation": "A glob rule spans the whole tree by file type; a directory CLAUDE.md is bound to its location, so scattered files of that type wouldn't all be covered."
+        },
+        {
+          "id": "B",
+          "text": "Glob-pattern rules consistently load much faster and use far less memory than directory-level CLAUDE.md files do.",
+          "correct": false,
+          "explanation": "The advantage is cross-directory coverage by pattern, not load speed."
+        },
+        {
+          "id": "C",
+          "text": "Subdirectory-level CLAUDE.md files are simply not a supported mechanism at all.",
+          "correct": false,
+          "explanation": "Directory-level CLAUDE.md files are supported; they're just directory-bound."
+        },
+        {
+          "id": "D",
+          "text": "Glob-pattern rules are only ever capable of matching files within one single directory.",
+          "correct": false,
+          "explanation": "Globs like `**/*.ext` match across directories, which is precisely their advantage."
+        }
       ]
     },
     {
@@ -592,10 +1492,30 @@
       "task_statement": "3.4",
       "stem": "You're unsure whether a task is simple enough for direct execution. Which signal most strongly indicates you should switch to plan mode?",
       "options": [
-        { "id": "A", "text": "The task spans many files and requires choosing between architecturally different approaches.", "correct": true, "explanation": "Multi-file scope plus genuine architectural decisions are the hallmark signals that plan mode's exploration and design phase is warranted." },
-        { "id": "B", "text": "The fix is a single line of code and you already have a clear, pointed stack trace.", "correct": false, "explanation": "A clear one-line fix is the canonical case for direct execution, not plan mode." },
-        { "id": "C", "text": "You already know precisely which two characters in the file you are going to need to change.", "correct": false, "explanation": "A precise, tiny, well-understood change fits direct execution." },
-        { "id": "D", "text": "You simply want the answer as fast as possible on an entirely trivial change.", "correct": false, "explanation": "For trivial changes, direct execution is the faster, appropriate path." }
+        {
+          "id": "A",
+          "text": "The task spans many files and requires choosing between architecturally different approaches.",
+          "correct": true,
+          "explanation": "Multi-file scope plus genuine architectural decisions are the hallmark signals that plan mode's exploration and design phase is warranted."
+        },
+        {
+          "id": "B",
+          "text": "The fix is a single line of code and you already have a clear, pointed stack trace.",
+          "correct": false,
+          "explanation": "A clear one-line fix is the canonical case for direct execution, not plan mode."
+        },
+        {
+          "id": "C",
+          "text": "You already know precisely which two characters in the file you are going to need to change.",
+          "correct": false,
+          "explanation": "A precise, tiny, well-understood change fits direct execution."
+        },
+        {
+          "id": "D",
+          "text": "You simply want the answer as fast as possible on an entirely trivial change.",
+          "correct": false,
+          "explanation": "For trivial changes, direct execution is the faster, appropriate path."
+        }
       ]
     },
     {
@@ -605,10 +1525,30 @@
       "task_statement": "3.2",
       "stem": "Your CI bot skill should never delete files. Which configuration enforces that, and why is a prose instruction insufficient?",
       "options": [
-        { "id": "A", "text": "Restrict the skill via `allowed-tools` to only what it needs; prose can be ignored.", "correct": true, "explanation": "`allowed-tools` deterministically limits the skill's capabilities, whereas a prose 'don't delete' instruction relies on probabilistic compliance." },
-        { "id": "B", "text": "Add the phrase 'NEVER delete files' in bold to the skill body; that on its own is sufficient.", "correct": false, "explanation": "Emphatic prose still relies on probabilistic compliance and isn't a hard guarantee." },
-        { "id": "C", "text": "Use the `context: fork` option to reliably prevent the skill from deleting files.", "correct": false, "explanation": "Forking isolates context, not tool capabilities; it doesn't block deletes." },
-        { "id": "D", "text": "Lower the model's sampling temperature setting so that it gradually learns to avoid file deletes.", "correct": false, "explanation": "Temperature can't enforce capability restrictions." }
+        {
+          "id": "A",
+          "text": "Restrict the skill via `allowed-tools` to only what it needs; prose can be ignored.",
+          "correct": true,
+          "explanation": "`allowed-tools` deterministically limits the skill's capabilities, whereas a prose 'don't delete' instruction relies on probabilistic compliance."
+        },
+        {
+          "id": "B",
+          "text": "Add the phrase 'NEVER delete files' in bold to the skill body; that on its own is sufficient.",
+          "correct": false,
+          "explanation": "Emphatic prose still relies on probabilistic compliance and isn't a hard guarantee."
+        },
+        {
+          "id": "C",
+          "text": "Use the `context: fork` option to reliably prevent the skill from deleting files.",
+          "correct": false,
+          "explanation": "Forking isolates context, not tool capabilities; it doesn't block deletes."
+        },
+        {
+          "id": "D",
+          "text": "Lower the model's sampling temperature setting so that it gradually learns to avoid file deletes.",
+          "correct": false,
+          "explanation": "Temperature can't enforce capability restrictions."
+        }
       ]
     },
     {
@@ -618,10 +1558,30 @@
       "task_statement": "1.7",
       "stem": "You want to compare two distinct testing strategies that both branch from the same baseline analysis of the test suite. After exploring both, you'll pick one. What's the cleanest workflow?",
       "options": [
-        { "id": "A", "text": "Fork the baseline with `fork_session`, explore each strategy, then choose.", "correct": true, "explanation": "`fork_session` creates independent branches from a shared baseline, perfect for comparing divergent strategies without cross-contamination." },
-        { "id": "B", "text": "Do both strategies within one single session sequentially, mixing their two contexts together.", "correct": false, "explanation": "A single session intermixes the two explorations, muddying the comparison." },
-        { "id": "C", "text": "Clear the context between strategies and re-derive the baseline analysis each time.", "correct": false, "explanation": "Clearing forces wasteful re-analysis and loses the shared baseline." },
-        { "id": "D", "text": "Use `--resume` on the same session name twice at the same time, simultaneously.", "correct": false, "explanation": "Resuming the same named session doesn't create independent branches the way forking does." }
+        {
+          "id": "A",
+          "text": "Fork the baseline with `fork_session`, explore each strategy, then choose.",
+          "correct": true,
+          "explanation": "`fork_session` creates independent branches from a shared baseline, perfect for comparing divergent strategies without cross-contamination."
+        },
+        {
+          "id": "B",
+          "text": "Do both strategies within one single session sequentially, mixing their two contexts together.",
+          "correct": false,
+          "explanation": "A single session intermixes the two explorations, muddying the comparison."
+        },
+        {
+          "id": "C",
+          "text": "Clear the context between strategies and re-derive the baseline analysis each time.",
+          "correct": false,
+          "explanation": "Clearing forces wasteful re-analysis and loses the shared baseline."
+        },
+        {
+          "id": "D",
+          "text": "Use `--resume` on the same session name twice at the same time, simultaneously.",
+          "correct": false,
+          "explanation": "Resuming the same named session doesn't create independent branches the way forking does."
+        }
       ]
     },
     {
@@ -631,10 +1591,30 @@
       "task_statement": "3.1",
       "stem": "A directory-level `CLAUDE.md` exists in `packages/api/`. When does its guidance apply?",
       "options": [
-        { "id": "A", "text": "Primarily when working with files in that subtree, layering on top of project and user config.", "correct": true, "explanation": "Directory-level CLAUDE.md adds guidance scoped to its subtree, composing with the broader project- and user-level configuration." },
-        { "id": "B", "text": "Globally, for every single file that is located anywhere in the entire repository.", "correct": false, "explanation": "Directory-level files are scoped to their subtree, not the whole repo." },
-        { "id": "C", "text": "Only if you first explicitly run a dedicated slash command in order to load it into the session.", "correct": false, "explanation": "Directory CLAUDE.md loads based on location, not manual invocation." },
-        { "id": "D", "text": "Never, because only the single root CLAUDE.md file is ever actually read by Claude.", "correct": false, "explanation": "The hierarchy includes directory-level files, which do apply within their subtree." }
+        {
+          "id": "A",
+          "text": "Primarily when working with files in that subtree, layering on top of project and user config.",
+          "correct": true,
+          "explanation": "Directory-level CLAUDE.md adds guidance scoped to its subtree, composing with the broader project- and user-level configuration."
+        },
+        {
+          "id": "B",
+          "text": "Globally, for every single file that is located anywhere in the entire repository.",
+          "correct": false,
+          "explanation": "Directory-level files are scoped to their subtree, not the whole repo."
+        },
+        {
+          "id": "C",
+          "text": "Only if you first explicitly run a dedicated slash command in order to load it into the session.",
+          "correct": false,
+          "explanation": "Directory CLAUDE.md loads based on location, not manual invocation."
+        },
+        {
+          "id": "D",
+          "text": "Never, because only the single root CLAUDE.md file is ever actually read by Claude.",
+          "correct": false,
+          "explanation": "The hierarchy includes directory-level files, which do apply within their subtree."
+        }
       ]
     },
     {
@@ -644,10 +1624,30 @@
       "task_statement": "3.5",
       "stem": "You and Claude disagree on the intended output shape for a report generator, and prose keeps producing near-misses. Beyond examples, which complementary technique helps lock in the contract early?",
       "options": [
-        { "id": "A", "text": "Assert the exact output shape in tests, then iterate on failures.", "correct": true, "explanation": "Test-driven iteration codifies the contract; sharing failing assertions drives Claude to the exact intended shape, complementing concrete examples." },
-        { "id": "B", "text": "Ask Claude to pick whatever shape it prefers.", "correct": false, "explanation": "Delegating the contract to the model perpetuates the mismatch." },
-        { "id": "C", "text": "Avoid examples and tests; just describe it again at length.", "correct": false, "explanation": "More prose is what's already failing; examples and tests are the reliable tools." },
-        { "id": "D", "text": "Raise temperature for more variety in shapes.", "correct": false, "explanation": "More variety worsens the mismatch rather than locking the contract." }
+        {
+          "id": "A",
+          "text": "Assert the exact output shape in tests, then iterate on failures.",
+          "correct": true,
+          "explanation": "Test-driven iteration codifies the contract; sharing failing assertions drives Claude to the exact intended shape, complementing concrete examples."
+        },
+        {
+          "id": "B",
+          "text": "Ask Claude to pick whatever shape it prefers.",
+          "correct": false,
+          "explanation": "Delegating the contract to the model perpetuates the mismatch."
+        },
+        {
+          "id": "C",
+          "text": "Avoid examples and tests entirely; just describe the desired output shape again at much greater length.",
+          "correct": false,
+          "explanation": "More prose is what's already failing; examples and tests are the reliable tools."
+        },
+        {
+          "id": "D",
+          "text": "Raise temperature for more variety in shapes.",
+          "correct": false,
+          "explanation": "More variety worsens the mismatch rather than locking the contract."
+        }
       ]
     },
     {
@@ -657,10 +1657,30 @@
       "task_statement": "3.2",
       "stem": "Which directory holds personal (not team-shared) skills, and what's the implication for teammates?",
       "options": [
-        { "id": "A", "text": "`~/.claude/skills/`; personal skills there don't affect teammates and can use distinct names.", "correct": true, "explanation": "User-scoped skills live in `~/.claude/skills/`, are personal, and using different names avoids affecting or colliding with team-shared skills." },
-        { "id": "B", "text": "`.claude/skills/` in the repo; any personal skills you place there will still remain private to you.", "correct": false, "explanation": "Repo `.claude/skills/` is shared via version control, not private." },
-        { "id": "C", "text": "Skills can never be personal at all; every single skill is automatically shared with the team.", "correct": false, "explanation": "User-scoped skills in `~/.claude/skills/` are personal." },
-        { "id": "D", "text": "Personal skills must instead be added directly into the project's shared CLAUDE.md file by hand.", "correct": false, "explanation": "Skills live in skills directories, not CLAUDE.md." }
+        {
+          "id": "A",
+          "text": "`~/.claude/skills/`; personal skills there don't affect teammates and can use distinct names.",
+          "correct": true,
+          "explanation": "User-scoped skills live in `~/.claude/skills/`, are personal, and using different names avoids affecting or colliding with team-shared skills."
+        },
+        {
+          "id": "B",
+          "text": "`.claude/skills/` in the repo; any personal skills you place there will still remain private to you.",
+          "correct": false,
+          "explanation": "Repo `.claude/skills/` is shared via version control, not private."
+        },
+        {
+          "id": "C",
+          "text": "Skills can never be personal at all; every single skill is automatically shared with the team.",
+          "correct": false,
+          "explanation": "User-scoped skills in `~/.claude/skills/` are personal."
+        },
+        {
+          "id": "D",
+          "text": "Personal skills must instead be added directly into the project's shared CLAUDE.md file by hand.",
+          "correct": false,
+          "explanation": "Skills live in skills directories, not CLAUDE.md."
+        }
       ]
     },
     {
@@ -670,10 +1690,30 @@
       "task_statement": "5.4",
       "stem": "In an extended session, Claude begins referencing 'typical' implementations rather than the actual classes it read earlier. Besides a scratchpad, what else helps maintain fidelity as context grows?",
       "options": [
-        { "id": "A", "text": "Summarize key findings before each new phase and re-inject them, using `/compact` to reduce noise.", "correct": true, "explanation": "Phase summaries plus `/compact` reduce accumulated noise while preserving the concrete findings, counteracting generic-answer drift." },
-        { "id": "B", "text": "Keep adding raw file dumps to the conversation so that nothing at all is ever lost.", "correct": false, "explanation": "Raw dumps accelerate context bloat and degradation." },
-        { "id": "C", "text": "Restart the underlying model's hardware in order to clear the degradation problem up completely.", "correct": false, "explanation": "This is context degradation, not a hardware fault." },
-        { "id": "D", "text": "Set the temperature all the way to 0 in order to restore the lost specifics.", "correct": false, "explanation": "Temperature can't recover specifics lost from a degraded context." }
+        {
+          "id": "A",
+          "text": "Summarize key findings before each new phase and re-inject them, using `/compact` to reduce noise.",
+          "correct": true,
+          "explanation": "Phase summaries plus `/compact` reduce accumulated noise while preserving the concrete findings, counteracting generic-answer drift."
+        },
+        {
+          "id": "B",
+          "text": "Keep adding raw file dumps to the conversation so that nothing at all is ever lost.",
+          "correct": false,
+          "explanation": "Raw dumps accelerate context bloat and degradation."
+        },
+        {
+          "id": "C",
+          "text": "Restart the underlying model's hardware in order to clear the degradation problem up completely.",
+          "correct": false,
+          "explanation": "This is context degradation, not a hardware fault."
+        },
+        {
+          "id": "D",
+          "text": "Set the temperature all the way to 0 in order to restore the lost specifics.",
+          "correct": false,
+          "explanation": "Temperature can't recover specifics lost from a degraded context."
+        }
       ]
     },
     {
@@ -683,10 +1723,30 @@
       "task_statement": "3.4",
       "stem": "For an open-ended task like 'add comprehensive tests to this legacy module,' how should plan mode and execution combine?",
       "options": [
-        { "id": "A", "text": "Use plan mode to map structure and high-impact areas into a prioritized plan, then execute it.", "correct": true, "explanation": "Open-ended legacy work benefits from planning to map the code and prioritize, then executing the plan with adaptation — the canonical plan-then-execute pattern." },
-        { "id": "B", "text": "Skip the planning entirely and just write the tests file-by-file in an arbitrary order.", "correct": false, "explanation": "Without mapping structure and priorities, coverage tends to be uneven and low-impact." },
-        { "id": "C", "text": "Plan the work exhaustively but then never actually execute, in order to avoid mistakes.", "correct": false, "explanation": "Planning without execution doesn't deliver the tests." },
-        { "id": "D", "text": "Raise the effort to max and write absolutely everything in one single giant pass.", "correct": false, "explanation": "A single giant pass on a legacy module dilutes attention; plan-then-execute is more reliable." }
+        {
+          "id": "A",
+          "text": "Use plan mode to map structure and high-impact areas, then execute the plan.",
+          "correct": true,
+          "explanation": "Open-ended legacy work benefits from planning to map the code and prioritize, then executing the plan with adaptation — the canonical plan-then-execute pattern."
+        },
+        {
+          "id": "B",
+          "text": "Skip the planning entirely and just write the tests file-by-file in an arbitrary order.",
+          "correct": false,
+          "explanation": "Without mapping structure and priorities, coverage tends to be uneven and low-impact."
+        },
+        {
+          "id": "C",
+          "text": "Plan the work exhaustively but then never actually execute, in order to avoid mistakes.",
+          "correct": false,
+          "explanation": "Planning without execution doesn't deliver the tests."
+        },
+        {
+          "id": "D",
+          "text": "Raise the effort to max and write absolutely everything in one single giant pass.",
+          "correct": false,
+          "explanation": "A single giant pass on a legacy module dilutes attention; plan-then-execute is more reliable."
+        }
       ]
     },
     {
@@ -696,10 +1756,30 @@
       "task_statement": "3.1",
       "stem": "Your repo already has an `AGENTS.md` for another tool, and you don't want to duplicate its instructions in CLAUDE.md. What's a clean way to reuse it?",
       "options": [
-        { "id": "A", "text": "Add `@AGENTS.md` near the top of CLAUDE.md, then add Claude-specific notes below.", "correct": true, "explanation": "The `@` import lets CLAUDE.md pull in `AGENTS.md` so you avoid duplication, then layer Claude-specific instructions afterward." },
-        { "id": "B", "text": "Copy the entire contents of AGENTS.md into CLAUDE.md by hand, keeping both in sync.", "correct": false, "explanation": "Manual duplication creates drift; the `@` import avoids it." },
-        { "id": "C", "text": "Rename AGENTS.md to CLAUDE.md and simply lose support for the other tool that needs it.", "correct": false, "explanation": "Renaming breaks the other tool; importing preserves both." },
-        { "id": "D", "text": "Put the entire AGENTS.md content inside a custom slash command that you run instead.", "correct": false, "explanation": "Always-loaded context should be imported into CLAUDE.md, not gated behind a command." }
+        {
+          "id": "A",
+          "text": "Add `@AGENTS.md` near the top of CLAUDE.md, then add Claude-specific notes below.",
+          "correct": true,
+          "explanation": "The `@` import lets CLAUDE.md pull in `AGENTS.md` so you avoid duplication, then layer Claude-specific instructions afterward."
+        },
+        {
+          "id": "B",
+          "text": "Copy the entire contents of AGENTS.md into CLAUDE.md by hand, keeping both in sync.",
+          "correct": false,
+          "explanation": "Manual duplication creates drift; the `@` import avoids it."
+        },
+        {
+          "id": "C",
+          "text": "Rename AGENTS.md to CLAUDE.md and simply lose support for the other tool that needs it.",
+          "correct": false,
+          "explanation": "Renaming breaks the other tool; importing preserves both."
+        },
+        {
+          "id": "D",
+          "text": "Put the entire AGENTS.md content inside a custom slash command that you run instead.",
+          "correct": false,
+          "explanation": "Always-loaded context should be imported into CLAUDE.md, not gated behind a command."
+        }
       ]
     },
     {
@@ -709,10 +1789,30 @@
       "task_statement": "3.2",
       "stem": "A developer keeps invoking `/seed-db` without the environment argument it requires, causing confusing failures. Which two adjustments most directly help?",
       "options": [
-        { "id": "A", "text": "Add an `argument-hint` so the missing parameter is prompted, and document the argument in the body.", "correct": true, "explanation": "`argument-hint` surfaces the required parameter at invocation, and documenting it in the body clarifies usage — directly addressing the missing-argument confusion." },
-        { "id": "B", "text": "Add both the `context: fork` option and the `model: haiku` option to the command's frontmatter.", "correct": false, "explanation": "Neither isolation nor model choice addresses a missing required argument." },
-        { "id": "C", "text": "Move the command from the project scope over into `~/.claude/commands/` instead.", "correct": false, "explanation": "Changing scope doesn't prompt for or document the argument." },
-        { "id": "D", "text": "Restrict the `allowed-tools` setting so that it blocks access to the database tool.", "correct": false, "explanation": "Blocking the tool prevents the command from working at all, rather than guiding correct argument use." }
+        {
+          "id": "A",
+          "text": "Add an `argument-hint` to prompt the parameter, and document it in the body.",
+          "correct": true,
+          "explanation": "`argument-hint` surfaces the required parameter at invocation, and documenting it in the body clarifies usage — directly addressing the missing-argument confusion."
+        },
+        {
+          "id": "B",
+          "text": "Add both the `context: fork` option and the `model: haiku` option to the command's frontmatter.",
+          "correct": false,
+          "explanation": "Neither isolation nor model choice addresses a missing required argument."
+        },
+        {
+          "id": "C",
+          "text": "Move the command from the project scope over into `~/.claude/commands/` instead.",
+          "correct": false,
+          "explanation": "Changing scope doesn't prompt for or document the argument."
+        },
+        {
+          "id": "D",
+          "text": "Restrict the `allowed-tools` setting so that it blocks access to the database tool.",
+          "correct": false,
+          "explanation": "Blocking the tool prevents the command from working at all, rather than guiding correct argument use."
+        }
       ]
     },
     {
@@ -722,10 +1822,30 @@
       "task_statement": "3.3",
       "stem": "A `.claude/rules/` file has frontmatter `paths: [\"**/*.test.ts\", \"**/*.test.tsx\"]`. What behavior does this produce?",
       "options": [
-        { "id": "A", "text": "The conventions load only when editing files matching those globs.", "correct": true, "explanation": "Path-scoped rules activate conditionally based on the `paths` globs, so these conventions apply specifically to matching test files and stay out of context otherwise." },
-        { "id": "B", "text": "The rule loads for every file in the repository at all times.", "correct": false, "explanation": "The `paths` globs restrict activation to matching files, not all files." },
-        { "id": "C", "text": "The rule disables linting for test files.", "correct": false, "explanation": "Rules provide conventions/context; they don't toggle linting." },
-        { "id": "D", "text": "The rule only loads if invoked by a slash command.", "correct": false, "explanation": "Path-scoped rules load automatically on matching edits, not via manual invocation." }
+        {
+          "id": "A",
+          "text": "The conventions load only when editing files matching those globs.",
+          "correct": true,
+          "explanation": "Path-scoped rules activate conditionally based on the `paths` globs, so these conventions apply specifically to matching test files and stay out of context otherwise."
+        },
+        {
+          "id": "B",
+          "text": "The rule loads for every single file in the repository at all times, regardless of type.",
+          "correct": false,
+          "explanation": "The `paths` globs restrict activation to matching files, not all files."
+        },
+        {
+          "id": "C",
+          "text": "The rule disables linting for test files.",
+          "correct": false,
+          "explanation": "Rules provide conventions/context; they don't toggle linting."
+        },
+        {
+          "id": "D",
+          "text": "The rule only loads if invoked by a slash command.",
+          "correct": false,
+          "explanation": "Path-scoped rules load automatically on matching edits, not via manual invocation."
+        }
       ]
     },
     {
@@ -735,10 +1855,30 @@
       "task_statement": "1.7",
       "stem": "Which pair correctly matches the session mechanism to its purpose?",
       "options": [
-        { "id": "A", "text": "`--resume <name>` continues a specific prior conversation; `fork_session` branches from a shared baseline.", "correct": true, "explanation": "Resume continues a named session in place; fork creates a divergent branch from a shared baseline for parallel exploration." },
-        { "id": "B", "text": "`--resume` always starts completely fresh, while `fork_session` simply deletes the original session.", "correct": false, "explanation": "Resume continues (doesn't start fresh) and forking doesn't delete the original." },
-        { "id": "C", "text": "Both of these two mechanisms actually do exactly the same thing as each other.", "correct": false, "explanation": "They serve distinct purposes: continuation vs. branching." },
-        { "id": "D", "text": "`fork_session` continues the very same conversation, while `--resume` is what creates branches.", "correct": false, "explanation": "This reverses their roles." }
+        {
+          "id": "A",
+          "text": "`--resume <name>` continues a prior conversation; `fork_session` branches from a shared baseline.",
+          "correct": true,
+          "explanation": "Resume continues a named session in place; fork creates a divergent branch from a shared baseline for parallel exploration."
+        },
+        {
+          "id": "B",
+          "text": "`--resume` always starts completely fresh, while `fork_session` simply deletes the original session.",
+          "correct": false,
+          "explanation": "Resume continues (doesn't start fresh) and forking doesn't delete the original."
+        },
+        {
+          "id": "C",
+          "text": "Both of these two mechanisms actually do exactly the same thing as each other.",
+          "correct": false,
+          "explanation": "They serve distinct purposes: continuation vs. branching."
+        },
+        {
+          "id": "D",
+          "text": "`fork_session` continues the very same conversation, while `--resume` is what creates branches.",
+          "correct": false,
+          "explanation": "This reverses their roles."
+        }
       ]
     },
     {
@@ -748,10 +1888,30 @@
       "task_statement": "3.4",
       "stem": "Which is the best example of an appropriate direct-execution task (no plan mode needed)?",
       "options": [
-        { "id": "A", "text": "Adding a single date-validation conditional to one function with a clear failing test.", "correct": true, "explanation": "A small, well-scoped, well-understood change with a clear test is the canonical direct-execution case." },
-        { "id": "B", "text": "Splitting a large monolithic application into separate independent microservices.", "correct": false, "explanation": "That's a large architectural change calling for plan mode." },
-        { "id": "C", "text": "Migrating a library across 45+ files with several competing approaches.", "correct": false, "explanation": "Large, decision-heavy migrations warrant plan mode first." },
-        { "id": "D", "text": "Redesigning the entire module dependency graph of the application.", "correct": false, "explanation": "Architectural redesign is a plan-mode task, not direct execution." }
+        {
+          "id": "A",
+          "text": "Adding a single date-validation conditional to one function with a clear failing test.",
+          "correct": true,
+          "explanation": "A small, well-scoped, well-understood change with a clear test is the canonical direct-execution case."
+        },
+        {
+          "id": "B",
+          "text": "Splitting a large monolithic application into separate independent microservices.",
+          "correct": false,
+          "explanation": "That's a large architectural change calling for plan mode."
+        },
+        {
+          "id": "C",
+          "text": "Migrating a library across 45+ files with several competing integration approaches to weigh.",
+          "correct": false,
+          "explanation": "Large, decision-heavy migrations warrant plan mode first."
+        },
+        {
+          "id": "D",
+          "text": "Redesigning the entire module dependency graph of the application.",
+          "correct": false,
+          "explanation": "Architectural redesign is a plan-mode task, not direct execution."
+        }
       ]
     },
     {
@@ -761,10 +1921,30 @@
       "task_statement": "3.5",
       "stem": "You're fixing two defects in a parser: defect A changes how tokens are split, and defect B depends on how tokens are split. How should you present them to Claude?",
       "options": [
-        { "id": "A", "text": "Describe both in one message because they interact, so the fix accounts for their interplay.", "correct": true, "explanation": "Interacting defects should be addressed together; fixing them separately risks one fix invalidating the other." },
-        { "id": "B", "text": "Fix defect B first in complete isolation, and only then fix defect A separately afterward.", "correct": false, "explanation": "Because B depends on A's behavior, isolating them risks inconsistent fixes." },
-        { "id": "C", "text": "Only bother to fix defect A and just assume that defect B will resolve itself.", "correct": false, "explanation": "Assuming B self-resolves leaves a real defect unhandled." },
-        { "id": "D", "text": "Send each individual character-level change to Claude as its own separate message.", "correct": false, "explanation": "Over-fragmenting prevents the model from reasoning about the interaction." }
+        {
+          "id": "A",
+          "text": "Describe both in one message because they interact, so the fix accounts for their interplay.",
+          "correct": true,
+          "explanation": "Interacting defects should be addressed together; fixing them separately risks one fix invalidating the other."
+        },
+        {
+          "id": "B",
+          "text": "Fix defect B first in complete isolation, and only then fix defect A separately afterward.",
+          "correct": false,
+          "explanation": "Because B depends on A's behavior, isolating them risks inconsistent fixes."
+        },
+        {
+          "id": "C",
+          "text": "Only bother to fix defect A and just assume that defect B will resolve itself.",
+          "correct": false,
+          "explanation": "Assuming B self-resolves leaves a real defect unhandled."
+        },
+        {
+          "id": "D",
+          "text": "Send each individual character-level change to Claude as its own separate message.",
+          "correct": false,
+          "explanation": "Over-fragmenting prevents the model from reasoning about the interaction."
+        }
       ]
     },
     {
@@ -774,10 +1954,30 @@
       "task_statement": "5.4",
       "stem": "What is the primary benefit of having an exploration subagent return a concise summary to the main agent rather than the raw file contents it read?",
       "options": [
-        { "id": "A", "text": "It preserves the main agent's context budget while still surfacing the key findings to proceed.", "correct": true, "explanation": "Returning summaries instead of raw contents keeps the main conversation's context lean while conveying the essential findings." },
-        { "id": "B", "text": "It causes the exploration subagent to run on a noticeably faster model than before.", "correct": false, "explanation": "Summarizing output is unrelated to which model the subagent uses." },
-        { "id": "C", "text": "It permanently deletes all of the explored files from the disk afterward.", "correct": false, "explanation": "Summarizing output doesn't touch the filesystem." },
-        { "id": "D", "text": "It disables the main agent's own set of tools for the entire duration of the exploration.", "correct": false, "explanation": "Delegation doesn't disable the main agent's tools; it just isolates verbose discovery." }
+        {
+          "id": "A",
+          "text": "It preserves the main agent's context budget while still surfacing the key findings.",
+          "correct": true,
+          "explanation": "Returning summaries instead of raw contents keeps the main conversation's context lean while conveying the essential findings."
+        },
+        {
+          "id": "B",
+          "text": "It causes the exploration subagent to run on a noticeably faster model than before.",
+          "correct": false,
+          "explanation": "Summarizing output is unrelated to which model the subagent uses."
+        },
+        {
+          "id": "C",
+          "text": "It permanently deletes all of the explored files from the disk afterward.",
+          "correct": false,
+          "explanation": "Summarizing output doesn't touch the filesystem."
+        },
+        {
+          "id": "D",
+          "text": "It disables the main agent's own set of tools for the entire duration of the exploration.",
+          "correct": false,
+          "explanation": "Delegation doesn't disable the main agent's tools; it just isolates verbose discovery."
+        }
       ]
     },
     {
@@ -787,10 +1987,30 @@
       "task_statement": "3.1",
       "stem": "A teammate's behavior differs from yours because instructions you rely on live only in your user-level config. What's the correct remedy to standardize the team?",
       "options": [
-        { "id": "A", "text": "Move the shared instructions into the project-level `CLAUDE.md` committed to the repo for everyone.", "correct": true, "explanation": "Standardizing the team requires putting the instructions in the version-controlled project CLAUDE.md, which all developers load." },
-        { "id": "B", "text": "Ask every teammate on the project to manually copy your `~/.claude/CLAUDE.md` file themselves.", "correct": false, "explanation": "Manual copying is brittle and drifts; project-level config is the maintainable, shared source of truth." },
-        { "id": "C", "text": "Put the instructions in a slash command teammates must remember to run.", "correct": false, "explanation": "Universal standards should auto-load via CLAUDE.md, not depend on manual command invocation." },
-        { "id": "D", "text": "Leave them in user-level config; teammates will eventually sync.", "correct": false, "explanation": "User-level config never syncs to teammates; it stays personal." }
+        {
+          "id": "A",
+          "text": "Move the shared instructions into the project-level `CLAUDE.md` committed to the repo.",
+          "correct": true,
+          "explanation": "Standardizing the team requires putting the instructions in the version-controlled project CLAUDE.md, which all developers load."
+        },
+        {
+          "id": "B",
+          "text": "Ask every teammate on the project to manually copy your `~/.claude/CLAUDE.md` file themselves.",
+          "correct": false,
+          "explanation": "Manual copying is brittle and drifts; project-level config is the maintainable, shared source of truth."
+        },
+        {
+          "id": "C",
+          "text": "Put the instructions in a slash command teammates must remember to run.",
+          "correct": false,
+          "explanation": "Universal standards should auto-load via CLAUDE.md, not depend on manual command invocation."
+        },
+        {
+          "id": "D",
+          "text": "Leave them in user-level config; teammates will eventually sync.",
+          "correct": false,
+          "explanation": "User-level config never syncs to teammates; it stays personal."
+        }
       ]
     },
     {
@@ -800,10 +2020,30 @@
       "task_statement": "3.2",
       "stem": "Which combination of frontmatter options would let a code-analysis skill run without flooding the main session and without the ability to modify files?",
       "options": [
-        { "id": "A", "text": "`context: fork` to isolate the output and `allowed-tools` limited to read-only operations.", "correct": true, "explanation": "`context: fork` keeps verbose analysis out of the main session, while `allowed-tools` restricted to read-only prevents file modification." },
-        { "id": "B", "text": "The `argument-hint` option combined with setting `model: haiku` in the frontmatter.", "correct": false, "explanation": "Neither isolates output nor restricts file modification." },
-        { "id": "C", "text": "Setting `model: opus` together with writing a much longer skill description.", "correct": false, "explanation": "Model and description don't control context isolation or tool permissions." },
-        { "id": "D", "text": "Only a prose note in the body politely saying 'read-only, please.'", "correct": false, "explanation": "Prose is probabilistic; `allowed-tools` enforces read-only deterministically and `context: fork` handles isolation." }
+        {
+          "id": "A",
+          "text": "`context: fork` to isolate the output and `allowed-tools` limited to read-only operations.",
+          "correct": true,
+          "explanation": "`context: fork` keeps verbose analysis out of the main session, while `allowed-tools` restricted to read-only prevents file modification."
+        },
+        {
+          "id": "B",
+          "text": "The `argument-hint` option combined with setting `model: haiku` in the skill's frontmatter to keep it fast and inexpensive.",
+          "correct": false,
+          "explanation": "Neither isolates output nor restricts file modification."
+        },
+        {
+          "id": "C",
+          "text": "Setting `model: opus` together with writing a much longer skill description.",
+          "correct": false,
+          "explanation": "Model and description don't control context isolation or tool permissions."
+        },
+        {
+          "id": "D",
+          "text": "Only a prose note in the body politely saying 'read-only, please.'",
+          "correct": false,
+          "explanation": "Prose is probabilistic; `allowed-tools` enforces read-only deterministically and `context: fork` handles isolation."
+        }
       ]
     },
     {
@@ -813,10 +2053,30 @@
       "task_statement": "3.4",
       "stem": "Plan mode's main value proposition for complex changes is best described as:",
       "options": [
-        { "id": "A", "text": "Safe exploration and design before committing changes, reducing the chance of rework.", "correct": true, "explanation": "Plan mode lets Claude investigate and design first, surfacing dependencies and approaches before any change is made, which prevents expensive rework." },
-        { "id": "B", "text": "Guaranteeing that the resulting code will always compile correctly on the very first try.", "correct": false, "explanation": "Plan mode doesn't guarantee compilation; it reduces rework risk through upfront design." },
-        { "id": "C", "text": "Completely eliminating any need to test the changes that get made.", "correct": false, "explanation": "Testing is still needed; planning addresses design and exploration, not verification." },
-        { "id": "D", "text": "Making small, trivial fixes noticeably faster than plain direct execution does.", "correct": false, "explanation": "For small fixes, direct execution is faster; plan mode's value is on complex work." }
+        {
+          "id": "A",
+          "text": "Safe exploration and design before committing changes, reducing the chance of rework.",
+          "correct": true,
+          "explanation": "Plan mode lets Claude investigate and design first, surfacing dependencies and approaches before any change is made, which prevents expensive rework."
+        },
+        {
+          "id": "B",
+          "text": "Guaranteeing that the resulting code will always compile correctly on the very first try.",
+          "correct": false,
+          "explanation": "Plan mode doesn't guarantee compilation; it reduces rework risk through upfront design."
+        },
+        {
+          "id": "C",
+          "text": "Completely eliminating any need to test the changes that get made.",
+          "correct": false,
+          "explanation": "Testing is still needed; planning addresses design and exploration, not verification."
+        },
+        {
+          "id": "D",
+          "text": "Making small, trivial fixes noticeably faster than plain direct execution does.",
+          "correct": false,
+          "explanation": "For small fixes, direct execution is faster; plan mode's value is on complex work."
+        }
       ]
     },
     {
@@ -826,10 +2086,30 @@
       "task_statement": "3.3",
       "stem": "Where do path-scoped convention files live, and what frontmatter field controls when they activate?",
       "options": [
-        { "id": "A", "text": "In `.claude/rules/`, with a YAML `paths` field of globs controlling activation.", "correct": true, "explanation": "Path-scoped rules reside in `.claude/rules/` and use the `paths` frontmatter (globs) to decide which files trigger their loading." },
-        { "id": "B", "text": "In the `.claude/commands/` directory, controlled by an `args` field in the frontmatter.", "correct": false, "explanation": "`.claude/commands/` holds slash commands, not path-scoped rules." },
-        { "id": "C", "text": "In the root CLAUDE.md file, controlled by a `globs` field in its frontmatter.", "correct": false, "explanation": "CLAUDE.md always loads and isn't the path-scoped rule mechanism." },
-        { "id": "D", "text": "In `~/.claude/skills/`, controlled by an `allowed-tools` field there.", "correct": false, "explanation": "That's the skills directory; `allowed-tools` restricts tools, not path activation." }
+        {
+          "id": "A",
+          "text": "In `.claude/rules/`, with a YAML `paths` field of globs controlling activation.",
+          "correct": true,
+          "explanation": "Path-scoped rules reside in `.claude/rules/` and use the `paths` frontmatter (globs) to decide which files trigger their loading."
+        },
+        {
+          "id": "B",
+          "text": "In the `.claude/commands/` directory, controlled by an `args` field in the frontmatter.",
+          "correct": false,
+          "explanation": "`.claude/commands/` holds slash commands, not path-scoped rules."
+        },
+        {
+          "id": "C",
+          "text": "In the root CLAUDE.md file, controlled by a `globs` field in its frontmatter.",
+          "correct": false,
+          "explanation": "CLAUDE.md always loads and isn't the path-scoped rule mechanism."
+        },
+        {
+          "id": "D",
+          "text": "In `~/.claude/skills/`, controlled by an `allowed-tools` field there.",
+          "correct": false,
+          "explanation": "That's the skills directory; `allowed-tools` restricts tools, not path activation."
+        }
       ]
     },
     {
@@ -839,10 +2119,30 @@
       "task_statement": "3.5",
       "stem": "When iterating on a complex utility, why is sharing a failing test with Claude more effective than re-describing the bug in prose?",
       "options": [
-        { "id": "A", "text": "A failing test is an executable specification of expected behavior, giving Claude a precise target.", "correct": true, "explanation": "Tests encode exact expected behavior; sharing failures gives Claude an unambiguous target, unlike prose that can be interpreted loosely." },
-        { "id": "B", "text": "Prose descriptions of a bug become strictly forbidden whenever any tests already exist for it.", "correct": false, "explanation": "Prose isn't forbidden; tests are simply a more precise signal." },
-        { "id": "C", "text": "Tests automatically make the underlying model run at a higher effort level.", "correct": false, "explanation": "Tests don't change effort level; they provide a concrete correctness signal." },
-        { "id": "D", "text": "Sharing a test disables the model's need to read the surrounding code at all.", "correct": false, "explanation": "Claude still reads the code; tests add a precise target, they don't replace understanding the code." }
+        {
+          "id": "A",
+          "text": "A failing test is an executable specification, giving Claude a precise target.",
+          "correct": true,
+          "explanation": "Tests encode exact expected behavior; sharing failures gives Claude an unambiguous target, unlike prose that can be interpreted loosely."
+        },
+        {
+          "id": "B",
+          "text": "Prose descriptions of a bug become strictly forbidden whenever any tests already exist for it.",
+          "correct": false,
+          "explanation": "Prose isn't forbidden; tests are simply a more precise signal."
+        },
+        {
+          "id": "C",
+          "text": "Tests automatically make the underlying model run at a higher effort level.",
+          "correct": false,
+          "explanation": "Tests don't change effort level; they provide a concrete correctness signal."
+        },
+        {
+          "id": "D",
+          "text": "Sharing a test disables the model's need to read the surrounding code at all.",
+          "correct": false,
+          "explanation": "Claude still reads the code; tests add a precise target, they don't replace understanding the code."
+        }
       ]
     },
     {
@@ -852,10 +2152,30 @@
       "task_statement": "5.4",
       "stem": "You're about to spawn several subagents for a multi-phase refactor. To keep them effective despite a long prior conversation, what should you inject into each subagent's initial context?",
       "options": [
-        { "id": "A", "text": "A concise, structured summary of the relevant findings from prior phases, not the raw transcript.", "correct": true, "explanation": "Seeding subagents with a focused summary of prior findings preserves needed context without bloating them with the full noisy transcript." },
-        { "id": "B", "text": "The complete, entirely unedited conversation history from all of the prior phases.", "correct": false, "explanation": "Dumping the whole transcript bloats each subagent's context and degrades performance." },
-        { "id": "C", "text": "Nothing at all; each subagent should simply rediscover everything itself from scratch.", "correct": false, "explanation": "Rediscovering everything wastes effort when a summary can carry forward key findings." },
-        { "id": "D", "text": "Only the bare list of file names, without including any of the actual investigation findings.", "correct": false, "explanation": "Bare file names omit the findings that make the summary useful." }
+        {
+          "id": "A",
+          "text": "A concise, structured summary of the relevant prior findings, not the raw transcript.",
+          "correct": true,
+          "explanation": "Seeding subagents with a focused summary of prior findings preserves needed context without bloating them with the full noisy transcript."
+        },
+        {
+          "id": "B",
+          "text": "The complete, entirely unedited conversation history accumulated across every one of the prior phases.",
+          "correct": false,
+          "explanation": "Dumping the whole transcript bloats each subagent's context and degrades performance."
+        },
+        {
+          "id": "C",
+          "text": "Nothing at all; each subagent should simply rediscover everything itself from scratch.",
+          "correct": false,
+          "explanation": "Rediscovering everything wastes effort when a summary can carry forward key findings."
+        },
+        {
+          "id": "D",
+          "text": "Only the bare list of file names, without including any of the actual investigation findings.",
+          "correct": false,
+          "explanation": "Bare file names omit the findings that make the summary useful."
+        }
       ]
     },
     {
@@ -865,10 +2185,30 @@
       "task_statement": "3.2",
       "stem": "You want a skill that summarizes a large dependency graph but must not pollute the main chat and should run a cheaper model for cost. Which frontmatter combination fits?",
       "options": [
-        { "id": "A", "text": "`context: fork` for isolation, plus the `model` option set to a cheaper model.", "correct": true, "explanation": "`context: fork` isolates the verbose summary from the main session, and the `model` option selects a cheaper model for the cost goal." },
-        { "id": "B", "text": "The `argument-hint` option combined together with the `allowed-tools` option.", "correct": false, "explanation": "These address argument prompting and tool restriction, not isolation or model choice." },
-        { "id": "C", "text": "Only the `allowed-tools` frontmatter option, on its own.", "correct": false, "explanation": "Restricting tools neither isolates output nor chooses a cheaper model." },
-        { "id": "D", "text": "A simple prose note in the body asking for brevity.", "correct": false, "explanation": "Prose can't guarantee isolation or set the model; frontmatter options do." }
+        {
+          "id": "A",
+          "text": "`context: fork` for isolation, plus the `model` option set to a cheaper model.",
+          "correct": true,
+          "explanation": "`context: fork` isolates the verbose summary from the main session, and the `model` option selects a cheaper model for the cost goal."
+        },
+        {
+          "id": "B",
+          "text": "The `argument-hint` option combined together with the `allowed-tools` option.",
+          "correct": false,
+          "explanation": "These address argument prompting and tool restriction, not isolation or model choice."
+        },
+        {
+          "id": "C",
+          "text": "Only the `allowed-tools` frontmatter option, on its own.",
+          "correct": false,
+          "explanation": "Restricting tools neither isolates output nor chooses a cheaper model."
+        },
+        {
+          "id": "D",
+          "text": "A simple prose note in the body asking for brevity.",
+          "correct": false,
+          "explanation": "Prose can't guarantee isolation or set the model; frontmatter options do."
+        }
       ]
     },
     {
@@ -878,10 +2218,426 @@
       "task_statement": "3.4",
       "stem": "A change has clear scope and a single obvious approach, but it touches 6 files mechanically (a rename). Which mode is most appropriate and why?",
       "options": [
-        { "id": "A", "text": "Direct execution — the approach is unambiguous despite several files.", "correct": true, "explanation": "Plan mode is for architectural ambiguity and competing approaches; a mechanical, unambiguous rename across a few files is well-suited to direct execution." },
-        { "id": "B", "text": "Plan mode — any change touching more than one file requires planning.", "correct": false, "explanation": "File count alone doesn't mandate plan mode; architectural ambiguity does. A clear rename is direct-execution-friendly." },
-        { "id": "C", "text": "Neither; such changes can't be automated.", "correct": false, "explanation": "Mechanical renames are exactly the kind of change Claude handles directly." },
-        { "id": "D", "text": "Plan mode, then discard the plan and do it manually.", "correct": false, "explanation": "That wastes the planning step on an unambiguous task." }
+        {
+          "id": "A",
+          "text": "Direct execution — the approach is unambiguous despite several files.",
+          "correct": true,
+          "explanation": "Plan mode is for architectural ambiguity and competing approaches; a mechanical, unambiguous rename across a few files is well-suited to direct execution."
+        },
+        {
+          "id": "B",
+          "text": "Plan mode — any change touching more than one file requires planning.",
+          "correct": false,
+          "explanation": "File count alone doesn't mandate plan mode; architectural ambiguity does. A clear rename is direct-execution-friendly."
+        },
+        {
+          "id": "C",
+          "text": "Neither; such changes can't be automated.",
+          "correct": false,
+          "explanation": "Mechanical renames are exactly the kind of change Claude handles directly."
+        },
+        {
+          "id": "D",
+          "text": "Plan mode, then discard the plan and do it manually.",
+          "correct": false,
+          "explanation": "That wastes the planning step on an unambiguous task."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-049",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "Your CLAUDE.md says \"always run the formatter before finishing,\" but Claude still skips it sometimes because CLAUDE.md is treated as context, not enforced configuration. You need formatting to run reliably after every file edit. What's the right mechanism?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Configure a PostToolUse hook matching `Edit|Write` that runs the formatter.",
+          "correct": true,
+          "explanation": "Hooks execute as shell commands at fixed lifecycle events regardless of what Claude decides; a PostToolUse hook on Edit|Write deterministically formats after each edit."
+        },
+        {
+          "id": "B",
+          "text": "Reword the CLAUDE.md instruction to be far more emphatic and capitalized.",
+          "correct": false,
+          "explanation": "CLAUDE.md is context, not enforced configuration, so even emphatic wording offers no guarantee of compliance."
+        },
+        {
+          "id": "C",
+          "text": "Move the formatting instruction into a path-scoped rule file instead.",
+          "correct": false,
+          "explanation": "Rules are still context shaping behavior probabilistically, not a guaranteed post-edit action."
+        },
+        {
+          "id": "D",
+          "text": "Add the formatter call to a slash command users run manually.",
+          "correct": false,
+          "explanation": "A manual command depends on someone remembering to run it, the opposite of automatic enforcement after each edit."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-050",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You want a hook that blocks any Bash `rm -rf` command before it runs. Which hook event should the handler use to be able to prevent the tool call?",
+      "options": [
+        {
+          "id": "A",
+          "text": "PostToolUse, since it runs right after the command and can undo it.",
+          "correct": false,
+          "explanation": "PostToolUse fires after the tool already ran; it cannot block the call, only react to it."
+        },
+        {
+          "id": "B",
+          "text": "PreToolUse, which fires before the tool call and can deny it.",
+          "correct": true,
+          "explanation": "PreToolUse fires before a tool executes and can return a deny permission decision (or exit 2) to block the call entirely."
+        },
+        {
+          "id": "C",
+          "text": "SessionStart, which can screen commands for the whole session.",
+          "correct": false,
+          "explanation": "SessionStart fires once when a session begins and is not a per-tool-call gate."
+        },
+        {
+          "id": "D",
+          "text": "Stop, which fires when Claude finishes responding to the turn.",
+          "correct": false,
+          "explanation": "Stop fires at the end of a turn, not before an individual tool call, so it cannot block one."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-051",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "A command-type PostToolUse hook script detects a problem and exits with code 1, expecting that to stop the action. Instead Claude proceeds anyway. Why, and what should change?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Exit code 2 signals a blocking error; exit 1 is non-blocking.",
+          "correct": true,
+          "explanation": "Claude Code treats exit code 2 as a blocking error and feeds stderr back to Claude; exit 1 (and other nonzero codes) is a non-blocking error and execution continues."
+        },
+        {
+          "id": "B",
+          "text": "Hooks cannot influence behavior at all; they only write to logs.",
+          "correct": false,
+          "explanation": "Hooks can block actions and inject context; the issue here is the exit code used."
+        },
+        {
+          "id": "C",
+          "text": "The hook must return HTTP 500 to block, which a command hook cannot do.",
+          "correct": false,
+          "explanation": "HTTP status codes apply to HTTP hooks; command hooks signal via exit codes, and exit 2 blocks."
+        },
+        {
+          "id": "D",
+          "text": "Exit code 1 is the correct blocking signal, but the hook's matcher field was missing or misconfigured, so it never ran.",
+          "correct": false,
+          "explanation": "Even with a matcher, exit 1 is non-blocking; the script must exit 2 to signal a blocking error."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-052",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You want a lint hook to be shared with the whole team through version control, applying to this project only. In which file should you define it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`~/.claude/settings.json`, since hooks always live in user settings.",
+          "correct": false,
+          "explanation": "User settings apply to all your projects and are local to your machine, not shared via the repo."
+        },
+        {
+          "id": "B",
+          "text": "`.claude/settings.local.json`, which is committed for the team.",
+          "correct": false,
+          "explanation": "settings.local.json is gitignored when Claude Code creates it, so it stays personal rather than shared."
+        },
+        {
+          "id": "C",
+          "text": "`.claude/settings.json` in the project, committed to the repo.",
+          "correct": true,
+          "explanation": "Project settings at `.claude/settings.json` are scoped to the single project and can be committed to version control to share with teammates."
+        },
+        {
+          "id": "D",
+          "text": "The project's root `CLAUDE.md`, under a hooks heading.",
+          "correct": false,
+          "explanation": "Hooks are defined in JSON settings files, not in CLAUDE.md."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-053",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "You're building a `/deploy-prod` skill and want to be sure Claude never triggers it on its own just because the code looks ready, while you can still run it manually. Which frontmatter field handles this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `disable-model-invocation: true` so only you can invoke it.",
+          "correct": true,
+          "explanation": "`disable-model-invocation: true` prevents Claude from auto-loading the skill while leaving it user-invocable via `/deploy-prod`, ideal for side-effecting actions."
+        },
+        {
+          "id": "B",
+          "text": "Set `user-invocable: false` to keep production deploys tightly under control.",
+          "correct": false,
+          "explanation": "`user-invocable: false` hides it from the `/` menu and lets only Claude invoke it, the opposite of what's wanted."
+        },
+        {
+          "id": "C",
+          "text": "Set `context: fork` so Claude can't reach the deploy step.",
+          "correct": false,
+          "explanation": "`context: fork` isolates execution context; it does not stop Claude from invoking the skill."
+        },
+        {
+          "id": "D",
+          "text": "Set `allowed-tools` to an empty list to disable auto-runs.",
+          "correct": false,
+          "explanation": "`allowed-tools` pre-approves tools for the skill; it doesn't govern whether Claude may invoke the skill."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-054",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "Your `/pr-summary` skill should always summarize the actual current PR diff rather than what Claude can guess. You want the live diff inlined into the prompt before Claude reads the skill. Which feature does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Reference the diff with an `@gh-pr-diff` import in the skill body.",
+          "correct": false,
+          "explanation": "The `@` import syntax pulls in files for CLAUDE.md, not the output of a live shell command into a skill."
+        },
+        {
+          "id": "B",
+          "text": "Use dynamic context injection with `` !`gh pr diff` `` in the skill.",
+          "correct": true,
+          "explanation": "The `` !`<command>` `` syntax runs the shell command before the skill content is sent, replacing the placeholder with the actual output so Claude receives real diff data."
+        },
+        {
+          "id": "C",
+          "text": "Add `context: fork` so the skill fetches fresh data each run.",
+          "correct": false,
+          "explanation": "`context: fork` isolates execution; it does not inline shell command output into the prompt."
+        },
+        {
+          "id": "D",
+          "text": "Set an `argument-hint` of `[diff]` so the diff is supplied.",
+          "correct": false,
+          "explanation": "`argument-hint` only suggests expected arguments during autocomplete; it doesn't fetch or inline the diff."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-055",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You have personal sandbox URLs and preferred test data you want Claude to know for this project only, but you must not commit them to the shared repo. Where should these go?",
+      "options": [
+        {
+          "id": "A",
+          "text": "In the project's `./CLAUDE.md`, committed for convenience.",
+          "correct": false,
+          "explanation": "The project CLAUDE.md is shared through version control, so personal sandbox details would leak to the whole team."
+        },
+        {
+          "id": "B",
+          "text": "In `~/.claude/CLAUDE.md`, your machine-wide user-level configuration file.",
+          "correct": false,
+          "explanation": "User-level config applies to all your projects, not scoped to this one; CLAUDE.local.md is the project-specific personal option."
+        },
+        {
+          "id": "C",
+          "text": "In a `CLAUDE.local.md` at the project root, added to `.gitignore`.",
+          "correct": true,
+          "explanation": "CLAUDE.local.md holds personal project-specific preferences, loads alongside CLAUDE.md, and is gitignored so it isn't committed."
+        },
+        {
+          "id": "D",
+          "text": "In a `.claude/rules/` file scoped with a `paths` glob.",
+          "correct": false,
+          "explanation": "Rules are shared project config and aren't the place for private, uncommitted personal data."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-056",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You're starting a brand-new project and want a sensible starting CLAUDE.md with the build commands, test instructions, and conventions Claude can discover from the codebase. What's the fastest way to bootstrap it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Run `/init`, which analyzes the codebase and generates a starting CLAUDE.md.",
+          "correct": true,
+          "explanation": "`/init` analyzes the codebase and creates a CLAUDE.md with discovered build commands, test instructions, and conventions; if one exists it suggests improvements instead."
+        },
+        {
+          "id": "B",
+          "text": "Run `/memory`, which auto-generates the project CLAUDE.md by scanning your settings and discovered conventions.",
+          "correct": false,
+          "explanation": "`/memory` lists and lets you edit loaded memory files; it doesn't generate a project CLAUDE.md from the codebase."
+        },
+        {
+          "id": "C",
+          "text": "Run `/compact` to summarize the repo into a CLAUDE.md file.",
+          "correct": false,
+          "explanation": "`/compact` summarizes the current conversation, not the repository, and does not produce a CLAUDE.md."
+        },
+        {
+          "id": "D",
+          "text": "Copy your `~/.claude/CLAUDE.md` into the repo as the project file.",
+          "correct": false,
+          "explanation": "Copying personal user-level instructions doesn't capture this project's discovered build/test conventions and mixes personal preferences in."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-057",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "Your IT team must enforce company coding standards and a compliance reminder on every Claude Code session on a machine, in every repository, in a way individual developers cannot exclude. Which mechanism fits?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A project `./CLAUDE.md` committed to every repository the team uses.",
+          "correct": false,
+          "explanation": "A project CLAUDE.md is per-repo and can be excluded with claudeMdExcludes; it isn't a machine-wide enforced policy."
+        },
+        {
+          "id": "B",
+          "text": "A managed policy CLAUDE.md at the managed location, deployed via MDM.",
+          "correct": true,
+          "explanation": "A managed policy CLAUDE.md applies to every session in every repo on the machine, loads before user and project files, and cannot be excluded by individual settings."
+        },
+        {
+          "id": "C",
+          "text": "A `~/.claude/CLAUDE.md` pushed to each developer's home directory.",
+          "correct": false,
+          "explanation": "User-level files are personal and editable/removable by the developer, so they don't enforce organization-wide policy."
+        },
+        {
+          "id": "D",
+          "text": "A `CLAUDE.local.md` committed at each repository's root.",
+          "correct": false,
+          "explanation": "CLAUDE.local.md is meant to be gitignored personal config and is neither machine-wide nor unexcludable."
+        }
+      ]
+    },
+    {
+      "id": "S2-D5-016",
+      "scenario": "S2",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "Halfway through a long session you run `/compact` and worry your project standards will be lost. Which statement about what survives compaction is accurate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Everything in the session is wiped, so re-paste your standards.",
+          "correct": false,
+          "explanation": "Compaction summarizes rather than wiping everything, and the project-root CLAUDE.md is re-injected automatically."
+        },
+        {
+          "id": "B",
+          "text": "The project-root CLAUDE.md is re-read from disk and re-injected after compaction.",
+          "correct": true,
+          "explanation": "Project-root CLAUDE.md survives compaction because Claude re-reads it from disk and re-injects it; conversation-only instructions and not-yet-reloaded nested files may be lost."
+        },
+        {
+          "id": "C",
+          "text": "Every nested subdirectory CLAUDE.md file in the whole project is always re-read and re-injected immediately too.",
+          "correct": false,
+          "explanation": "Nested CLAUDE.md files are not re-injected automatically; they reload only the next time Claude reads a file in that subdirectory."
+        },
+        {
+          "id": "D",
+          "text": "Instructions given only in chat persist automatically through compaction.",
+          "correct": false,
+          "explanation": "Conversation-only instructions can be lost after compaction; that's why durable rules belong in CLAUDE.md."
+        }
+      ]
+    },
+    {
+      "id": "S2-D5-017",
+      "scenario": "S2",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "You keep re-explaining the same build command and a debugging insight every session. You'd rather Claude record such learnings itself across sessions without you writing CLAUDE.md entries. Which mechanism does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Auto memory, where Claude saves learnings to its memory directory.",
+          "correct": true,
+          "explanation": "Auto memory lets Claude write notes like build commands and debugging insights to its per-repo memory directory and reload them in future sessions, no manual writing required."
+        },
+        {
+          "id": "B",
+          "text": "Path-scoped rules, which record learnings as you edit files.",
+          "correct": false,
+          "explanation": "Rules are instructions you author, not notes Claude writes for itself across sessions."
+        },
+        {
+          "id": "C",
+          "text": "The `/compact` command, which persists learnings to disk.",
+          "correct": false,
+          "explanation": "`/compact` summarizes the current conversation in-session; it isn't a cross-session learnings store."
+        },
+        {
+          "id": "D",
+          "text": "A custom slash command that snapshots the conversation each turn.",
+          "correct": false,
+          "explanation": "A slash command is an on-demand action and doesn't automatically accumulate learnings across sessions the way auto memory does."
+        }
+      ]
+    },
+    {
+      "id": "S2-D5-018",
+      "scenario": "S2",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "You invoked a coding-standards skill early in a long session, but after several other skills and a compaction, Claude seems to have stopped following it. What's the most reliable way to restore its full guidance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Edit the skill file mid-session; the running session reloads it automatically each turn.",
+          "correct": false,
+          "explanation": "Claude Code does not re-read an invoked skill's file on later turns; editing it doesn't re-inject the already-loaded content."
+        },
+        {
+          "id": "B",
+          "text": "Re-invoke the skill so its full content is re-attached to the context.",
+          "correct": true,
+          "explanation": "After compaction, re-attached skills share a limited budget and older ones can be dropped; re-invoking the skill restores its full content into context."
+        },
+        {
+          "id": "C",
+          "text": "Run `/clear` to reset the session and lose the noise.",
+          "correct": false,
+          "explanation": "`/clear` discards the conversation context entirely, including the valuable work, rather than restoring the skill."
+        },
+        {
+          "id": "D",
+          "text": "Lower the effort level so Claude focuses on the standards again.",
+          "correct": false,
+          "explanation": "Effort level tunes reasoning depth and doesn't restore dropped skill content to the context."
+        }
       ]
     }
   ]
