@@ -2045,6 +2045,402 @@
           "explanation": "Relabeling doesn't help the model interpret tricky language; examples do."
         }
       ]
+    },
+    {
+      "id": "S5-D3-031",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your CI review job sometimes behaves differently depending on which runner picks it up, because some runners have a teammate's hooks or a project `.mcp.json` server that loads into the session. You want every CI run to produce the same result regardless of local configuration. Which flag addresses this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `--output-format json` so the run's configuration is normalized in the result payload.",
+          "correct": false,
+          "explanation": "Output format controls how results are returned, not whether local hooks or MCP servers load into the session."
+        },
+        {
+          "id": "B",
+          "text": "Add `--bare` to skip auto-discovery of hooks, MCP, and CLAUDE.md.",
+          "correct": true,
+          "explanation": "Bare mode skips auto-discovery of hooks, skills, plugins, MCP servers, and CLAUDE.md, so only explicitly passed flags take effect — giving the same result on every machine, exactly the CI need."
+        },
+        {
+          "id": "C",
+          "text": "Add `--no-config` so the session fully ignores any local configuration files present.",
+          "correct": false,
+          "explanation": "There is no --no-config flag; --bare is the documented way to skip local auto-discovery."
+        },
+        {
+          "id": "D",
+          "text": "Add `--isolated` so the run executes in a sandbox kept separate from local files.",
+          "correct": false,
+          "explanation": "There is no --isolated flag for this; bare mode is what prevents picking up local hooks and MCP servers."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-032",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your package.json defines a `lint:claude` script that runs Claude as a typo linter. To avoid granting Claude the Bash permission needed to fetch the diff itself, how should the script feed the diff to the headless run?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Grant `--allowedTools \"Bash(git diff *)\"` so Claude can run the diff command on its own.",
+          "correct": false,
+          "explanation": "This works but defeats the goal of avoiding the Bash permission; piping stdin keeps the run permission-free."
+        },
+        {
+          "id": "B",
+          "text": "Have Claude call the Read tool on a committed `diff.txt` snapshot file in the repo.",
+          "correct": false,
+          "explanation": "Reading a file requires producing and committing a snapshot and still needs the Read tool; piping stdin is simpler and direct."
+        },
+        {
+          "id": "C",
+          "text": "Pipe it in: `git diff main | claude -p \"...\"` so Claude reads stdin.",
+          "correct": true,
+          "explanation": "Piping the diff via stdin means Claude receives the content directly and needs no Bash permission to read it — the documented build-script linter pattern."
+        },
+        {
+          "id": "D",
+          "text": "Embed the entire diff text inline inside the `-p` prompt string on every single run.",
+          "correct": false,
+          "explanation": "Inlining a diff into the prompt string is awkward and breaks on shell quoting; stdin piping is the documented approach."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-033",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You parse `--output-format json` from your CI review runs and want to track how much each invocation costs so finance can see per-PR spend without opening the usage dashboard. What does the JSON payload give you?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A `total_cost_usd` field plus a per-model cost breakdown.",
+          "correct": true,
+          "explanation": "With --output-format json the response includes total_cost_usd and a per-model cost breakdown, letting scripted callers track spend per invocation directly."
+        },
+        {
+          "id": "B",
+          "text": "A link to the usage dashboard that the script must then open to read the spend.",
+          "correct": false,
+          "explanation": "The point of the JSON cost fields is to avoid consulting the dashboard; the payload carries the cost directly."
+        },
+        {
+          "id": "C",
+          "text": "Nothing about cost at all; spend remains visible only on the usage dashboard.",
+          "correct": false,
+          "explanation": "The JSON payload does include cost data (total_cost_usd), so this is incorrect."
+        },
+        {
+          "id": "D",
+          "text": "Only a raw input and output token count that you must price out yourself.",
+          "correct": false,
+          "explanation": "The payload reports total_cost_usd in dollars directly, not just tokens you must convert."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-034",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You are upgrading a GitHub Actions workflow from the beta claude-code-action to v1. The beta used `max_turns: \"10\"` and `model: \"claude-sonnet-4-6\"` as top-level inputs. Where do these go in the v1 workflow?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Kept as the existing top-level `max_turns` and `model` inputs, unchanged from the beta.",
+          "correct": false,
+          "explanation": "Those dedicated inputs were removed in v1; CLI options now go through claude_args."
+        },
+        {
+          "id": "B",
+          "text": "Appended into the `prompt` field after the natural-language instructions text.",
+          "correct": false,
+          "explanation": "The prompt field carries instructions, not CLI flags like model or max-turns."
+        },
+        {
+          "id": "C",
+          "text": "Into a dedicated new `cli_options` block kept separate from `claude_args`.",
+          "correct": false,
+          "explanation": "There is no cli_options block; claude_args is the single passthrough for CLI arguments."
+        },
+        {
+          "id": "D",
+          "text": "Into `claude_args` as `--max-turns 10 --model claude-sonnet-4-6`.",
+          "correct": true,
+          "explanation": "The v1 upgrade moves CLI options like max_turns and model into the claude_args passthrough field, replacing the dedicated beta inputs."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-035",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your GitLab CI job triggers Claude from MR comments and passes the comment text through a pipeline variable. The script invokes `claude -p \"${AI_FLOW_INPUT:-'Review this MR'}\"`. What role does the `AI_FLOW_INPUT` variable play here?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It holds the ANTHROPIC_API_KEY that the job uses to authenticate the run.",
+          "correct": false,
+          "explanation": "The API key comes from the ANTHROPIC_API_KEY CI/CD variable, not AI_FLOW_INPUT."
+        },
+        {
+          "id": "B",
+          "text": "It carries the trigger's comment/context payload into the prompt.",
+          "correct": true,
+          "explanation": "In the GitLab integration the AI_FLOW_* variables convey input and context from web/API triggers; AI_FLOW_INPUT supplies the prompt text, with a default fallback when absent."
+        },
+        {
+          "id": "C",
+          "text": "It selects which Claude model the job should use for the review work.",
+          "correct": false,
+          "explanation": "Model selection is unrelated to AI_FLOW_INPUT, which supplies the prompt input from the trigger."
+        },
+        {
+          "id": "D",
+          "text": "It enumerates the list of allowed tools that the job grants to Claude.",
+          "correct": false,
+          "explanation": "Allowed tools are passed via --allowedTools; AI_FLOW_INPUT carries the trigger's input text."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-036",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You want one CI step to review the PR for security issues and act as a security engineer, but you want to keep Claude Code's default behavior otherwise. The diff is piped in via stdin. Which flag assigns this reviewer persona?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`--system-prompt \"You are a security engineer...\"`, keeping defaults intact.",
+          "correct": false,
+          "explanation": "--system-prompt fully replaces the default prompt; to keep default behavior and add a persona, use --append-system-prompt."
+        },
+        {
+          "id": "B",
+          "text": "`--persona security-engineer` to load a built-in reviewer role for the run.",
+          "correct": false,
+          "explanation": "There is no --persona flag; system prompt flags assign role instructions."
+        },
+        {
+          "id": "C",
+          "text": "`--append-system-prompt \"You are a security engineer...\"`.",
+          "correct": true,
+          "explanation": "--append-system-prompt adds instructions (such as a security-engineer review persona) while preserving Claude Code's default behavior — the documented PR security-review pattern."
+        },
+        {
+          "id": "D",
+          "text": "`--role \"security engineer\"` passed on the command line alongside the prompt.",
+          "correct": false,
+          "explanation": "There is no --role flag; --append-system-prompt is the documented mechanism."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-033",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Your pipeline runs review and test generation as one giant prompt: \"Review the diff, then write tests for the issues you find.\" Results are muddled — the review is shallow and tests miss the flagged issues. What restructuring fits the workflow best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Keep the single prompt but instruct the model to be far more thorough on both halves.",
+          "correct": false,
+          "explanation": "A thoroughness plea doesn't resolve the conflated objectives; separating the steps does."
+        },
+        {
+          "id": "B",
+          "text": "Raise the temperature so the model varies its review and its test output more.",
+          "correct": false,
+          "explanation": "Higher temperature adds variability, not focus, and worsens alignment between review and tests."
+        },
+        {
+          "id": "C",
+          "text": "Cap the output length so the model commits to fewer findings overall.",
+          "correct": false,
+          "explanation": "A length cap can drop real findings and doesn't separate the two conflated tasks."
+        },
+        {
+          "id": "D",
+          "text": "Chain it: one step produces findings, a second generates tests from them.",
+          "correct": true,
+          "explanation": "Prompt chaining splits the combined task into focused steps — review first, then feed those findings into a dedicated test-generation step — improving depth and alignment versus one muddled prompt."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-034",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Your review prompt is one long paragraph that interleaves the diff to review, the project's accepted conventions, and the desired output format. The model frequently confuses which text is the code under review and which is instructions. What's the most effective structural fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Move the diff to the very end so the model reads all instructions first.",
+          "correct": false,
+          "explanation": "Reordering alone doesn't delimit sections; the model can still conflate adjacent prose with the diff. Clear tags are the fix."
+        },
+        {
+          "id": "B",
+          "text": "Separate the diff, conventions, and format into distinct XML-tagged sections.",
+          "correct": true,
+          "explanation": "XML tags create clear, unambiguous boundaries between the content to review, the instructions, and the output spec, so the model stops conflating them — the recommended structuring technique."
+        },
+        {
+          "id": "C",
+          "text": "Rewrite the paragraph to be substantially shorter so there is less to confuse.",
+          "correct": false,
+          "explanation": "Brevity doesn't establish boundaries between the diff and the instructions; explicit delimiters do."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature so the model parses the prompt text more literally.",
+          "correct": false,
+          "explanation": "Temperature affects sampling variability, not the model's ability to tell instructions from the code under review."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-035",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "You want the headless review to emit findings in a fixed JSON shape, and you provide a JSON schema. A teammate argues you should also add an example finding object to the prompt. What does including a worked example add beyond the schema?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It demonstrates field content and tone.",
+          "correct": true,
+          "explanation": "A schema fixes the structure and required fields, but a concrete example shows the intended content, wording, and level of detail for each field — guidance the type definitions cannot express."
+        },
+        {
+          "id": "B",
+          "text": "It replaces the schema entirely, so the schema can be dropped from the call.",
+          "correct": false,
+          "explanation": "The example complements the schema; the schema still enforces the shape, while the example guides content."
+        },
+        {
+          "id": "C",
+          "text": "It forces the output to validate, removing any need to check against the schema.",
+          "correct": false,
+          "explanation": "An example doesn't enforce validation; the schema constraint does that. They serve different purposes."
+        },
+        {
+          "id": "D",
+          "text": "It lets you raise the temperature without losing the required JSON structure.",
+          "correct": false,
+          "explanation": "An example doesn't change temperature behavior; structure is enforced by the schema, not by the example."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-036",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Your CI review prompt says \"point out security issues.\" It flags theoretically-possible-but-unreachable code paths constantly, drowning out the few exploitable findings. You want it to report only genuinely exploitable issues. Which instruction works best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "\"Point out all security issues, including any purely theoretical ones you happen to spot.\"",
+          "correct": false,
+          "explanation": "Inviting theoretical issues is the cause of the noise, not a fix."
+        },
+        {
+          "id": "B",
+          "text": "\"Be careful, and only mention security problems that you consider serious.\"",
+          "correct": false,
+          "explanation": "\"Serious\" is undefined and subjective, so it won't reliably exclude unreachable theoretical paths."
+        },
+        {
+          "id": "C",
+          "text": "\"Flag an issue only if you can describe a concrete triggering input.\"",
+          "correct": true,
+          "explanation": "A precise, testable criterion (a concrete triggering input) targets genuinely exploitable findings and excludes unreachable theoretical paths, far better than the vague \"point out security issues.\""
+        },
+        {
+          "id": "D",
+          "text": "\"Review the security of the diff thoroughly and report everything that could matter.\"",
+          "correct": false,
+          "explanation": "\"Everything that could matter\" widens scope and increases the theoretical noise you want to cut."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-037",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "You are choosing a model for the blocking pre-merge review where developers wait for the result. The prompt is already well-tuned, but latency is unacceptably high on your current high-tier model. The docs note some criteria are better solved by model choice than prompting. What's the right move?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Keep the model but rewrite the well-tuned prompt to be much shorter to cut latency.",
+          "correct": false,
+          "explanation": "The prompt is already well-tuned; latency is a model-choice concern, not primarily a prompt-length one."
+        },
+        {
+          "id": "B",
+          "text": "Move the blocking gate onto the Batches API to take advantage of its lower per-call cost.",
+          "correct": false,
+          "explanation": "Batches have no latency SLA and can take up to 24 hours, which is unacceptable for a blocking gate."
+        },
+        {
+          "id": "C",
+          "text": "Switch to a faster, lighter model, since latency is a model-choice concern.",
+          "correct": true,
+          "explanation": "Latency and cost are often best improved by selecting a different model rather than prompt engineering; for a blocking gate that needs speed, a faster, lighter model is the appropriate lever."
+        },
+        {
+          "id": "D",
+          "text": "Raise the temperature so that the model commits to its answer noticeably faster.",
+          "correct": false,
+          "explanation": "Temperature affects sampling variability, not latency; it does not speed up a blocking review."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-038",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Your test-generation step in CI produces tests, then a second independent Claude instance reviews those generated tests before they are committed. A teammate says the review instance should instead be the same session that wrote the tests \"to save tokens.\" Why is the independent instance preferred?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It carries no generation reasoning, so it questions the tests' assumptions.",
+          "correct": true,
+          "explanation": "An independent instance reviews with fresh context and no attachment to the generated tests, so it more readily flags weak assertions or missing cases the author overlooked — the documented fresh-eyes benefit."
+        },
+        {
+          "id": "B",
+          "text": "It shares the generating session's context window, so the review costs no extra tokens at all.",
+          "correct": false,
+          "explanation": "A separate instance has its own context window and consumes its own tokens; the benefit is bias removal, not token savings."
+        },
+        {
+          "id": "C",
+          "text": "It automatically rewrites and commits any failing tests it finds, without needing approval.",
+          "correct": false,
+          "explanation": "A reviewer should surface issues, not silently rewrite and commit; that reintroduces authorship bias and skips review."
+        },
+        {
+          "id": "D",
+          "text": "It is always strictly cheaper than having the original session review its own output once more.",
+          "correct": false,
+          "explanation": "A second instance adds API usage; its advantage is unbiased review, not lower cost."
+        }
+      ]
     }
   ]
 }

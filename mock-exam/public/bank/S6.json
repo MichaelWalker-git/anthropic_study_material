@@ -2045,6 +2045,402 @@
           "explanation": "Dropping conflicting figures silently resolves the conflict, which is forbidden."
         }
       ]
+    },
+    {
+      "id": "S6-D4-039",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Even with a tool's JSON schema in place, occasional tool calls still come back with an extra undeclared field that breaks the downstream parser. What setting most directly guarantees the calls match your schema exactly?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `strict: true` on the tool.",
+          "correct": true,
+          "explanation": "Strict tool use forces Claude's tool calls to conform exactly to the declared schema, eliminating undeclared or extra fields."
+        },
+        {
+          "id": "B",
+          "text": "Force the tool with `tool_choice`.",
+          "correct": false,
+          "explanation": "Forcing the tool guarantees it is called, but not that the call's fields match the schema exactly."
+        },
+        {
+          "id": "C",
+          "text": "Raise `max_tokens` for headroom.",
+          "correct": false,
+          "explanation": "Token headroom does not affect whether the output conforms to the schema."
+        },
+        {
+          "id": "D",
+          "text": "Drop the temperature to zero.",
+          "correct": false,
+          "explanation": "Temperature reduces variability but does not enforce exact schema conformance."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-040",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your extraction tool defines a `status` enum of `paid`, `pending`, `overdue`. A reviewer asks how to stop the model from ever returning a value outside that set. Which mechanism enforces it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A prose hint listing the values.",
+          "correct": false,
+          "explanation": "Prose guidance is probabilistic and does not strictly prevent out-of-set values."
+        },
+        {
+          "id": "B",
+          "text": "An enum constraint in the schema.",
+          "correct": true,
+          "explanation": "Declaring the field as an enum in the tool's input_schema constrains output to the allowed members and rejects anything else."
+        },
+        {
+          "id": "C",
+          "text": "Setting tool_choice to any.",
+          "correct": false,
+          "explanation": "`any` forces a tool call but places no constraint on which enum value the field takes."
+        },
+        {
+          "id": "D",
+          "text": "Lowering temperature to zero.",
+          "correct": false,
+          "explanation": "Temperature affects sampling variability, not the set of permissible enum values."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-041",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "A field should hold either a numeric amount or be explicitly absent when the document omits it. The team keeps debating between a required number and a placeholder. What schema type best models true optionality?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Required number, default zero.",
+          "correct": false,
+          "explanation": "Defaulting to zero injects a fabricated value that downstream systems cannot distinguish from a real zero."
+        },
+        {
+          "id": "B",
+          "text": "Required string \"none\".",
+          "correct": false,
+          "explanation": "A string placeholder both breaks numeric typing and masks genuine absence with fake data."
+        },
+        {
+          "id": "C",
+          "text": "A nullable number field.",
+          "correct": true,
+          "explanation": "A nullable number lets the model emit a real numeric value when present and explicit null when the document omits it, modeling true optionality."
+        },
+        {
+          "id": "D",
+          "text": "Required number, always guess.",
+          "correct": false,
+          "explanation": "Forcing a guessed number fabricates data rather than representing absence."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-042",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "You want every extracted record to carry the original currency symbol so downstream conversion works, but the model sometimes drops it. The currency is one of a fixed known set. What is the most reliable enforcement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a required enum currency field.",
+          "correct": true,
+          "explanation": "A required enum field for currency forces the model to always emit one of the known codes, preventing dropped or invalid currencies."
+        },
+        {
+          "id": "B",
+          "text": "Mention currency in the prompt.",
+          "correct": false,
+          "explanation": "A prose mention does not enforce presence; the field can still be omitted."
+        },
+        {
+          "id": "C",
+          "text": "Parse currency downstream from text.",
+          "correct": false,
+          "explanation": "Downstream text parsing is brittle and abandons the guarantee the schema can provide."
+        },
+        {
+          "id": "D",
+          "text": "Infer currency from the amount.",
+          "correct": false,
+          "explanation": "An amount alone cannot reliably determine its currency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-043",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "An exhaustive extraction of a 600-page filing must return far more structured output than the model's standard single-turn limit allows, and it can run overnight. What approach fits?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set temperature to maximum.",
+          "correct": false,
+          "explanation": "Temperature has no effect on the maximum output length the model can return."
+        },
+        {
+          "id": "B",
+          "text": "Use the extended-output beta.",
+          "correct": true,
+          "explanation": "The extended-output beta header raises the batch max_tokens cap to 300k, which suits exhaustive structured extraction in a latency-tolerant overnight batch."
+        },
+        {
+          "id": "C",
+          "text": "Stream the response and stop early.",
+          "correct": false,
+          "explanation": "Stopping early truncates the exhaustive output you need and streaming is unsupported in batch."
+        },
+        {
+          "id": "D",
+          "text": "Lower max_tokens to be safe.",
+          "correct": false,
+          "explanation": "Lowering max_tokens cuts the output short, the opposite of an exhaustive extraction."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-044",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your batch shares a large identical instruction-and-schema preamble across thousands of documents, and batches can take far longer than five minutes to complete. What raises your cache hit rate for that shared content?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Disable caching inside batches.",
+          "correct": false,
+          "explanation": "Disabling caching forgoes the cost and time savings the shared preamble could provide."
+        },
+        {
+          "id": "B",
+          "text": "Put the schema after each document.",
+          "correct": false,
+          "explanation": "Placing shared content after variable content reduces the cacheable prefix and hurts hit rates."
+        },
+        {
+          "id": "C",
+          "text": "Use the 1-hour cache duration.",
+          "correct": true,
+          "explanation": "Because batches can exceed the 5-minute cache lifetime, the 1-hour cache duration improves hit rates on shared batch context."
+        },
+        {
+          "id": "D",
+          "text": "Vary the preamble per request.",
+          "correct": false,
+          "explanation": "Varying the shared content defeats caching, which depends on identical cached blocks."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-045",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "A new contract clause requires extracting the \"governing law\" jurisdiction, but documents express it in many phrasings and the model is inconsistent about what qualifies. What is the most effective first step in the prompt?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define what counts as governing law.",
+          "correct": true,
+          "explanation": "Stating explicit, unambiguous criteria for what qualifies as the governing-law jurisdiction is the foundational fix for inconsistent extraction."
+        },
+        {
+          "id": "B",
+          "text": "Tell it to extract legal stuff.",
+          "correct": false,
+          "explanation": "A vague instruction leaves the model guessing what qualifies, perpetuating inconsistency."
+        },
+        {
+          "id": "C",
+          "text": "Add three more retries.",
+          "correct": false,
+          "explanation": "Retries cannot resolve criteria that were never defined."
+        },
+        {
+          "id": "D",
+          "text": "Raise temperature for coverage.",
+          "correct": false,
+          "explanation": "Higher temperature increases variability, worsening the inconsistency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-025",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Your extraction prompt places the JSON schema first, then thousands of tokens of reference glossary, then the document at the very end. Accuracy on document fields is weak. Reordering aside, what is the core issue?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The schema is too strict for long input.",
+          "correct": false,
+          "explanation": "Schema strictness is unrelated to positional recall of document content."
+        },
+        {
+          "id": "B",
+          "text": "Bulky middle content weakens attention.",
+          "correct": true,
+          "explanation": "A large glossary in the middle creates the lost-in-the-middle effect and crowds the context, weakening attention on the key content."
+        },
+        {
+          "id": "C",
+          "text": "Temperature is dropping middle tokens.",
+          "correct": false,
+          "explanation": "Temperature applies uniformly and does not drop tokens by position."
+        },
+        {
+          "id": "D",
+          "text": "The model forgot the prior call's schema.",
+          "correct": false,
+          "explanation": "This is a single self-contained call; cross-call memory is not the issue."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-026",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Auditors must trace every extracted clause to its exact location, but your output only stores a confidence score per clause. What output change satisfies the traceability requirement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Raise all confidence scores higher.",
+          "correct": false,
+          "explanation": "Higher scores say nothing about where a clause came from."
+        },
+        {
+          "id": "B",
+          "text": "Add a page-and-quote source per clause.",
+          "correct": true,
+          "explanation": "Linking each clause to its source location and quote provides the claim-source mapping auditors need for traceability."
+        },
+        {
+          "id": "C",
+          "text": "Append the entire source document after the output.",
+          "correct": false,
+          "explanation": "Dumping the whole document does not tie a specific clause to a specific location."
+        },
+        {
+          "id": "D",
+          "text": "Store the model temperature used.",
+          "correct": false,
+          "explanation": "Temperature metadata cannot establish where a clause originated."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-027",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Two extraction prompt variants both report 95% aggregate accuracy, but you must choose the one that performs better on the rare high-value contract type. How should you compare them?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pick whichever finished its run faster.",
+          "correct": false,
+          "explanation": "Speed is irrelevant to per-type extraction accuracy."
+        },
+        {
+          "id": "B",
+          "text": "Trust the tied aggregate and pick either.",
+          "correct": false,
+          "explanation": "A tied aggregate can hide divergent performance on the rare type that matters here."
+        },
+        {
+          "id": "C",
+          "text": "Compare stratified accuracy on that type.",
+          "correct": true,
+          "explanation": "Stratified per-type accuracy surfaces which variant performs better on the rare high-value type that the aggregate conceals."
+        },
+        {
+          "id": "D",
+          "text": "Choose the one with lower temperature.",
+          "correct": false,
+          "explanation": "Temperature is not a measure of accuracy on a document type."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-028",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Your pipeline auto-accepts any extraction above a confidence threshold, yet a costly error slipped through on a high-confidence record. Before changing the threshold, what should you verify about the scores?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Whether the scores are calibrated to accuracy.",
+          "correct": true,
+          "explanation": "If a high-confidence record was wrong, the scores may be miscalibrated; verifying calibration against labeled data comes before retuning the threshold."
+        },
+        {
+          "id": "B",
+          "text": "Whether the model was given enough output tokens.",
+          "correct": false,
+          "explanation": "Token usage does not explain whether confidence reflects real accuracy."
+        },
+        {
+          "id": "C",
+          "text": "Whether temperature was set to zero.",
+          "correct": false,
+          "explanation": "Temperature does not determine whether confidence scores track correctness."
+        },
+        {
+          "id": "D",
+          "text": "Whether the schema was strict.",
+          "correct": false,
+          "explanation": "A strict schema validates structure, not the trustworthiness of confidence scores."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-029",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "One document states a figure as a firm audited number while another states it as a forward-looking estimate, yet both flow into the dataset as plain values. Consumers treat them as equally certain. What output practice fixes this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Average the two figures into one value.",
+          "correct": false,
+          "explanation": "Averaging conflates an audited number with an estimate and erases their differing certainty."
+        },
+        {
+          "id": "B",
+          "text": "Keep only the audited figure.",
+          "correct": false,
+          "explanation": "Dropping the estimate loses information consumers may legitimately need."
+        },
+        {
+          "id": "C",
+          "text": "Capture each value's claim type and source.",
+          "correct": true,
+          "explanation": "Recording whether each figure is audited or an estimate, with its source, lets consumers weight certainty correctly instead of treating values as equal."
+        },
+        {
+          "id": "D",
+          "text": "Flag both figures as unreliable.",
+          "correct": false,
+          "explanation": "Neither figure is unreliable; they differ in certainty type, which attribution captures."
+        }
+      ]
     }
   ]
 }

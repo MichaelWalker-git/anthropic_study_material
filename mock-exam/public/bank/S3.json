@@ -1979,6 +1979,402 @@
           "explanation": "Re-summarizing at every hop wastes tokens and risks provenance loss."
         }
       ]
+    },
+    {
+      "id": "S3-D1-029",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "The coordinator never picks the document-analysis subagent on its own; engineers always have to name it explicitly in the prompt. Its `AgentDefinition` has a valid prompt and tools, but its `description` reads only \"document agent.\" What change most improves automatic delegation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rewrite the `description` to state clearly when the subagent should be used.",
+          "correct": true,
+          "explanation": "Claude decides whether to invoke a subagent based on its `description`; a vague one prevents task matching, so a clear description of when to use it enables automatic delegation."
+        },
+        {
+          "id": "B",
+          "text": "Move the usage guidance out of `description` and into the subagent's `prompt` field instead.",
+          "correct": false,
+          "explanation": "The `prompt` shapes behavior once invoked but is not what Claude matches against to decide invocation; the `description` drives that choice."
+        },
+        {
+          "id": "C",
+          "text": "Lower the subagent's temperature so the coordinator selects it more deterministically.",
+          "correct": false,
+          "explanation": "Temperature does not affect whether the coordinator matches a task to this subagent."
+        },
+        {
+          "id": "D",
+          "text": "Add more tools to the subagent so the coordinator sees it as more capable.",
+          "correct": false,
+          "explanation": "Tool count does not drive delegation; the `description` is the matching signal."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-030",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "While streaming messages, an engineer wants to tag every message that originated inside a particular subagent's execution so the UI can group them. Which message property identifies that a message came from within a subagent's context?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Check whether the message carries a `parent_tool_use_id` field.",
+          "correct": true,
+          "explanation": "Messages produced from within a subagent's execution include a `parent_tool_use_id` linking them to the invoking Agent tool call."
+        },
+        {
+          "id": "B",
+          "text": "Check whether the message's `role` is set to the value \"subagent\".",
+          "correct": false,
+          "explanation": "There is no \"subagent\" role; subagent provenance is signaled by `parent_tool_use_id`."
+        },
+        {
+          "id": "C",
+          "text": "Check whether the message's `session_id` differs from the main one.",
+          "correct": false,
+          "explanation": "Subagent transcripts persist in their own files but are not distinguished here by a differing live `session_id`; `parent_tool_use_id` is the field to inspect."
+        },
+        {
+          "id": "D",
+          "text": "Check whether the message contains a top-level `agentId` field.",
+          "correct": false,
+          "explanation": "`agentId` appears in the Agent tool result text for resuming, not as a per-message origin tag."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-031",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "A long document-analysis subagent stopped midway and the coordinator wants to continue it later with its full prior tool calls and reasoning intact, rather than restarting it. According to the SDK, what two values must be captured to resume that specific subagent?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `session_id` from the run plus the `agentId` parsed from the Agent tool result.",
+          "correct": true,
+          "explanation": "Resuming a subagent requires resuming the same session (`session_id`) and referencing the subagent's `agentId` extracted from its Agent tool result text."
+        },
+        {
+          "id": "B",
+          "text": "The subagent's `description` string and the coordinator's system prompt text.",
+          "correct": false,
+          "explanation": "These configure the agent but do not locate a prior subagent transcript to resume."
+        },
+        {
+          "id": "C",
+          "text": "The `parent_tool_use_id` and the subagent's allowed-tools list.",
+          "correct": false,
+          "explanation": "`parent_tool_use_id` tags message origin; resuming needs the session ID and the agentId."
+        },
+        {
+          "id": "D",
+          "text": "Only the `agentId`, since the SDK reattaches it to any new session automatically.",
+          "correct": false,
+          "explanation": "You must resume the same session; a new session cannot reach the subagent's transcript by agentId alone."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-032",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "The main conversation just underwent compaction to free context, and an engineer fears the research subagents' detailed transcripts were collapsed along with it. What is the actual relationship between main-conversation compaction and subagent transcripts?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Subagent transcripts are stored separately and are unaffected by main-conversation compaction.",
+          "correct": true,
+          "explanation": "Subagent transcripts persist in their own files, so compacting the main conversation leaves them intact."
+        },
+        {
+          "id": "B",
+          "text": "Compaction summarizes the main thread and every subagent transcript together in one pass.",
+          "correct": false,
+          "explanation": "Subagent transcripts are separate and not folded into main-conversation compaction."
+        },
+        {
+          "id": "C",
+          "text": "Subagent transcripts are deleted immediately whenever the parent compacts.",
+          "correct": false,
+          "explanation": "They are not deleted on compaction; cleanup follows the retention period, not compaction."
+        },
+        {
+          "id": "D",
+          "text": "Compaction blocks until all subagents flush their transcripts into the main thread.",
+          "correct": false,
+          "explanation": "There is no such flush; the transcripts live in separate files independent of the main thread."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-033",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "The research run now coordinates well over a hundred subtopic agents per job, and turn-by-turn subagent delegation through the conversation is straining the coordinator's context. The team wants orchestration that runs outside the conversation context. What does the SDK recommend at this scale?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Move orchestration into the `Workflow` tool, which the runtime executes outside the conversation.",
+          "correct": true,
+          "explanation": "Subagents suit a few delegated tasks per turn; for dozens to hundreds of agents the `Workflow` tool moves orchestration into a script run outside the conversation context."
+        },
+        {
+          "id": "B",
+          "text": "Raise the coordinator's `maxTurns` so it can keep delegating turn by turn for longer.",
+          "correct": false,
+          "explanation": "More turns does not move orchestration out of the conversation; it keeps the straining pattern."
+        },
+        {
+          "id": "C",
+          "text": "Give the coordinator a larger context window and continue per-turn delegation as is.",
+          "correct": false,
+          "explanation": "A bigger window defers, not solves, the scaling limit of turn-by-turn delegation."
+        },
+        {
+          "id": "D",
+          "text": "Fork the session once per subtopic and run each fork independently.",
+          "correct": false,
+          "explanation": "Forking branches history for divergent exploration; it is not the large-scale orchestration mechanism."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-034",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "The team wants the synthesis subagent to have its citation-formatting Skill already loaded into its context the moment it starts, rather than discovering it through the Skill tool mid-run. Which `AgentDefinition` field accomplishes this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "List the skill name in the subagent's `skills` field to preload it at startup.",
+          "correct": true,
+          "explanation": "The `skills` field preloads named skills into the agent's context at startup; unlisted skills remain invocable via the Skill tool."
+        },
+        {
+          "id": "B",
+          "text": "Add the skill to the subagent's `tools` array so it loads on launch.",
+          "correct": false,
+          "explanation": "`tools` controls allowed tool access, not skill preloading; `skills` does the preload."
+        },
+        {
+          "id": "C",
+          "text": "Reference the skill in the subagent's `description` so the runtime loads it.",
+          "correct": false,
+          "explanation": "`description` drives invocation matching, not skill preloading."
+        },
+        {
+          "id": "D",
+          "text": "Set the subagent's `memory` to `project` so the skill loads from disk.",
+          "correct": false,
+          "explanation": "`memory` selects a memory source, not which skills are preloaded."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-015",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "A research source MCP server already exposes documents as resources, and the coordinator must re-run a report whenever a tracked policy document changes upstream. The team wants the server to notify the client of changes to that one document. Which resources capability must the server support?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `subscribe` capability, so clients can be notified when that resource changes.",
+          "correct": true,
+          "explanation": "The `subscribe` resources capability lets a client subscribe to a specific resource and receive `notifications/resources/updated` when it changes."
+        },
+        {
+          "id": "B",
+          "text": "The `listChanged` capability, which signals when individual resource contents change.",
+          "correct": false,
+          "explanation": "`listChanged` notifies when the set of available resources changes, not when an individual resource's contents change."
+        },
+        {
+          "id": "C",
+          "text": "The `tools` capability, since change notifications are delivered as tool results.",
+          "correct": false,
+          "explanation": "Resource change notifications are part of the resources capability, not delivered via tools."
+        },
+        {
+          "id": "D",
+          "text": "Resource templates, because parameterized URIs are required for any updates.",
+          "correct": false,
+          "explanation": "Templates expose parameterized resources; they are unrelated to change subscriptions."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-016",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "The document-analysis tool returns weather-like structured records, and the team wants clients to validate the returned object's shape automatically. Per the MCP tool spec, which addition lets clients validate the structured result?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define an `outputSchema` on the tool that the structured result must conform to.",
+          "correct": true,
+          "explanation": "An `outputSchema` lets servers guarantee and clients validate that structured results conform to a declared shape."
+        },
+        {
+          "id": "B",
+          "text": "Expand the `inputSchema` to also describe the expected output fields.",
+          "correct": false,
+          "explanation": "`inputSchema` constrains arguments, not the result; `outputSchema` validates output."
+        },
+        {
+          "id": "C",
+          "text": "Set `isError` to false on every successful response so clients infer the shape.",
+          "correct": false,
+          "explanation": "`isError` flags execution errors; it does not describe or validate output structure."
+        },
+        {
+          "id": "D",
+          "text": "Add `annotations` describing the audience and priority of the output.",
+          "correct": false,
+          "explanation": "Annotations convey usage hints, not a validatable schema for the result."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-017",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "A web-search tool returns large documents. The team debates whether to embed full document text in each tool result or return a pointer the client can fetch on demand. Which MCP content type lets the tool reference a resource without inlining its full contents?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A `resource_link` content item carrying the resource's URI for the client to fetch.",
+          "correct": true,
+          "explanation": "A `resource_link` returns a URI the client can fetch or subscribe to, providing a reference without inlining the full resource contents."
+        },
+        {
+          "id": "B",
+          "text": "An embedded `resource` block, which is the only way to reference any resource.",
+          "correct": false,
+          "explanation": "An embedded resource inlines the contents; a `resource_link` is the reference-only option."
+        },
+        {
+          "id": "C",
+          "text": "A `text` content item holding the resource's full body inline.",
+          "correct": false,
+          "explanation": "Text content inlines the body, which is exactly what the team wants to avoid."
+        },
+        {
+          "id": "D",
+          "text": "A `structuredContent` field, which substitutes for any resource reference.",
+          "correct": false,
+          "explanation": "`structuredContent` carries a JSON object result, not a fetchable resource reference."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-018",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "The synthesis MCP server returns many candidate sources, and the coordinator wants the server to hint which sources are most important so it can prioritize them under a tight budget. Which resource annotation conveys relative importance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `priority` annotation, a 0.0-to-1.0 value indicating importance.",
+          "correct": true,
+          "explanation": "The `priority` annotation ranges from 0.0 to 1.0, letting clients prioritize which resources to include in context."
+        },
+        {
+          "id": "B",
+          "text": "The `audience` annotation, which ranks resources from most to least important.",
+          "correct": false,
+          "explanation": "`audience` indicates intended audience (user/assistant), not importance ranking."
+        },
+        {
+          "id": "C",
+          "text": "The `lastModified` annotation, since newer resources are always higher priority.",
+          "correct": false,
+          "explanation": "`lastModified` is a timestamp for recency, not a measure of importance."
+        },
+        {
+          "id": "D",
+          "text": "The `mimeType` field, which encodes a default importance per content type.",
+          "correct": false,
+          "explanation": "`mimeType` describes format; it carries no importance signal."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-019",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A stateless one-shot research call runs per incoming request, and the team does not want any conversation transcript written to disk for these throwaway runs. In the TypeScript SDK, which option keeps the session in memory only for the call's duration?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `persistSession: false` so the session exists only in memory for the call.",
+          "correct": true,
+          "explanation": "In the TypeScript SDK, `persistSession: false` keeps the session in memory for the duration of the call and writes nothing to disk."
+        },
+        {
+          "id": "B",
+          "text": "Set `continue: false` so the SDK skips resuming and avoids persistence.",
+          "correct": false,
+          "explanation": "`continue` controls whether to pick up the most recent session, not whether the session is persisted."
+        },
+        {
+          "id": "C",
+          "text": "Set `fork_session: true` so the throwaway run stays isolated from disk.",
+          "correct": false,
+          "explanation": "Forking branches history into a new session; it does not prevent disk persistence."
+        },
+        {
+          "id": "D",
+          "text": "Set `maxTurns: 1` so a single-turn run is never persisted.",
+          "correct": false,
+          "explanation": "`maxTurns` bounds turns, not persistence; a one-turn run is still written to disk by default."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-020",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A batch worker resumes a research session by ID from a different directory than the original run, but instead of the prior context it gets a fresh session every time. The session file exists. What is the most likely cause?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The resume call runs from a different `cwd`, so the SDK looks in the wrong session location.",
+          "correct": true,
+          "explanation": "Sessions are stored under an encoded `cwd` path; resuming from a different working directory makes the SDK look in the wrong place and start fresh."
+        },
+        {
+          "id": "B",
+          "text": "The session ID expired, so resume always returns a new session after some time.",
+          "correct": false,
+          "explanation": "Session IDs do not silently expire into fresh sessions; the cwd mismatch is the documented cause."
+        },
+        {
+          "id": "C",
+          "text": "Resume requires `continue: true` as well, or it ignores the captured ID.",
+          "correct": false,
+          "explanation": "`resume` works on its own with a specific ID; the problem here is the mismatched directory."
+        },
+        {
+          "id": "D",
+          "text": "The session must be forked before it can be resumed across processes.",
+          "correct": false,
+          "explanation": "Forking is unrelated; resume needs the matching cwd and an existing file on the host."
+        }
+      ]
     }
   ]
 }

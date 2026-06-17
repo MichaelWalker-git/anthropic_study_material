@@ -1979,6 +1979,402 @@
           "explanation": "Tool search mode addresses context size of definitions, not missing results."
         }
       ]
+    },
+    {
+      "id": "S4-D2-027",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A team is connecting the agent to a cloud-based issue tracker that exposes a remote MCP endpoint. Which transport does the documentation recommend for this kind of remote, cloud service?",
+      "options": [
+        {
+          "id": "A",
+          "text": "stdio, since it runs the server as a local subprocess on your own machine.",
+          "correct": false,
+          "explanation": "stdio runs a local process; it is for tools needing direct system access, not a remote cloud service."
+        },
+        {
+          "id": "B",
+          "text": "HTTP, the recommended and most widely supported remote transport.",
+          "correct": true,
+          "explanation": "HTTP servers are the recommended option for remote MCP servers and the most widely supported transport for cloud-based services."
+        },
+        {
+          "id": "C",
+          "text": "SSE, the preferred transport for all new remote servers.",
+          "correct": false,
+          "explanation": "SSE is deprecated; the docs advise using HTTP instead where available."
+        },
+        {
+          "id": "D",
+          "text": "WebSocket, the only transport that supports OAuth.",
+          "correct": false,
+          "explanation": "WebSocket supports neither OAuth nor the --transport flag; HTTP is the one that supports OAuth."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-028",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "While adding a local stdio MCP server with `claude mcp add ... -- python server.py --port 8080`, an engineer asks why the `--` is required before the command. What is its purpose?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It separates Claude's own options from the command and args passed to the server.",
+          "correct": true,
+          "explanation": "For stdio servers, `--` separates Claude's options (like --transport, --env) from the server command and its arguments, which are passed untouched."
+        },
+        {
+          "id": "B",
+          "text": "It tells Claude Code to launch the configured server in detached background mode at startup.",
+          "correct": false,
+          "explanation": "`--` does not control background execution; it is an argument separator."
+        },
+        {
+          "id": "C",
+          "text": "It marks the server as project-scoped instead of local-scoped.",
+          "correct": false,
+          "explanation": "Scope is set with --scope, not the `--` separator."
+        },
+        {
+          "id": "D",
+          "text": "It enables environment variable expansion for the args list.",
+          "correct": false,
+          "explanation": "Expansion is independent of `--`; the separator just divides Claude's flags from the server command."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-029",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "The same MCP server is defined at local scope and at user scope with different URLs. Which definition does Claude Code use, and how are the entries combined?",
+      "options": [
+        {
+          "id": "A",
+          "text": "User scope wins, and its fields are merged over the local entry.",
+          "correct": false,
+          "explanation": "Local scope has higher precedence than user scope, and entries are not merged."
+        },
+        {
+          "id": "B",
+          "text": "Both definitions load as two separate connections to the server.",
+          "correct": false,
+          "explanation": "When a server is defined in multiple places, Claude Code connects to it once, not twice."
+        },
+        {
+          "id": "C",
+          "text": "Local scope wins, and the entire entry from that source is used.",
+          "correct": true,
+          "explanation": "Local scope has the highest precedence over project and user, and the entire entry from the winning source is used without merging fields across scopes."
+        },
+        {
+          "id": "D",
+          "text": "The URLs are concatenated so both endpoints are tried in turn.",
+          "correct": false,
+          "explanation": "URLs are not concatenated; one source's complete entry is chosen by precedence."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-030",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A committed `.mcp.json` references `${API_KEY}` for a header, but a teammate has not set that variable and it has no default. What happens when Claude Code loads the config?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Claude Code fails to parse the config because the variable is unset.",
+          "correct": true,
+          "explanation": "If a required environment variable is not set and has no default value, Claude Code will fail to parse the config."
+        },
+        {
+          "id": "B",
+          "text": "The header is silently dropped and the server connects anyway.",
+          "correct": false,
+          "explanation": "An unset required variable with no default causes a parse failure, not a silent drop."
+        },
+        {
+          "id": "C",
+          "text": "Claude Code substitutes an empty string for the missing variable.",
+          "correct": false,
+          "explanation": "An empty substitution only happens with a default like `${API_KEY:-}`; otherwise parsing fails."
+        },
+        {
+          "id": "D",
+          "text": "Claude Code prompts the teammate to type the value interactively.",
+          "correct": false,
+          "explanation": "There is no interactive prompt for a missing variable; the config simply fails to parse."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-031",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "With tool search enabled by default, a critical MCP server's tools must be visible to Claude on every turn without a search step. Which configuration achieves that for just that server?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `ENABLE_TOOL_SEARCH=false` so all servers load upfront.",
+          "correct": false,
+          "explanation": "This disables deferral for every server, not just the one that needs to be always visible."
+        },
+        {
+          "id": "B",
+          "text": "Add `\"alwaysLoad\": true` to that server's `.mcp.json` entry.",
+          "correct": true,
+          "explanation": "Setting `alwaysLoad: true` on a server loads all its tools into context at session start regardless of the tool search setting, leaving other servers deferred."
+        },
+        {
+          "id": "C",
+          "text": "Move the server into user scope so it is prioritized.",
+          "correct": false,
+          "explanation": "Scope controls sharing and precedence, not whether tools are always loaded into context."
+        },
+        {
+          "id": "D",
+          "text": "Add the server name to the permissions deny list.",
+          "correct": false,
+          "explanation": "A deny rule blocks the tool; it does not make it always visible."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-015",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "An engineer is choosing between the Anthropic Client SDK and the Claude Agent SDK to build a code-exploration agent. What is the key difference in how tool execution is handled?",
+      "options": [
+        {
+          "id": "A",
+          "text": "With the Client SDK you implement the tool loop; the Agent SDK handles tools for you.",
+          "correct": true,
+          "explanation": "The Client SDK gives direct API access where you implement the tool loop yourself, while the Agent SDK provides built-in tool execution and runs the agent loop."
+        },
+        {
+          "id": "B",
+          "text": "The Client SDK ships built-in Read and Bash tools, whereas the Agent SDK ships none of them at all.",
+          "correct": false,
+          "explanation": "It is reversed: the Agent SDK provides built-in tools; the Client SDK requires you to implement execution."
+        },
+        {
+          "id": "C",
+          "text": "Both SDKs execute tools on Anthropic's servers with no local code.",
+          "correct": false,
+          "explanation": "Client tools execute in your application; neither SDK runs your tools entirely on Anthropic servers."
+        },
+        {
+          "id": "D",
+          "text": "Only the Client SDK can connect to MCP servers.",
+          "correct": false,
+          "explanation": "The Agent SDK supports MCP servers too; MCP is not exclusive to the Client SDK."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-016",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "An MCP tool runs on Anthropic's infrastructure as a server tool. How does this differ from a client tool in the agentic loop?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A server tool requires you to send back a `tool_result` for each call.",
+          "correct": false,
+          "explanation": "Returning a tool_result is the client-tool flow; server tools are executed by Anthropic."
+        },
+        {
+          "id": "B",
+          "text": "For a server tool, Anthropic executes it and you see the results directly.",
+          "correct": true,
+          "explanation": "Server tools run on Anthropic's infrastructure and return results directly, whereas client tools stop with tool_use for your code to execute and return a tool_result."
+        },
+        {
+          "id": "C",
+          "text": "A server tool always stops the loop with `stop_reason: end_turn`.",
+          "correct": false,
+          "explanation": "Server-tool execution does not force end_turn; that reason signals turn completion, not server execution."
+        },
+        {
+          "id": "D",
+          "text": "A server tool cannot appear in the same request as any client tool.",
+          "correct": false,
+          "explanation": "There is no such restriction; the distinction is only where execution happens."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-017",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "In the Agent SDK, an engineer wants to resume a previous query with full prior context. Where do they obtain the identifier needed to resume?",
+      "options": [
+        {
+          "id": "A",
+          "text": "From the init system message's `session_id` emitted during the first query.",
+          "correct": true,
+          "explanation": "The first query emits an init system message carrying the session_id, which you pass as `resume` to continue with full prior context."
+        },
+        {
+          "id": "B",
+          "text": "From the `allowed_tools` option that was set when the first query was originally issued.",
+          "correct": false,
+          "explanation": "`allowed_tools` configures tool access, not a session identifier."
+        },
+        {
+          "id": "C",
+          "text": "From the project's `.mcp.json` server entry.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures MCP servers and holds no session id."
+        },
+        {
+          "id": "D",
+          "text": "From the contents of the project root `CLAUDE.md`.",
+          "correct": false,
+          "explanation": "CLAUDE.md provides memory, not a session identifier to resume."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-021",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "A connected MCP server exposes prompts, and the team wants to invoke one named `pr_review` for issue 456. How does that prompt surface in Claude Code?",
+      "options": [
+        {
+          "id": "A",
+          "text": "As an @-mention resource referenced like `@github:pr_review`.",
+          "correct": false,
+          "explanation": "@-mentions reference resources; prompts surface as slash commands, not resource mentions."
+        },
+        {
+          "id": "B",
+          "text": "As an entry that must first be added to `.claude/commands/`.",
+          "correct": false,
+          "explanation": "MCP prompts are discovered dynamically; you do not copy them into the commands directory."
+        },
+        {
+          "id": "C",
+          "text": "As a slash command like `/mcp__github__pr_review 456`.",
+          "correct": true,
+          "explanation": "MCP prompts appear as commands in the form `/mcp__servername__promptname`, with arguments passed space-separated after the command."
+        },
+        {
+          "id": "D",
+          "text": "As a new built-in tool automatically named `pr_review`.",
+          "correct": false,
+          "explanation": "Prompts become slash commands, not built-in tools."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-022",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "An MCP docs server exposes an API reference resource, and an engineer wants to point the agent at it inline in a prompt. What is the correct way to reference it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add the resource path to the `args` array in `.mcp.json`.",
+          "correct": false,
+          "explanation": "`args` configures a server command; it is not how you reference a resource in a prompt."
+        },
+        {
+          "id": "B",
+          "text": "Use an @ mention like `@docs:file://api/authentication`.",
+          "correct": true,
+          "explanation": "MCP resources are referenced with @ mentions in the form `@server:protocol://resource/path`, and are fetched and attached automatically."
+        },
+        {
+          "id": "C",
+          "text": "Invoke it as a slash command `/docs api/authentication`.",
+          "correct": false,
+          "explanation": "Slash commands are for MCP prompts; resources are referenced via @ mentions."
+        },
+        {
+          "id": "D",
+          "text": "Paste the resource URI into the project `CLAUDE.md` deny list.",
+          "correct": false,
+          "explanation": "There is no resource deny list in CLAUDE.md; resources are @-mentioned in prompts."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-023",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "When adding an MCP server with `claude mcp add`, which `--scope` value shares the server with the whole team via a version-controlled file?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`local`, the default scope for the current project.",
+          "correct": false,
+          "explanation": "Local scope is private to you in the current project and is not shared via version control."
+        },
+        {
+          "id": "B",
+          "text": "`user`, which spans all of your projects.",
+          "correct": false,
+          "explanation": "User scope is available across your projects but remains private, not team-shared."
+        },
+        {
+          "id": "C",
+          "text": "`project`, which writes the server into a shared `.mcp.json`.",
+          "correct": true,
+          "explanation": "The `project` scope stores the server in `.mcp.json` at the project root, which is checked into version control and shared with everyone on the team."
+        },
+        {
+          "id": "D",
+          "text": "`enterprise`, which each individual developer selects manually at install time on their machine.",
+          "correct": false,
+          "explanation": "Enterprise-level managed configuration is deployed by administrators, not chosen per developer to share a team server."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-024",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "An agent is not calling the available investigation tools and instead answers a codebase question from memory. Per the docs, what is a reliable steering technique?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a system-prompt instruction like \"Use the tools to investigate before responding.\"",
+          "correct": true,
+          "explanation": "A light system-prompt instruction such as \"Use the tools to investigate before responding\" measurably increases tool use when Claude is not calling tools as expected."
+        },
+        {
+          "id": "B",
+          "text": "Remove all tool descriptions so Claude must explore to learn them.",
+          "correct": false,
+          "explanation": "Stripping descriptions degrades correct tool selection; clear descriptions are what guide use."
+        },
+        {
+          "id": "C",
+          "text": "Lower the `max_tokens` setting so the model has no remaining room left to answer from its own memory.",
+          "correct": false,
+          "explanation": "Reducing output budget truncates answers; it does not steer toward tool use."
+        },
+        {
+          "id": "D",
+          "text": "Delete the project `CLAUDE.md` so the agent has less context.",
+          "correct": false,
+          "explanation": "Removing memory does not encourage tool use; a system-prompt nudge does."
+        }
+      ]
     }
   ]
 }
