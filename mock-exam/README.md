@@ -54,7 +54,7 @@ Scenarios: S1 Customer Support Resolution Agent · S2 Code Generation with Claud
 
 ## The question bank
 
-Questions live in `public/bank/S1.json … S6.json` (one file per scenario), loaded and merged in the browser at runtime. The pool currently holds **~376 questions** (60+ per scenario).
+Questions live in `public/bank/S1.json … S6.json` (one file per scenario), loaded and merged in the browser at runtime. The pool currently holds **~448 questions** (70+ per scenario).
 
 Each question looks like this:
 
