@@ -1,0 +1,2050 @@
+{
+  "questions": [
+    {
+      "id": "S6-D4-001",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your extraction system occasionally produces JSON with syntax errors that break the downstream parser. You currently ask the model to \"respond only with valid JSON.\" What's the most reliable way to guarantee schema-compliant structured output?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define an extraction tool with a JSON schema as its input parameters and extract structured data from the `tool_use` response.",
+          "correct": true,
+          "explanation": "Tool use with JSON schemas is the most reliable approach for guaranteed schema-compliant output, eliminating JSON syntax errors entirely."
+        },
+        {
+          "id": "B",
+          "text": "Add more emphatic instructions like \"YOU MUST respond with valid JSON only, with no exceptions and absolutely no surrounding prose.\"",
+          "correct": false,
+          "explanation": "Prose instructions remain probabilistic and don't eliminate syntax errors."
+        },
+        {
+          "id": "C",
+          "text": "Post-process the model's text output with a regex that repairs malformed JSON.",
+          "correct": false,
+          "explanation": "Regex repair is brittle and can silently corrupt data; it treats the symptom, not the cause."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature to 0 so the JSON is always formatted identically.",
+          "correct": false,
+          "explanation": "Temperature 0 reduces variability but does not guarantee valid JSON structure."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-002",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Your extraction returns a document's `stated_total` but downstream reconciliation shows the line items frequently don't sum to it. Strict JSON schema via tool use is already in place. What design best surfaces these discrepancies?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Extract a `calculated_total` alongside `stated_total` and add a `conflict_detected` boolean so discrepancies are flagged for review.",
+          "correct": true,
+          "explanation": "Strict schemas eliminate syntax errors but not semantic errors. Extracting both totals and flagging conflicts surfaces inconsistent source data for self-correction or review."
+        },
+        {
+          "id": "B",
+          "text": "Trust the `stated_total` as authoritative and discard the individual line items whenever the two happen to disagree with each other.",
+          "correct": false,
+          "explanation": "Silently discarding data hides genuine discrepancies that downstream systems need to know about."
+        },
+        {
+          "id": "C",
+          "text": "Retry the extraction until the totals happen to match.",
+          "correct": false,
+          "explanation": "Retries don't help when the source document itself is internally inconsistent."
+        },
+        {
+          "id": "D",
+          "text": "Remove the total fields from the schema to avoid the conflict.",
+          "correct": false,
+          "explanation": "Dropping required data to avoid surfacing a conflict defeats the purpose of extraction."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-001",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "4.4",
+      "stem": "On retry, your extraction system re-sends the same prompt when a required field comes back empty. For documents that genuinely lack the field, retries waste tokens and still fail. How should you decide when retrying is worthwhile?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Retry with appended validation errors for format failures, but not when the field is simply absent.",
+          "correct": true,
+          "explanation": "Retry-with-error-feedback helps format and structural errors, but retries are ineffective when the required information isn't present in the source — that distinction should drive the decision."
+        },
+        {
+          "id": "B",
+          "text": "Always retry up to five times regardless of the failure cause.",
+          "correct": false,
+          "explanation": "Blind retries waste tokens on documents that genuinely lack the field."
+        },
+        {
+          "id": "C",
+          "text": "Never retry; accept the first extraction result.",
+          "correct": false,
+          "explanation": "This gives up on recoverable format/structural errors that retries would fix."
+        },
+        {
+          "id": "D",
+          "text": "Fabricate a plausible-looking value whenever the field is missing from the document, purely so that the strict schema validates successfully.",
+          "correct": false,
+          "explanation": "Fabricating values to satisfy a required field is a serious accuracy violation."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-003",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "You want the model to always return data through your extraction tool rather than sometimes replying in prose. With a single `extract_invoice` tool defined, which `tool_choice` setting forces that tool to be called on every request?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set `tool_choice` to `{\"type\":\"tool\",\"name\":\"extract_invoice\"}` so the model is required to call that specific tool.",
+          "correct": true,
+          "explanation": "Forcing a named tool guarantees the model invokes `extract_invoice` and returns schema-shaped input rather than free text."
+        },
+        {
+          "id": "B",
+          "text": "Set `tool_choice` to `{\"type\":\"auto\"}` and trust the model to pick the tool itself.",
+          "correct": false,
+          "explanation": "`auto` lets the model decide and it may answer in prose instead of calling the tool."
+        },
+        {
+          "id": "C",
+          "text": "Set `tool_choice` to `{\"type\":\"none\"}` to keep the tool available to the model without applying any selection pressure at all.",
+          "correct": false,
+          "explanation": "`none` prevents tool use altogether, the opposite of what is required here."
+        },
+        {
+          "id": "D",
+          "text": "Omit `tool_choice` and lower temperature so the tool is selected reliably.",
+          "correct": false,
+          "explanation": "Omitting it defaults to auto behavior; temperature does not force a tool call."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-004",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your pipeline defines three extraction tools and you want Claude to call exactly one of them (its choice) but never reply in plain text. Which `tool_choice` value matches this requirement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use `{\"type\":\"any\"}`, which requires the model to use one of the available tools but lets it choose which.",
+          "correct": true,
+          "explanation": "`any` forces some tool call while leaving the selection among the defined tools to the model."
+        },
+        {
+          "id": "B",
+          "text": "Use `{\"type\":\"auto\"}`, which forces a tool call when several tools are present.",
+          "correct": false,
+          "explanation": "`auto` allows the model to skip tools and answer in prose, so it does not guarantee a call."
+        },
+        {
+          "id": "C",
+          "text": "Use a forced named tool so the model is locked to exactly one specific schema on every single request it receives.",
+          "correct": false,
+          "explanation": "A named force removes the model's freedom to pick among the three tools."
+        },
+        {
+          "id": "D",
+          "text": "Use `{\"type\":\"none\"}`, which permits any of the tools to be used freely.",
+          "correct": false,
+          "explanation": "`none` disables tool use entirely rather than requiring one."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-005",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Many source documents omit a customer's middle name. With a strict schema, the model keeps inventing initials to fill a required `middle_name` string. What schema change best stops the fabrication?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Make `middle_name` optional or nullable so the model can omit it when the source provides no value.",
+          "correct": true,
+          "explanation": "Optional/nullable fields let the model represent genuinely absent data instead of fabricating values to satisfy a required field."
+        },
+        {
+          "id": "B",
+          "text": "Keep `middle_name` as a required field and instead instruct the model in prose to simply leave it blank whenever it is missing.",
+          "correct": false,
+          "explanation": "A required field still pressures the model to fill it; prose guidance is weaker than the schema constraint."
+        },
+        {
+          "id": "C",
+          "text": "Add a regex pattern to `middle_name` that only accepts single capital letters.",
+          "correct": false,
+          "explanation": "A pattern constrains format but still demands a value, encouraging invented initials."
+        },
+        {
+          "id": "D",
+          "text": "Default `middle_name` to the string \"N/A\" whenever the document is unclear.",
+          "correct": false,
+          "explanation": "A literal placeholder injects fake data downstream rather than signaling true absence."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-006",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your `document_type` enum has fixed values, but new contract subtypes keep appearing and the model is forced to mis-bin them. You still want clean categories for the common cases. What enum design handles this best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Keep the known enum values but add an `other` member plus a free-text `other_detail` field for the model to describe novel types.",
+          "correct": true,
+          "explanation": "An `other`+detail pattern keeps clean categories for known types while capturing extensible cases without mis-binning."
+        },
+        {
+          "id": "B",
+          "text": "Remove the enum and let `document_type` be any free-text string.",
+          "correct": false,
+          "explanation": "Dropping the enum loses the consistency that downstream systems rely on for the common cases."
+        },
+        {
+          "id": "C",
+          "text": "Expand the enum every single time a brand-new contract subtype appears and then redeploy the schema across the whole pipeline.",
+          "correct": false,
+          "explanation": "Constant redeploys are operationally brittle and still fail until each new type is added."
+        },
+        {
+          "id": "D",
+          "text": "Map every unrecognized subtype to the closest existing enum value.",
+          "correct": false,
+          "explanation": "Forcing novel types into existing bins is exactly the mis-binning you are trying to avoid."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-007",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Some scanned documents are too blurry to read a value confidently, yet the model still emits a guess for the `payment_status` enum. You want it to mark uncertainty instead. What is the cleanest schema-level approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add an `unclear` member to the `payment_status` enum so the model can flag ambiguous cases explicitly.",
+          "correct": true,
+          "explanation": "An explicit `unclear` enum value gives the model a sanctioned way to signal ambiguity rather than guessing among the real categories."
+        },
+        {
+          "id": "B",
+          "text": "Instruct the model in the prompt to skip fields it cannot read clearly.",
+          "correct": false,
+          "explanation": "Skipping a required enum field tends to produce schema violations or silent guesses, not a clean signal."
+        },
+        {
+          "id": "C",
+          "text": "Lower the temperature so the model's enum guesses become more consistent.",
+          "correct": false,
+          "explanation": "Consistency in a guess does not make the guess correct or flag the underlying ambiguity."
+        },
+        {
+          "id": "D",
+          "text": "Return the most statistically common `payment_status` value seen across the corpus whenever the scanned document is too blurry to read.",
+          "correct": false,
+          "explanation": "Defaulting to a common value masks ambiguity and injects likely-wrong data."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-008",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "A teammate argues that switching from prose-JSON to tool-use schemas will also guarantee the extracted amounts are correct. Why is that claim wrong?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Schemas enforce structure and types, but cannot verify that a captured value actually matches what the document says — that is a semantic error.",
+          "correct": true,
+          "explanation": "Strict schemas eliminate syntax and type errors, yet semantic mistakes like a misread amount still pass validation."
+        },
+        {
+          "id": "B",
+          "text": "Tool schemas only ever validate the very first field in the object, so every later amount in the record is left completely unchecked.",
+          "correct": false,
+          "explanation": "Schemas validate all declared fields, not just the first; the real gap is semantic, not positional."
+        },
+        {
+          "id": "C",
+          "text": "Schemas validate amounts only when temperature is set to zero.",
+          "correct": false,
+          "explanation": "Schema validation is independent of temperature; this is a fabricated dependency."
+        },
+        {
+          "id": "D",
+          "text": "Tool use disables validation, so amounts are never checked at all.",
+          "correct": false,
+          "explanation": "Standard tool use applies schema validation; it does not disable checking."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-009",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Downstream consumers need numeric amounts, but the model sometimes returns `\"1,200.00\"` as a string. The field is declared as a `number` in the schema with tool use enabled. What does this tell you?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Declaring the field as `number` makes the tool layer reject string values, pushing the model toward a typed numeric output.",
+          "correct": true,
+          "explanation": "Typed schema fields constrain output: a `number` type prevents formatted-string amounts and yields parseable numerics."
+        },
+        {
+          "id": "B",
+          "text": "The schema cannot influence output types at all, so the formatted-string amount should simply be parsed manually by your own code afterward.",
+          "correct": false,
+          "explanation": "Schemas do control types; relying on manual parsing ignores the reliability the schema provides."
+        },
+        {
+          "id": "C",
+          "text": "String amounts are unavoidable, so the field should be declared as a `string`.",
+          "correct": false,
+          "explanation": "Declaring it a string concedes the problem and forces brittle downstream parsing."
+        },
+        {
+          "id": "D",
+          "text": "The model needs a higher max_tokens limit to format numbers correctly.",
+          "correct": false,
+          "explanation": "Token limits have nothing to do with numeric typing of a field."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-010",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Your extraction tool's schema describes a deeply nested `line_items` array of objects. The model occasionally returns the right values but in a flat structure. What is the most direct fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Tighten the tool's `input_schema` to require the nested array of typed objects, with clear field descriptions for each level.",
+          "correct": true,
+          "explanation": "Making the nesting and types explicit in the schema constrains the model to the intended structure rather than a flat shape."
+        },
+        {
+          "id": "B",
+          "text": "Add a prose instruction telling the model to nest the line items properly.",
+          "correct": false,
+          "explanation": "Prose is less reliable than the schema itself for enforcing structure."
+        },
+        {
+          "id": "C",
+          "text": "Flatten your downstream consumer to accept whatever shape arrives.",
+          "correct": false,
+          "explanation": "Reshaping the consumer to match inconsistent output abandons the schema's guarantees."
+        },
+        {
+          "id": "D",
+          "text": "Run the extraction twice and then write code to merge the two flat outputs together into a single nested structure afterward.",
+          "correct": false,
+          "explanation": "Merging duplicate runs is wasteful and does not address the schema definition."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-011",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "A reviewer asks why you chose tool use over assistant-message prefilling with a code-block stop sequence for guaranteeing JSON. What is the strongest justification?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Tool use validates output against a declared schema, so structural and type guarantees are enforced rather than merely encouraged.",
+          "correct": true,
+          "explanation": "Prefill+stop coaxes raw JSON but offers no schema validation; tool use enforces the declared structure and types."
+        },
+        {
+          "id": "B",
+          "text": "Prefilling cannot produce JSON at all, so tool use is the only option.",
+          "correct": false,
+          "explanation": "Prefilling can produce JSON; the difference is enforcement, not capability."
+        },
+        {
+          "id": "C",
+          "text": "Tool use is always strictly cheaper in token cost than assistant-message prefilling, for any document of any size.",
+          "correct": false,
+          "explanation": "Cost is not the deciding factor and is not guaranteed lower; the schema guarantee is the point."
+        },
+        {
+          "id": "D",
+          "text": "Stop sequences are deprecated and no longer supported by the API.",
+          "correct": false,
+          "explanation": "Stop sequences remain supported; this is factually incorrect."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-012",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "Each extracted record must include a confidence flag the model sets itself, but you do not want the model to omit it. You are using tool use. How do you ensure the field is always present?",
+      "options": [
+        {
+          "id": "A",
+          "text": "List the confidence field in the schema's `required` array so the tool layer enforces its presence.",
+          "correct": true,
+          "explanation": "Adding a field to `required` makes the tool validation reject output that omits it, guaranteeing presence."
+        },
+        {
+          "id": "B",
+          "text": "Mention the field in the tool description and hope the model includes it.",
+          "correct": false,
+          "explanation": "Descriptions guide but do not enforce; the field can still be omitted."
+        },
+        {
+          "id": "C",
+          "text": "Make the confidence field optional in the schema and then backfill a sensible default value in your own code whenever it is absent.",
+          "correct": false,
+          "explanation": "Backfilling discards the model's own signal, which defeats the purpose of a model-set flag."
+        },
+        {
+          "id": "D",
+          "text": "Add the field twice in the schema so the model is more likely to emit it.",
+          "correct": false,
+          "explanation": "Duplicating a property is invalid schema design and does not enforce presence."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-013",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "For a contract-extraction tool, you want the model to use the tool when a contract is present but answer normally for non-contract uploads. Which `tool_choice` fits this mixed behavior?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use `{\"type\":\"auto\"}` so the model calls the tool only when the input warrants it and otherwise replies directly.",
+          "correct": true,
+          "explanation": "`auto` lets the model decide per input whether the tool is appropriate, which matches mixed-content handling."
+        },
+        {
+          "id": "B",
+          "text": "Use `{\"type\":\"any\"}` so the model always calls a tool regardless of input.",
+          "correct": false,
+          "explanation": "`any` forces a tool call even for non-contract uploads, which is wrong here."
+        },
+        {
+          "id": "C",
+          "text": "Force the named contract tool so that every single upload, contract or not, is unconditionally parsed as though it were a contract.",
+          "correct": false,
+          "explanation": "Forcing the tool misapplies contract extraction to non-contract inputs."
+        },
+        {
+          "id": "D",
+          "text": "Use `{\"type\":\"none\"}` so the tool is reserved for explicit user requests only.",
+          "correct": false,
+          "explanation": "`none` blocks the tool entirely, so contracts would never be extracted."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-014",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "An auditor reports that some `effective_date` values are valid dates but clearly wrong for the document. The schema already enforces ISO-8601 date format. What is the realistic conclusion?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Format validation passed, so the failure is semantic; you need cross-checks or human review, not a stricter date pattern.",
+          "correct": true,
+          "explanation": "A well-formatted but incorrect date is a semantic error that schema format rules cannot catch; verification beyond the schema is needed."
+        },
+        {
+          "id": "B",
+          "text": "The schema's date pattern is clearly broken and must be replaced with a much stricter regular expression to fix the wrong values.",
+          "correct": false,
+          "explanation": "The dates are valid in format; a stricter pattern would not catch a wrong-but-valid date."
+        },
+        {
+          "id": "C",
+          "text": "The model needs the date field marked optional to stop the errors.",
+          "correct": false,
+          "explanation": "Making the field optional would drop dates entirely, not improve correctness."
+        },
+        {
+          "id": "D",
+          "text": "Switching `tool_choice` to forced will correct the date values.",
+          "correct": false,
+          "explanation": "`tool_choice` governs whether a tool is called, not the correctness of extracted values."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-015",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "When an extraction fails validation, your retry currently resends the original prompt unchanged. Accuracy barely improves on structural failures. What single change makes retries most effective for those failures?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Append the specific validation errors to the retry prompt so the model knows exactly what to correct.",
+          "correct": true,
+          "explanation": "Retry-with-error-feedback gives the model the precise structural problem to fix, which is far more effective than an unchanged resend."
+        },
+        {
+          "id": "B",
+          "text": "Increase the number of retries from three up to ten while leaving the original prompt completely unchanged on each attempt.",
+          "correct": false,
+          "explanation": "More identical retries without feedback rarely converges on a fix."
+        },
+        {
+          "id": "C",
+          "text": "Raise the temperature on each retry to encourage a different answer.",
+          "correct": false,
+          "explanation": "Higher temperature adds randomness, not targeted correction of the structural error."
+        },
+        {
+          "id": "D",
+          "text": "Switch to a smaller, faster model so retries complete more quickly.",
+          "correct": false,
+          "explanation": "A faster model does not address why the validation failed."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-016",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "A subset of invoices is missing a tax field that the model can never recover, while another subset just has malformed numbers. Your retry budget is fixed. How should you route retries?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Spend retries on format and structural errors with error feedback, and stop retrying when the field is genuinely absent from the source.",
+          "correct": true,
+          "explanation": "Retries are effective for recoverable format/structural issues but ineffective when the information is simply not present, so the budget should follow that distinction."
+        },
+        {
+          "id": "B",
+          "text": "Split the retry budget evenly across both subsets to be fair.",
+          "correct": false,
+          "explanation": "Even splitting wastes retries on documents that can never produce the missing field."
+        },
+        {
+          "id": "C",
+          "text": "Prioritize spending retries on the missing-field invoices first, on the grounds that those particular errors are the most severe.",
+          "correct": false,
+          "explanation": "Severity does not make an absent value recoverable; retries there are wasted."
+        },
+        {
+          "id": "D",
+          "text": "Disable retries entirely and queue every failure for human review.",
+          "correct": false,
+          "explanation": "This abandons easily recoverable format errors that feedback retries would fix."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-017",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Reviewers notice the model often dismisses fields as \"not found\" even when the value is present but oddly placed. You want to study the failure mode before changing prompts. What field best enables that analysis?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a `detected_pattern` field where the model records the layout or cue it used, so dismissal patterns can be analyzed.",
+          "correct": true,
+          "explanation": "Capturing a `detected_pattern` lets you analyze why the model dismissed values, revealing systematic layout-related failures."
+        },
+        {
+          "id": "B",
+          "text": "Add a free-text `notes` field where the model can write down anything it wants about how the extraction went for that document.",
+          "correct": false,
+          "explanation": "Unstructured notes are hard to aggregate and won't reliably reveal dismissal patterns."
+        },
+        {
+          "id": "C",
+          "text": "Increase max_tokens so the model can explain itself at length.",
+          "correct": false,
+          "explanation": "More room for prose does not produce a structured signal you can analyze."
+        },
+        {
+          "id": "D",
+          "text": "Lower temperature so the dismissals become deterministic.",
+          "correct": false,
+          "explanation": "Determinism does not explain the cause of the dismissals."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-018",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Reconciliation needs to know whether a mismatch between the printed total and the line-item sum was the document's fault or the model's. Which extraction design surfaces that distinction?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Extract `calculated_total` and `stated_total` plus a `conflict_detected` flag, so a mismatch points to inconsistent source data.",
+          "correct": true,
+          "explanation": "Capturing both totals and a conflict flag lets reconciliation see that the source itself disagrees, separating document errors from extraction errors."
+        },
+        {
+          "id": "B",
+          "text": "Extract only the `stated_total` and trust it as authoritative.",
+          "correct": false,
+          "explanation": "With only one total there is nothing to compare, so the distinction is lost."
+        },
+        {
+          "id": "C",
+          "text": "Recompute the total in a downstream step and silently overwrite whatever value the model originally returned for that field.",
+          "correct": false,
+          "explanation": "Overwriting hides the original conflict that reconciliation needs to see."
+        },
+        {
+          "id": "D",
+          "text": "Round both numbers to whole units so small mismatches disappear.",
+          "correct": false,
+          "explanation": "Rounding masks genuine discrepancies instead of revealing their source."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-019",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "After three feedback-driven retries, a particular document still fails because the required clause does not exist in the text. What is the correct terminal behavior?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Stop retrying and mark the field as genuinely absent, since feedback cannot recover information that is not in the source.",
+          "correct": true,
+          "explanation": "Retries are ineffective for absent information; the right outcome is to record the field as missing rather than burn more attempts."
+        },
+        {
+          "id": "B",
+          "text": "Continue retrying with stronger wording until the clause appears.",
+          "correct": false,
+          "explanation": "No wording can extract a clause that is not present in the document."
+        },
+        {
+          "id": "C",
+          "text": "Insert the most common clause text that has been seen across other similar documents in the corpus to fill the gap.",
+          "correct": false,
+          "explanation": "Inserting borrowed text fabricates content not in this source."
+        },
+        {
+          "id": "D",
+          "text": "Lower the validation strictness so the empty value passes silently.",
+          "correct": false,
+          "explanation": "Relaxing validation hides the absence instead of recording it honestly."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-020",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Your retry handler appends a generic message: \"Your previous output was invalid, try again.\" Accuracy on structural errors is still poor. What refinement helps most?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include the exact validator messages, such as which field failed and why, instead of a generic invalidity notice.",
+          "correct": true,
+          "explanation": "Specific, field-level error feedback gives the model an actionable target; generic notices do not."
+        },
+        {
+          "id": "B",
+          "text": "Repeat the same generic message twice for emphasis.",
+          "correct": false,
+          "explanation": "Repetition of a vague message adds no actionable information."
+        },
+        {
+          "id": "C",
+          "text": "Remove the message entirely and just resend the document.",
+          "correct": false,
+          "explanation": "Removing feedback returns to a blind resend, which underperforms."
+        },
+        {
+          "id": "D",
+          "text": "Add the full JSON schema into the retry prompt again, but still include no details about which specific field actually failed.",
+          "correct": false,
+          "explanation": "Re-stating the schema without telling the model what failed is far less effective than specific errors."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-021",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Vendors format dates and addresses inconsistently, and your extractions vary in formatting run to run. Schema enforcement is already in place for types. What technique most improves formatting consistency?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a few-shot block of input/output pairs showing the exact normalized formatting you expect.",
+          "correct": true,
+          "explanation": "Few-shot examples are the most effective way to lock in consistent formatting that the schema's type rules alone cannot specify."
+        },
+        {
+          "id": "B",
+          "text": "Add yet another strongly worded, emphatic sentence to the prompt asking the model for perfectly consistent formatting every time.",
+          "correct": false,
+          "explanation": "Prose emphasis is weaker than concrete demonstrations for formatting consistency."
+        },
+        {
+          "id": "C",
+          "text": "Raise max_tokens so the model has room to reformat carefully.",
+          "correct": false,
+          "explanation": "Token headroom does not teach the model the target format."
+        },
+        {
+          "id": "D",
+          "text": "Run the extraction at temperature 1 to explore more formats.",
+          "correct": false,
+          "explanation": "Higher temperature increases variability, the opposite of consistency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-022",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Some incoming documents are clean tables while others are messy free-form letters, and the model handles the messy ones poorly. How should your few-shot examples be chosen?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include examples that demonstrate handling both clean tables and messy free-form structures so the model generalizes across them.",
+          "correct": true,
+          "explanation": "Demonstrating varied document structures teaches the model to handle the full range, including the messy cases it currently fails."
+        },
+        {
+          "id": "B",
+          "text": "Use only the very cleanest table examples in the prompt so that the model learns the single ideal format and nothing else.",
+          "correct": false,
+          "explanation": "Clean-only examples leave the model unprepared for the messy documents that fail."
+        },
+        {
+          "id": "C",
+          "text": "Use a single example and rely on the schema to cover the rest.",
+          "correct": false,
+          "explanation": "One example cannot demonstrate the varied structures the model struggles with."
+        },
+        {
+          "id": "D",
+          "text": "Provide many examples of the same messy letter repeatedly.",
+          "correct": false,
+          "explanation": "Repeating one structure does not teach generalization across formats."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-023",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Field notes record quantities informally, like \"a couple dozen\" or \"half a pallet,\" and the model often returns null for these. You want consistent numeric estimates. What is the best prompting approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Provide few-shot examples mapping informal measurements to the normalized numeric values you expect.",
+          "correct": true,
+          "explanation": "Examples that show how informal measurements convert to numbers reduce empty/null extraction and teach the desired normalization."
+        },
+        {
+          "id": "B",
+          "text": "Tell the model in prose that it must always estimate some number for the quantity field and may never under any circumstances return null.",
+          "correct": false,
+          "explanation": "A blunt instruction can push the model to guess wildly without showing the intended mapping."
+        },
+        {
+          "id": "C",
+          "text": "Mark the quantity field nullable and accept the nulls.",
+          "correct": false,
+          "explanation": "Accepting nulls abandons the goal of consistent numeric estimates."
+        },
+        {
+          "id": "D",
+          "text": "Set temperature to 1 so the model is more willing to estimate.",
+          "correct": false,
+          "explanation": "Temperature does not teach the conversion and harms consistency."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-024",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Audits show the model frequently returns empty strings for fields whose values are present but phrased unusually. Which prompt change most directly reduces this empty/null extraction?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add few-shot examples where unusually phrased values are correctly extracted, showing the model the value really is present.",
+          "correct": true,
+          "explanation": "Examples demonstrating extraction from unusual phrasing reduce hallucinated emptiness by showing the model the value exists."
+        },
+        {
+          "id": "B",
+          "text": "Instruct the model that it must never return an empty string for any field under any circumstance whatsoever, no matter what.",
+          "correct": false,
+          "explanation": "A blanket ban can push fabrication when a value truly is absent; examples are more precise."
+        },
+        {
+          "id": "C",
+          "text": "Reduce max_tokens to force the model to be more decisive.",
+          "correct": false,
+          "explanation": "Constraining length does not help the model recognize unusual phrasing."
+        },
+        {
+          "id": "D",
+          "text": "Add the field name again in the schema description for emphasis.",
+          "correct": false,
+          "explanation": "Repeating the name does not demonstrate how to read unusual phrasing."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-025",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "A colleague worries that adding examples will make the model copy the example values into real extractions. How do you both keep few-shot benefits and avoid that leakage?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use clearly fictitious example values and wrap examples in distinct tags so the model treats them as patterns, not data to copy.",
+          "correct": true,
+          "explanation": "Clearly delimited, obviously fake examples teach the pattern while signaling they are not the document to extract from."
+        },
+        {
+          "id": "B",
+          "text": "Drop examples entirely to remove any risk of copying.",
+          "correct": false,
+          "explanation": "Removing examples loses the consistency benefit they provide."
+        },
+        {
+          "id": "C",
+          "text": "Use real prior customer documents directly as the examples so that all of the demonstrated values look fully authentic to the model.",
+          "correct": false,
+          "explanation": "Realistic values increase the chance the model copies them and risk leaking customer data."
+        },
+        {
+          "id": "D",
+          "text": "Place the examples after the document so they are read last.",
+          "correct": false,
+          "explanation": "Ordering alone does not prevent copying and can reduce the examples' guiding effect."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-026",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "You added examples but the model still hallucinates plausible-sounding values for fields that are absent. Which adjustment to your few-shot set best curbs this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include an example where a field is genuinely absent and the ideal output leaves it null, demonstrating restraint.",
+          "correct": true,
+          "explanation": "Showing a correct null output for an absent field teaches the model that omission is the right behavior, reducing hallucination."
+        },
+        {
+          "id": "B",
+          "text": "Add many more examples to the prompt in which every single field is always fully populated with a value.",
+          "correct": false,
+          "explanation": "All-populated examples reinforce the habit of always filling fields, worsening hallucination."
+        },
+        {
+          "id": "C",
+          "text": "Increase the number of examples regardless of their content.",
+          "correct": false,
+          "explanation": "Quantity without an absence example does not teach restraint."
+        },
+        {
+          "id": "D",
+          "text": "Tell the model the examples are only suggestions it can ignore.",
+          "correct": false,
+          "explanation": "Undercutting the examples weakens their guidance entirely."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-027",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "You must extract fields from 80,000 archived PDFs overnight, and latency per document does not matter. Cost does. Which approach fits best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Submit the documents through the Message Batches API, which offers about 50% cost savings within a 24-hour window.",
+          "correct": true,
+          "explanation": "Batch processing is ideal for large, latency-tolerant volumes and provides roughly 50% savings over standard calls within the 24-hour window."
+        },
+        {
+          "id": "B",
+          "text": "Send each of the PDFs as an individual real-time synchronous request, firing them off as fast as your account rate limit will allow.",
+          "correct": false,
+          "explanation": "Real-time calls cost more and provide no benefit when latency does not matter."
+        },
+        {
+          "id": "C",
+          "text": "Stream every document and stop early to save output tokens.",
+          "correct": false,
+          "explanation": "Streaming addresses UX latency, not bulk cost for an overnight job."
+        },
+        {
+          "id": "D",
+          "text": "Concatenate all 80,000 PDFs into one request to amortize overhead.",
+          "correct": false,
+          "explanation": "A single giant request will exceed context limits and is not how batching works."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-028",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "A batch of 10,000 documents finishes and 240 entries returned errors. You want to reprocess only those without resubmitting the whole batch. What is the right mechanism?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Match results to inputs by their `custom_id` and resubmit only the failed `custom_id` entries in a new batch.",
+          "correct": true,
+          "explanation": "Each batch request carries a `custom_id`, letting you isolate and resubmit only the failed documents instead of the whole batch."
+        },
+        {
+          "id": "B",
+          "text": "Resubmit the entire batch since results arrive in submission order.",
+          "correct": false,
+          "explanation": "Batch results are not guaranteed in order, and resubmitting all 10,000 wastes cost."
+        },
+        {
+          "id": "C",
+          "text": "Switch all of the failed documents over to real-time synchronous calls without any reliable way of tracking which ones actually failed.",
+          "correct": false,
+          "explanation": "Without `custom_id` matching you cannot reliably identify which entries failed."
+        },
+        {
+          "id": "D",
+          "text": "Wait and re-poll the same batch until the errors resolve themselves.",
+          "correct": false,
+          "explanation": "Completed errors do not self-heal by re-polling the finished batch."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-029",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "In a large batch, a handful of documents failed because they exceeded the context window. What is the appropriate corrective step for just those documents?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Chunk each oversized document into context-sized pieces and re-extract, then merge the per-chunk results.",
+          "correct": true,
+          "explanation": "Documents that exceed the context window must be chunked to fit; merging chunk results recovers the full extraction."
+        },
+        {
+          "id": "B",
+          "text": "Resubmit the oversized documents completely unchanged in a fresh batch and simply hope that they happen to fit within the window next time.",
+          "correct": false,
+          "explanation": "The documents will exceed the window every time unless they are chunked."
+        },
+        {
+          "id": "C",
+          "text": "Truncate each oversized document to fit and accept the lost content.",
+          "correct": false,
+          "explanation": "Truncation silently drops content that may contain required fields."
+        },
+        {
+          "id": "D",
+          "text": "Move the oversized documents to a higher max_tokens setting.",
+          "correct": false,
+          "explanation": "max_tokens limits output length, not the input context window."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-030",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Before launching a 200,000-document batch, your lead asks how to avoid discovering a bad prompt only after spending the full budget. What is the most cost-effective safeguard?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Prompt-refine on a small representative sample first, then run the full batch once accuracy is acceptable.",
+          "correct": true,
+          "explanation": "Refining the prompt on a sample before committing the large batch catches prompt problems cheaply, avoiding a costly bad run."
+        },
+        {
+          "id": "B",
+          "text": "Run the full 200,000-document batch first and then inspect a random sample of the results once everything has completed.",
+          "correct": false,
+          "explanation": "Inspecting afterward means the full cost is already spent on a possibly bad prompt."
+        },
+        {
+          "id": "C",
+          "text": "Split the batch into ten and run all ten simultaneously.",
+          "correct": false,
+          "explanation": "Parallel batches do not validate the prompt and still spend the full budget."
+        },
+        {
+          "id": "D",
+          "text": "Trust the schema to catch any prompt issues during the run.",
+          "correct": false,
+          "explanation": "The schema catches structure, not whether the prompt extracts the right things."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-031",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "A stakeholder needs results from a batch within minutes for an interactive dashboard. Why is the Message Batches API a poor fit here?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Batch processing is asynchronous with up to a 24-hour completion window, so it cannot meet a minutes-level interactive need.",
+          "correct": true,
+          "explanation": "The batch API trades latency for cost; its 24-hour window makes it unsuitable for interactive, minutes-level responses."
+        },
+        {
+          "id": "B",
+          "text": "Batch processing simply cannot use tool-use schemas at all, so the structured data feeding the dashboard would always come back malformed.",
+          "correct": false,
+          "explanation": "Batches can use tool-use schemas; the real issue is latency, not schema support."
+        },
+        {
+          "id": "C",
+          "text": "Batch processing costs more than real-time calls, which a dashboard cannot afford.",
+          "correct": false,
+          "explanation": "Batches are cheaper, not more expensive; cost is not the problem here."
+        },
+        {
+          "id": "D",
+          "text": "Batch processing limits each job to a single document, too few for a dashboard.",
+          "correct": false,
+          "explanation": "Batches handle many documents; the single-document claim is false."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-032",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your team wants to track which extracted record came from which source file across an asynchronous batch whose results may arrive out of order. What is the cleanest design?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Assign each request a meaningful `custom_id` keyed to the source file, then join results back by that id.",
+          "correct": true,
+          "explanation": "A meaningful `custom_id` is the intended way to correlate out-of-order batch results back to their source files."
+        },
+        {
+          "id": "B",
+          "text": "Rely on the order of the results array to map back to input files.",
+          "correct": false,
+          "explanation": "Batch results are not guaranteed in submission order, so positional mapping is unsafe."
+        },
+        {
+          "id": "C",
+          "text": "Embed the source filename directly inside each document's text and then parse it back out of the model's response afterward.",
+          "correct": false,
+          "explanation": "This is fragile and unnecessary when `custom_id` exists for exactly this purpose."
+        },
+        {
+          "id": "D",
+          "text": "Submit one document per batch so correlation is trivial.",
+          "correct": false,
+          "explanation": "One-per-batch defeats the cost and efficiency benefits of batching."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-033",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Different annotators disagree on what counts as the \"primary vendor\" on multi-vendor invoices, so extractions are inconsistent. What is the most effective first step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Write explicit extraction criteria defining exactly how to identify the primary vendor, then encode them in the prompt.",
+          "correct": true,
+          "explanation": "Ambiguous, undefined criteria cause inconsistency; stating explicit, unambiguous rules is the foundational fix before tuning anything else."
+        },
+        {
+          "id": "B",
+          "text": "Let the model decide the primary vendor however it sees fit each time.",
+          "correct": false,
+          "explanation": "Leaving the definition implicit perpetuates the inconsistency."
+        },
+        {
+          "id": "C",
+          "text": "Pick whichever vendor simply happens to appear first in the document by its physical position on the page.",
+          "correct": false,
+          "explanation": "A positional shortcut may not reflect the true primary vendor and bakes in a wrong rule."
+        },
+        {
+          "id": "D",
+          "text": "Add more retries so disagreements average out across attempts.",
+          "correct": false,
+          "explanation": "Retries cannot resolve an ambiguity that the criteria never defined."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-034",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "You are drafting the extraction prompt for a new document type. Which instruction set most reduces downstream ambiguity about what to capture?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Spell out each target field, its expected format, and how to treat missing or conflicting values explicitly.",
+          "correct": true,
+          "explanation": "Explicit per-field criteria covering format and edge handling give the model an unambiguous target, the core of D4.1."
+        },
+        {
+          "id": "B",
+          "text": "Tell the model to extract all the important information from the document.",
+          "correct": false,
+          "explanation": "\"Important\" is subjective and leaves the model guessing what matters."
+        },
+        {
+          "id": "C",
+          "text": "Provide only the bare JSON schema and simply assume that the field names alone are completely self-explanatory to the model.",
+          "correct": false,
+          "explanation": "Field names alone rarely convey format and edge-case rules, leaving ambiguity."
+        },
+        {
+          "id": "D",
+          "text": "Ask the model to summarize the document and infer fields from the summary.",
+          "correct": false,
+          "explanation": "Summarize-then-infer adds a lossy step and does not pin down explicit criteria."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-035",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Your validation layer rejects an extraction because a date is in the future, which your business rules forbid. The format is valid. What kind of check caught this and what should the retry include?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A semantic business-rule check caught it; the retry should include that specific rule violation as feedback.",
+          "correct": true,
+          "explanation": "Format was fine, so a semantic/business-rule validator flagged it; feeding that specific violation back makes the retry actionable."
+        },
+        {
+          "id": "B",
+          "text": "A syntax check caught it; the retry should resend the document unchanged.",
+          "correct": false,
+          "explanation": "The format was valid, so this is not a syntax error, and a blind resend is unhelpful."
+        },
+        {
+          "id": "C",
+          "text": "A schema type check is what caught it, and so the retry should respond by loosening the declared type on the date field.",
+          "correct": false,
+          "explanation": "The type was valid; loosening it would let bad dates through."
+        },
+        {
+          "id": "D",
+          "text": "Nothing meaningful caught it; the rule should be removed.",
+          "correct": false,
+          "explanation": "The business rule is doing its job; removing it ignores a real requirement."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-036",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "You want categories like `region` to stay clean for the five known regions but still capture rare territories without breaking validation. Which schema pattern is most maintainable?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define the five regions as enum values plus an `other` option, paired with an optional `region_detail` string.",
+          "correct": true,
+          "explanation": "Enum-plus-`other`-with-detail keeps the common cases clean while extensibly capturing rare territories without constant schema edits."
+        },
+        {
+          "id": "B",
+          "text": "Make `region` a free-text field and normalize it downstream every time.",
+          "correct": false,
+          "explanation": "Free text loses the clean categorization for the common five regions."
+        },
+        {
+          "id": "C",
+          "text": "Hard-code every conceivable world territory and region into the enum up front before the system ever goes live.",
+          "correct": false,
+          "explanation": "An exhaustive enum is unmaintainable and still breaks on anything unforeseen."
+        },
+        {
+          "id": "D",
+          "text": "Reject any document whose region is not one of the five known values.",
+          "correct": false,
+          "explanation": "Rejecting valid documents with rare regions is overly brittle."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-037",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "Your conflict-detection logic sets `conflict_detected` to true whenever `calculated_total` and `stated_total` differ by any amount, flooding reviewers with rounding-cent mismatches. What is the best refinement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Flag a conflict only when the difference exceeds a defined tolerance, so trivial rounding does not trigger review.",
+          "correct": true,
+          "explanation": "A tolerance threshold keeps the conflict flag meaningful, surfacing real discrepancies while ignoring negligible rounding noise."
+        },
+        {
+          "id": "B",
+          "text": "Stop extracting `calculated_total` so there is nothing to compare.",
+          "correct": false,
+          "explanation": "Removing the comparison loses the ability to detect genuine discrepancies."
+        },
+        {
+          "id": "C",
+          "text": "Route every flagged document to human review regardless of size.",
+          "correct": false,
+          "explanation": "That keeps flooding reviewers with trivial cent-level mismatches."
+        },
+        {
+          "id": "D",
+          "text": "Round both the calculated and stated totals to the nearest hundred currency units before comparing them to each other.",
+          "correct": false,
+          "explanation": "Coarse rounding could hide real mid-size discrepancies, not just cents."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-038",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Your few-shot examples improved formatting, but the model now rigidly copies the example's field order even when a document presents fields differently. What is the balanced fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Vary the field order across several examples so the model learns the content mapping rather than a fixed sequence.",
+          "correct": true,
+          "explanation": "Diverse example orderings teach the model to map by meaning, not position, while preserving the formatting gains."
+        },
+        {
+          "id": "B",
+          "text": "Remove all examples to eliminate the rigidity.",
+          "correct": false,
+          "explanation": "Removing examples sacrifices the formatting consistency they provided."
+        },
+        {
+          "id": "C",
+          "text": "Add a prose note that field order does not matter.",
+          "correct": false,
+          "explanation": "A note is weaker than demonstrating varied orders across examples."
+        },
+        {
+          "id": "D",
+          "text": "Reorder the fields in every incoming document to exactly match the example's order before running the extraction.",
+          "correct": false,
+          "explanation": "Pre-reordering documents is costly and brittle compared to varying examples."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-002",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "When you feed a very long document, the model reliably extracts fields described near the top and bottom of the prompt but misses the field defined in the middle. What is the most likely cause?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The model is exhibiting the \"lost in the middle\" effect, where information in the center of a long context gets less attention.",
+          "correct": true,
+          "explanation": "Models tend to recall content at the start and end of long contexts better than the middle, which explains the missed central field."
+        },
+        {
+          "id": "B",
+          "text": "The model has run out of training data for that field type.",
+          "correct": false,
+          "explanation": "Position-dependent misses point to context handling, not training coverage."
+        },
+        {
+          "id": "C",
+          "text": "The schema validates the top and bottom fields of the object first and then simply times out before it reaches the middle ones.",
+          "correct": false,
+          "explanation": "Schema validation is not positional and does not time out by location."
+        },
+        {
+          "id": "D",
+          "text": "The temperature setting only affects the middle of the response.",
+          "correct": false,
+          "explanation": "Temperature applies uniformly and does not target a region of the prompt."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-003",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Your prompt buries the critical extraction instructions in the middle of a long block of boilerplate context, and accuracy suffers. What placement strategy helps most?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Move the key instructions and the most important content to the start and end of the prompt.",
+          "correct": true,
+          "explanation": "Placing key information at the beginning and end counteracts the lost-in-the-middle effect and improves recall."
+        },
+        {
+          "id": "B",
+          "text": "Repeat the boilerplate so the instructions blend in naturally.",
+          "correct": false,
+          "explanation": "More boilerplate dilutes attention rather than focusing it on instructions."
+        },
+        {
+          "id": "C",
+          "text": "Center the instructions exactly in the middle for balance.",
+          "correct": false,
+          "explanation": "The middle is precisely where attention is weakest in long contexts."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature toward zero so that the instructions buried in the middle of the prompt are followed more precisely.",
+          "correct": false,
+          "explanation": "Temperature does not change positional attention within the prompt."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-004",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A tool your pipeline calls returns a huge raw API payload, most of which is irrelevant to extraction, and it pushes the prompt near the context limit. What is the best handling?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Trim the tool output down to the relevant fields before placing it back into the context.",
+          "correct": true,
+          "explanation": "Trimming verbose tool outputs to only relevant fields conserves context and keeps the model focused on what matters."
+        },
+        {
+          "id": "B",
+          "text": "Pass the entire raw payload so the model has all possible information.",
+          "correct": false,
+          "explanation": "Dumping the full payload wastes context and buries the relevant data."
+        },
+        {
+          "id": "C",
+          "text": "Increase max_tokens so the large payload fits.",
+          "correct": false,
+          "explanation": "max_tokens governs output length, not input context capacity."
+        },
+        {
+          "id": "D",
+          "text": "Compress the entire raw payload with gzip first and then add the compressed bytes directly into the prompt context.",
+          "correct": false,
+          "explanation": "The model cannot read gzip bytes; it needs readable, relevant text."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-005",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A developer assumes that because the previous extraction call established the schema, the next standalone call will remember it. Extractions on the new call ignore the schema. Why?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The model is stateless, so each request must include all it needs.",
+          "correct": true,
+          "explanation": "Claude retains no memory across separate API calls; the schema and instructions must be supplied every time."
+        },
+        {
+          "id": "B",
+          "text": "The schema expires after a fixed number of seconds on the server.",
+          "correct": false,
+          "explanation": "There is no server-side schema timer; the cause is statelessness, not expiry."
+        },
+        {
+          "id": "C",
+          "text": "The second call used a different temperature, dropping the schema.",
+          "correct": false,
+          "explanation": "Temperature does not carry or drop a schema between calls."
+        },
+        {
+          "id": "D",
+          "text": "Schemas only persist when streaming is enabled across calls.",
+          "correct": false,
+          "explanation": "Streaming does not create cross-call memory; calls remain independent."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-006",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Downstream auditors must be able to verify each extracted claim against the document. What output design best supports that requirement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Produce claim-source mappings that link each extracted value to the location or quote it came from.",
+          "correct": true,
+          "explanation": "Claim-source mappings give auditors traceable provenance from each value back to its supporting text."
+        },
+        {
+          "id": "B",
+          "text": "Return only the final values and trust the model's accuracy.",
+          "correct": false,
+          "explanation": "Values without provenance cannot be independently verified by auditors."
+        },
+        {
+          "id": "C",
+          "text": "Append the entire source document after the extracted values so that reviewers have it available for reference if needed.",
+          "correct": false,
+          "explanation": "Dumping the whole document does not link specific claims to specific sources."
+        },
+        {
+          "id": "D",
+          "text": "Add a single overall confidence score for the whole record.",
+          "correct": false,
+          "explanation": "One global score does not let an auditor trace an individual claim to its source."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-007",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "A market report cites two different figures for the same metric from two analysts. Your extraction must not silently pick one. What is the correct approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Annotate both conflicting statistics with their respective sources rather than choosing a single value.",
+          "correct": true,
+          "explanation": "Attributing each conflicting figure to its source preserves provenance and avoids fabricating a false consensus."
+        },
+        {
+          "id": "B",
+          "text": "Average the two figures and report the single mean.",
+          "correct": false,
+          "explanation": "Averaging invents a number neither source reported and erases the conflict."
+        },
+        {
+          "id": "C",
+          "text": "Report only the larger of the two figures on the grounds that the larger number is the more conservative choice to make.",
+          "correct": false,
+          "explanation": "Arbitrarily picking one silently discards the other source's claim."
+        },
+        {
+          "id": "D",
+          "text": "Drop the metric entirely because the sources disagree.",
+          "correct": false,
+          "explanation": "Dropping the data loses information the consumer may need with attribution."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-008",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Two source documents report different revenue numbers, and downstream consumers flag them as contradictions even though the documents cover different fiscal years. What extraction requirement prevents this misreading?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Require a publication or collection date for each figure so temporal differences are not misread as contradictions.",
+          "correct": true,
+          "explanation": "Capturing dates lets consumers see the figures describe different periods rather than conflicting facts."
+        },
+        {
+          "id": "B",
+          "text": "Keep only the most recent figure and discard the older one.",
+          "correct": false,
+          "explanation": "Discarding the older figure loses valid historical data the consumer may need."
+        },
+        {
+          "id": "C",
+          "text": "Mark both of the revenue figures as inherently unreliable simply because the two numbers happen to disagree with each other.",
+          "correct": false,
+          "explanation": "The figures are not unreliable; they simply describe different periods."
+        },
+        {
+          "id": "D",
+          "text": "Force the two numbers to reconcile by averaging them.",
+          "correct": false,
+          "explanation": "Averaging across different fiscal years produces a meaningless figure."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-009",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Your system extracts both financial tables and news commentary, but rendering everything as identical flat key-value pairs makes the output hard to consume. What output strategy is most appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Render financial data as structured tables and narrative news as prose, matching format to content type.",
+          "correct": true,
+          "explanation": "Choosing a representation that fits each content type (tables for figures, prose for narrative) improves usability over one uniform format."
+        },
+        {
+          "id": "B",
+          "text": "Force all content into a single uniform key-value format for consistency.",
+          "correct": false,
+          "explanation": "One uniform format misrepresents narrative content and hurts usability."
+        },
+        {
+          "id": "C",
+          "text": "Render absolutely everything as flowing prose paragraphs, including all of the structured financial tables and their figures.",
+          "correct": false,
+          "explanation": "Prose obscures tabular financial relationships that tables convey clearly."
+        },
+        {
+          "id": "D",
+          "text": "Drop the news commentary and keep only the financial tables.",
+          "correct": false,
+          "explanation": "Discarding the commentary loses information the consumer wants."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-010",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Your dashboard proudly reports \"97% overall extraction accuracy,\" yet a key client's contract type keeps producing errors. What is the most likely problem with that metric?",
+      "options": [
+        {
+          "id": "A",
+          "text": "An aggregate accuracy figure can mask poor performance on specific document types or fields that are rarer in the mix.",
+          "correct": true,
+          "explanation": "A high overall number can hide systematically poor results on a minority document type, which is exactly what the client is hitting."
+        },
+        {
+          "id": "B",
+          "text": "97% is simply too low and should be raised to 100% before launch.",
+          "correct": false,
+          "explanation": "The issue is hidden variance by type, not the headline number being too low."
+        },
+        {
+          "id": "C",
+          "text": "The metric itself is fundamentally wrong because accuracy simply cannot be measured for a structured extraction task at all.",
+          "correct": false,
+          "explanation": "Extraction accuracy is measurable; the problem is aggregation masking subgroups."
+        },
+        {
+          "id": "D",
+          "text": "Overall accuracy is fine; the client's documents must be defective.",
+          "correct": false,
+          "explanation": "Dismissing the subgroup ignores a real, measurable performance gap."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-011",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "You need a trustworthy estimate of error rates across many document types without hand-labeling everything. What sampling approach gives the most representative measurement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use stratified random sampling so each document type's error rate is measurable.",
+          "correct": true,
+          "explanation": "Stratified random sampling ensures each document type is measured, surfacing per-type error rates that a simple aggregate would hide."
+        },
+        {
+          "id": "B",
+          "text": "Hand-pick the documents that look hardest to extract.",
+          "correct": false,
+          "explanation": "Cherry-picking hard cases biases the estimate and is not representative."
+        },
+        {
+          "id": "C",
+          "text": "Sample only the most common document type to save effort.",
+          "correct": false,
+          "explanation": "Ignoring rarer types leaves their error rates unmeasured."
+        },
+        {
+          "id": "D",
+          "text": "Review the first 100 documents from the queue in order.",
+          "correct": false,
+          "explanation": "Sequential sampling can reflect arrival order, not the true type distribution."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-012",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Your model emits a confidence number per field, but those numbers do not track actual correctness. How do you make field-level confidence scores trustworthy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Calibrate field-level confidence scores against a labeled validation set.",
+          "correct": true,
+          "explanation": "Calibrating confidence on a labeled validation set aligns the scores with observed correctness, making them actionable."
+        },
+        {
+          "id": "B",
+          "text": "Multiply every raw confidence by a fixed constant to scale it.",
+          "correct": false,
+          "explanation": "An arbitrary scaling factor does not align scores with actual accuracy."
+        },
+        {
+          "id": "C",
+          "text": "Trust the raw scores as-is since the model produced them.",
+          "correct": false,
+          "explanation": "Uncalibrated model confidence is known to be unreliable on its own."
+        },
+        {
+          "id": "D",
+          "text": "Replace per-field scores with one document-level guess.",
+          "correct": false,
+          "explanation": "Collapsing to one score loses the field granularity you need."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-013",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Most extractions are high-confidence, but a steady stream of low-confidence or ambiguous ones risks shipping wrong data to finance systems. What is the most reliable handling?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Route low-confidence extractions to human review; auto-process the rest.",
+          "correct": true,
+          "explanation": "A confidence threshold that diverts uncertain cases to human review protects accuracy without slowing the confident majority."
+        },
+        {
+          "id": "B",
+          "text": "Auto-process everything and correct mistakes after they reach finance.",
+          "correct": false,
+          "explanation": "Letting wrong data flow downstream and fixing it later is costly and risky."
+        },
+        {
+          "id": "C",
+          "text": "Send every extraction to human review to be safe.",
+          "correct": false,
+          "explanation": "Reviewing the confident majority wastes human effort unnecessarily."
+        },
+        {
+          "id": "D",
+          "text": "Drop all low-confidence extractions without any review.",
+          "correct": false,
+          "explanation": "Silently dropping uncertain cases loses data that review could recover."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-014",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Your prompt prepends thousands of tokens of unrelated company policy before every document. Extraction quality drops as documents grow. What is the most effective context fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Strip context irrelevant to extraction so the prompt stays focused.",
+          "correct": true,
+          "explanation": "Pruning irrelevant context preserves the model's attention for the document and counters degradation as inputs grow."
+        },
+        {
+          "id": "B",
+          "text": "Add even more policy text so the model is fully informed.",
+          "correct": false,
+          "explanation": "More irrelevant text worsens the dilution and context pressure."
+        },
+        {
+          "id": "C",
+          "text": "Place the policy text in the exact middle of the prompt.",
+          "correct": false,
+          "explanation": "Relocating irrelevant text does not solve the underlying bloat."
+        },
+        {
+          "id": "D",
+          "text": "Raise max_tokens so the larger prompt is accepted.",
+          "correct": false,
+          "explanation": "max_tokens controls output length, not input attention or prompt size handling."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-015",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "A consumer disputes an extracted figure, claiming the model invented it. You have no record of where each value came from. What design would have prevented the dispute?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Store claim-source mappings tying each value to its supporting passage.",
+          "correct": true,
+          "explanation": "Provenance via claim-source mappings lets you immediately show where a value came from, settling disputes."
+        },
+        {
+          "id": "B",
+          "text": "Logging only the model's overall response time per document.",
+          "correct": false,
+          "explanation": "Timing logs say nothing about where a value originated."
+        },
+        {
+          "id": "C",
+          "text": "Keeping a count of how many fields were extracted per document.",
+          "correct": false,
+          "explanation": "A field count does not trace any individual value to its source."
+        },
+        {
+          "id": "D",
+          "text": "Saving the temperature used for each extraction call.",
+          "correct": false,
+          "explanation": "Temperature metadata cannot establish the source of a value."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-016",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Leadership wants a single accuracy number to advertise, but your QA lead objects. What is the strongest argument for reporting stratified results instead?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A single number can hide that some types or fields perform far worse.",
+          "correct": true,
+          "explanation": "Stratified reporting exposes per-type weaknesses that an aggregate conceals, giving an honest risk picture."
+        },
+        {
+          "id": "B",
+          "text": "A single number is harder to compute than per-type numbers.",
+          "correct": false,
+          "explanation": "Computation difficulty is not the issue; masking subgroup performance is."
+        },
+        {
+          "id": "C",
+          "text": "Stratified results always look better, so they market the system more favorably.",
+          "correct": false,
+          "explanation": "The point is honesty about weak spots, not making numbers look better."
+        },
+        {
+          "id": "D",
+          "text": "A single number cannot be calculated without a labeled set.",
+          "correct": false,
+          "explanation": "Both aggregate and stratified numbers need labels; that is not the distinguishing concern."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-017",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "You assemble the prompt as: long boilerplate, then the document, then the extraction instructions at the very end. Central document fields are sometimes missed. Which adjustment best addresses recall of key content?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Surface the key fields near both the start and end of the document.",
+          "correct": true,
+          "explanation": "Bracketing the document with key cues at the start and end leverages the strongest attention positions and improves recall."
+        },
+        {
+          "id": "B",
+          "text": "Move all instructions to the exact middle of the document.",
+          "correct": false,
+          "explanation": "The middle is the weakest position for recall in long contexts."
+        },
+        {
+          "id": "C",
+          "text": "Delete the extraction instructions to shorten the prompt.",
+          "correct": false,
+          "explanation": "Removing instructions leaves the model without guidance entirely."
+        },
+        {
+          "id": "D",
+          "text": "Duplicate the boilerplate before and after the document.",
+          "correct": false,
+          "explanation": "Adding boilerplate at the edges crowds out the key cues that belong there."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-018",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "An extracted dataset blends hard numbers from filings with speculative statements from press releases, and consumers treat them with equal weight. What provenance practice fixes this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Attribute each value to its source so consumers can weight them.",
+          "correct": true,
+          "explanation": "Source attribution lets consumers judge reliability per origin instead of treating all values as equivalent."
+        },
+        {
+          "id": "B",
+          "text": "Strip all source information so the data looks uniform and clean.",
+          "correct": false,
+          "explanation": "Removing provenance is the cause of the equal-weighting problem, not the fix."
+        },
+        {
+          "id": "C",
+          "text": "Keep only the press-release statements since they are more recent.",
+          "correct": false,
+          "explanation": "Discarding the filings loses the most reliable figures."
+        },
+        {
+          "id": "D",
+          "text": "Tag every value with the same generic \"document\" label.",
+          "correct": false,
+          "explanation": "A single generic label does not distinguish reliable from speculative sources."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-019",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "You set a confidence threshold for routing to human review, but reviewers say many routed items were actually obvious and correct. What does this indicate about your scores?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The scores are poorly calibrated; re-fit them on labeled data.",
+          "correct": true,
+          "explanation": "If low scores land on obviously correct items, the scores do not reflect real accuracy and need calibration."
+        },
+        {
+          "id": "B",
+          "text": "The human reviewers are misjudging the difficulty of the items.",
+          "correct": false,
+          "explanation": "Blaming reviewers ignores the clear signal that the scores are miscalibrated."
+        },
+        {
+          "id": "C",
+          "text": "The threshold should simply be raised so fewer items route.",
+          "correct": false,
+          "explanation": "Raising the threshold on miscalibrated scores can also let real errors through."
+        },
+        {
+          "id": "D",
+          "text": "Confidence scoring should be abandoned for this pipeline.",
+          "correct": false,
+          "explanation": "Calibration fixes the scores; abandoning them removes a useful triage signal."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-020",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Across a multi-turn extraction workflow you assume earlier tool outputs are still \"in the model's memory\" on later calls, but they are not present in the messages you resend. Why do later extractions lose that data?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The model is stateless: only content in the request is available.",
+          "correct": true,
+          "explanation": "Statelessness means each call sees only what you send; prior tool outputs must be carried forward explicitly to remain available."
+        },
+        {
+          "id": "B",
+          "text": "Because tool outputs are automatically purged after one minute server-side.",
+          "correct": false,
+          "explanation": "There is no automatic server-side purge timer; the cause is statelessness."
+        },
+        {
+          "id": "C",
+          "text": "Because later calls used a different model alias.",
+          "correct": false,
+          "explanation": "A model alias does not erase context you fail to include."
+        },
+        {
+          "id": "D",
+          "text": "Because tool outputs can only be read by the tool that produced them.",
+          "correct": false,
+          "explanation": "Tool outputs placed in the messages are readable by the model; the issue is they were omitted."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-021",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Consumers keep flagging two extracted survey percentages as a contradiction. Investigation shows the surveys were run a year apart. Which extraction field would have prevented the false flag?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A collection date on each percentage, so the year gap explains it.",
+          "correct": true,
+          "explanation": "Recording when each datum was collected lets consumers attribute the difference to time rather than contradiction."
+        },
+        {
+          "id": "B",
+          "text": "A combined average of the two percentages with no dates.",
+          "correct": false,
+          "explanation": "Averaging hides the temporal difference and invents a non-reported figure."
+        },
+        {
+          "id": "C",
+          "text": "A flag marking one survey as the official one.",
+          "correct": false,
+          "explanation": "Arbitrarily privileging one survey discards valid data without explaining the gap."
+        },
+        {
+          "id": "D",
+          "text": "A note saying the two numbers are unreliable.",
+          "correct": false,
+          "explanation": "The numbers are reliable for their respective dates; the missing piece is the date itself."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-022",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Your team wants confidence scores that genuinely help triage which extractions to trust. Which combination of practices delivers that most reliably?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Calibrate field scores on labeled data; route low ones to review.",
+          "correct": true,
+          "explanation": "Calibrated field-level confidence plus threshold-based human routing turns scores into a dependable triage mechanism."
+        },
+        {
+          "id": "B",
+          "text": "Report a single uncalibrated document score and trust it directly.",
+          "correct": false,
+          "explanation": "An uncalibrated, coarse score is not a reliable basis for triage."
+        },
+        {
+          "id": "C",
+          "text": "Use the model's raw token probabilities as the only signal.",
+          "correct": false,
+          "explanation": "Raw probabilities are uncalibrated and not directly meaningful as field confidence."
+        },
+        {
+          "id": "D",
+          "text": "Skip scoring and review a fixed random 10% of all output.",
+          "correct": false,
+          "explanation": "Fixed random review ignores confidence and can miss the riskiest cases."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-023",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Each extraction call includes a verbose system preamble, a long retrieved context, and the document, frequently nearing the context window. Quality is inconsistent. What is the highest-leverage first move?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Trim context to what extraction needs; keep key instructions at the edges.",
+          "correct": true,
+          "explanation": "Reducing irrelevant context and positioning key instructions at the start and end directly addresses both crowding and the lost-in-the-middle effect."
+        },
+        {
+          "id": "B",
+          "text": "Add a longer preamble explaining the task in more detail.",
+          "correct": false,
+          "explanation": "Lengthening the preamble worsens the context pressure rather than easing it."
+        },
+        {
+          "id": "C",
+          "text": "Keep all context but lower the temperature to 0.",
+          "correct": false,
+          "explanation": "Temperature does not relieve context crowding or positional attention loss."
+        },
+        {
+          "id": "D",
+          "text": "Move the document to the middle to balance the prompt.",
+          "correct": false,
+          "explanation": "Centering the document places key content in the weakest attention zone."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-024",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "A regulated workflow requires that every extracted financial figure be auditable and that conflicting source claims never be silently resolved. Which output design satisfies both constraints?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Attach claim-source mappings and keep conflicting claims separately attributed.",
+          "correct": true,
+          "explanation": "Provenance mappings make figures auditable while keeping conflicting claims attributed rather than silently merged."
+        },
+        {
+          "id": "B",
+          "text": "Resolve conflicts internally and emit one clean value per figure.",
+          "correct": false,
+          "explanation": "Silent resolution violates the requirement to not hide conflicting claims."
+        },
+        {
+          "id": "C",
+          "text": "Emit figures without sources but log the prompt for auditing.",
+          "correct": false,
+          "explanation": "A prompt log does not tie each figure to its supporting source."
+        },
+        {
+          "id": "D",
+          "text": "Keep only the highest-confidence figure and drop the rest.",
+          "correct": false,
+          "explanation": "Dropping conflicting figures silently resolves the conflict, which is forbidden."
+        }
+      ]
+    }
+  ]
+}

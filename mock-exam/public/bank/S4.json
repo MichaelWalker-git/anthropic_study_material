@@ -1,0 +1,1984 @@
+{
+  "questions": [
+    {
+      "id": "S4-D2-001",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "Your developer-productivity agent needs to find every caller of a function named `processPayment` across a large codebase. Which built-in tool is the most appropriate starting point?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use Grep to search file contents across the codebase for `processPayment`.",
+          "correct": true,
+          "explanation": "Grep is for content search — finding patterns like function names or callers across files — which is exactly this task."
+        },
+        {
+          "id": "B",
+          "text": "Use Glob to match files named `processPayment`.",
+          "correct": false,
+          "explanation": "Glob matches file paths/names, not occurrences of a symbol inside file contents."
+        },
+        {
+          "id": "C",
+          "text": "Use Read on every file in the repository and scan for the name.",
+          "correct": false,
+          "explanation": "Reading all files upfront is wasteful; Grep targets the content directly."
+        },
+        {
+          "id": "D",
+          "text": "Use Bash to delete and regenerate the files until the references appear.",
+          "correct": false,
+          "explanation": "Nonsensical and destructive; unrelated to searching for callers."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-002",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "You want a shared MCP server available to the whole team via version control, authenticated with a GitHub token that must not be committed. How should you configure it?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Configure the server in project-scoped `.mcp.json` and reference the token via environment variable expansion (e.g. `${GITHUB_TOKEN}`).",
+          "correct": true,
+          "explanation": "Project-scoped `.mcp.json` shares the server via version control, and environment variable expansion supplies credentials without committing secrets."
+        },
+        {
+          "id": "B",
+          "text": "Configure it in user-scoped `~/.claude.json` with the token pasted inline.",
+          "correct": false,
+          "explanation": "User-scoped config isn't shared with the team, and inline tokens risk credential leakage."
+        },
+        {
+          "id": "C",
+          "text": "Commit the token directly into `.mcp.json` so everyone has it.",
+          "correct": false,
+          "explanation": "Committing a secret is a serious security violation."
+        },
+        {
+          "id": "D",
+          "text": "Hardcode the token into each developer's shell profile and skip MCP config.",
+          "correct": false,
+          "explanation": "This doesn't configure the shared server and scatters secrets across machines."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-001",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "You are implementing an agentic loop by hand against the Claude API. Which condition should terminate the loop?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Continue while `stop_reason` is `tool_use`, executing requested tools and appending results, and terminate when `stop_reason` is `end_turn`.",
+          "correct": true,
+          "explanation": "The agentic loop lifecycle keys off `stop_reason`: keep iterating on `tool_use`, terminate on `end_turn`. This is the reliable, model-driven control signal."
+        },
+        {
+          "id": "B",
+          "text": "Parse the assistant's natural-language text for phrases like \"I'm done\" to decide when to stop.",
+          "correct": false,
+          "explanation": "Parsing natural-language signals is an anti-pattern — unreliable compared to the structured `stop_reason`."
+        },
+        {
+          "id": "C",
+          "text": "Set a fixed iteration cap as the primary stopping mechanism.",
+          "correct": false,
+          "explanation": "Arbitrary iteration caps as the primary stop are an anti-pattern; they cut off legitimate work or run too long."
+        },
+        {
+          "id": "D",
+          "text": "Stop as soon as any assistant message contains text content.",
+          "correct": false,
+          "explanation": "Text content can accompany tool-use turns; it isn't a valid completion indicator."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-003",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "You ask the agent to list all React test files so it can run them. Which built-in tool and pattern is correct for locating files like `**/*.test.tsx`?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Run a Bash loop that cats each directory and filters output by extension.",
+          "correct": false,
+          "explanation": "Shelling out is fragile and slower; Glob is purpose-built for path patterns."
+        },
+        {
+          "id": "B",
+          "text": "Use Glob with the pattern `**/*.test.tsx` to match file paths by name.",
+          "correct": true,
+          "explanation": "Glob matches file paths and names by pattern, so `**/*.test.tsx` is the right way to enumerate those files."
+        },
+        {
+          "id": "C",
+          "text": "Use Grep for the string `.test.tsx` across the contents of all files.",
+          "correct": false,
+          "explanation": "Grep searches file contents, not file names; it would miss files and match unrelated text."
+        },
+        {
+          "id": "D",
+          "text": "Use Read on the project root and parse the directory listing manually.",
+          "correct": false,
+          "explanation": "Read operates on individual files, not directory trees, so it cannot enumerate matches."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-004",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "The agent tries to make a targeted Edit to a config file but the operation fails because the matched text appears multiple times. What is the recommended fallback?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Retry the same Edit several more times until one of the repeated matches happens to take effect.",
+          "correct": false,
+          "explanation": "Repeating an Edit on non-unique text keeps failing; it never resolves the ambiguity."
+        },
+        {
+          "id": "B",
+          "text": "Switch to Glob to relocate the file before attempting the edit again.",
+          "correct": false,
+          "explanation": "Glob finds file paths; it does nothing to resolve ambiguous text inside a known file."
+        },
+        {
+          "id": "C",
+          "text": "Read the file and use Write to replace the whole file with the corrected content.",
+          "correct": true,
+          "explanation": "When Edit fails on non-unique text, the recommended fallback is Read then Write to rewrite the full file with the change."
+        },
+        {
+          "id": "D",
+          "text": "Use Bash sed in place since Edit cannot handle repeated text at all.",
+          "correct": false,
+          "explanation": "Bash sed is error-prone for structured edits; the documented fallback is Read plus Write."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-005",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "An engineer wants the agent to understand an unfamiliar module efficiently rather than dumping every file into context. What is the most effective approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Read every file in the module up front so the full picture is in context.",
+          "correct": false,
+          "explanation": "Reading everything wastes context and degrades performance on irrelevant content."
+        },
+        {
+          "id": "B",
+          "text": "Grep for key symbols to find entry points, then Read only the relevant files.",
+          "correct": true,
+          "explanation": "Building understanding incrementally — Grep to locate relevant code, then Read just those files — is the efficient documented pattern."
+        },
+        {
+          "id": "C",
+          "text": "Glob the whole tree and Read the first ten files alphabetically.",
+          "correct": false,
+          "explanation": "Reading arbitrary files by name order does not target the relevant code."
+        },
+        {
+          "id": "D",
+          "text": "Ask Bash to print line counts so the agent reads the largest files first.",
+          "correct": false,
+          "explanation": "File size is not a proxy for relevance; this still reads unneeded content."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-006",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "The agent needs to create a brand-new utility file that does not exist yet. Which built-in tool is appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Edit, supplying the entire new contents as the replacement string for an empty match.",
+          "correct": false,
+          "explanation": "Edit requires existing unique text to match; it cannot create a file from nothing."
+        },
+        {
+          "id": "B",
+          "text": "Grep, redirecting its search output into the destination path.",
+          "correct": false,
+          "explanation": "Grep searches content and produces no file; it cannot author new files."
+        },
+        {
+          "id": "C",
+          "text": "Write, which performs a full-file operation to create the file.",
+          "correct": true,
+          "explanation": "Write performs full-file operations and is the correct tool for creating a new file with its complete contents."
+        },
+        {
+          "id": "D",
+          "text": "Glob, since matching the intended path is enough to create it.",
+          "correct": false,
+          "explanation": "Glob only matches existing paths; it neither creates nor writes files."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-007",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "An engineer needs the agent to change a single uniquely-identifiable line in a 4,000-line file without rewriting the whole file. Which tool fits best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use Edit with a unique text match to make the targeted change in place.",
+          "correct": true,
+          "explanation": "Edit makes targeted edits by matching unique text, which is ideal for changing one line without rewriting the file."
+        },
+        {
+          "id": "B",
+          "text": "Use Write to output the entire 4,000-line file with the one line changed.",
+          "correct": false,
+          "explanation": "Write rewrites the whole file, which is wasteful when a targeted Edit will do."
+        },
+        {
+          "id": "C",
+          "text": "Use Grep to replace the matched line directly in the file contents.",
+          "correct": false,
+          "explanation": "Grep only searches; it does not modify files."
+        },
+        {
+          "id": "D",
+          "text": "Use Glob to find the line by its pattern and apply the change there.",
+          "correct": false,
+          "explanation": "Glob matches file paths, not lines within a file, and cannot edit."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-008",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "Production logs show an agent run timing out while it repeatedly reads large files trying to locate where an env var `STRIPE_KEY` is consumed. What is the most effective first step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Read each service file fully in sequence until the usage is spotted.",
+          "correct": false,
+          "explanation": "Sequential full reads are exactly the slow pattern causing the timeout."
+        },
+        {
+          "id": "B",
+          "text": "Grep for `STRIPE_KEY` to pinpoint the files, then Read only those.",
+          "correct": true,
+          "explanation": "Grep locates the symbol quickly across the repo so only the relevant files get Read, avoiding wasteful full reads."
+        },
+        {
+          "id": "C",
+          "text": "Glob for files containing `stripe` in the name and read all matches.",
+          "correct": false,
+          "explanation": "Filename matching misses files where the var is used but the name differs."
+        },
+        {
+          "id": "D",
+          "text": "Write a temporary index file cataloguing every variable by hand first.",
+          "correct": false,
+          "explanation": "Manually building an index is more work than a direct content search."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-009",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A developer wants to experiment with a personal MCP server on their own machine without affecting teammates or the repo. Where should it be configured?",
+      "options": [
+        {
+          "id": "A",
+          "text": "In the project `.mcp.json` so it stays close to the related code.",
+          "correct": false,
+          "explanation": "Project `.mcp.json` is committed and shared with the whole team, not personal."
+        },
+        {
+          "id": "B",
+          "text": "In the user-level config (`~/.claude.json`) so it stays personal to them.",
+          "correct": true,
+          "explanation": "User-level config is for personal or experimental servers that apply to your machine without being shared via version control."
+        },
+        {
+          "id": "C",
+          "text": "Inside the committed `CLAUDE.md` so Claude reads it each session.",
+          "correct": false,
+          "explanation": "CLAUDE.md provides instructions, not MCP server configuration, and would be shared."
+        },
+        {
+          "id": "D",
+          "text": "In a new `.github/workflows` file so CI picks the server up too.",
+          "correct": false,
+          "explanation": "Workflow files configure CI, not a local personal MCP server."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-010",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "Your team needs a standard integration with GitHub for the agent. What is the recommended approach before writing any custom tooling?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Author a separate bespoke tool for every single GitHub API endpoint the team could conceivably need.",
+          "correct": false,
+          "explanation": "Hand-authoring tools for every endpoint is the maintenance burden MCP exists to avoid."
+        },
+        {
+          "id": "B",
+          "text": "Prefer an existing community or official MCP server for the standard integration.",
+          "correct": true,
+          "explanation": "For standard integrations, reusing an existing community or official MCP server avoids writing and maintaining bespoke tool code."
+        },
+        {
+          "id": "C",
+          "text": "Have the agent call the GitHub REST API via raw Bash curl every time.",
+          "correct": false,
+          "explanation": "Raw curl scatters undocumented commands and lacks proper tool schemas."
+        },
+        {
+          "id": "D",
+          "text": "Embed all GitHub logic inside the project CLAUDE.md as instructions.",
+          "correct": false,
+          "explanation": "CLAUDE.md gives guidance but does not provide executable tools or integration."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-011",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "An MCP server exposes the production database schema as a resource. How does this most help the agent's workflow?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It lets the agent execute schema migrations automatically against production without any human review step.",
+          "correct": false,
+          "explanation": "Resources expose read-only content; they do not execute migrations."
+        },
+        {
+          "id": "B",
+          "text": "It grants write access to the database tables through the resource URI.",
+          "correct": false,
+          "explanation": "Resources are read-only content catalogs, not write paths."
+        },
+        {
+          "id": "C",
+          "text": "It exposes the schema as content the agent can read, reducing exploratory tool calls.",
+          "correct": true,
+          "explanation": "MCP resources expose content catalogs like schemas and docs, so the agent can read them directly instead of making many exploratory tool calls."
+        },
+        {
+          "id": "D",
+          "text": "It replaces the need for any CLAUDE.md documentation in the repo.",
+          "correct": false,
+          "explanation": "Resources complement project memory; they do not replace CLAUDE.md guidance."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-012",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "After adding a new MCP server to `.mcp.json` and reconnecting, when does the agent become aware of that server's tools?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Tools from all configured MCP servers are discovered at connection time.",
+          "correct": true,
+          "explanation": "Tools from every configured MCP server are discovered when the connection is established, making them available to the agent."
+        },
+        {
+          "id": "B",
+          "text": "Only after the tools are individually re-declared inside CLAUDE.md.",
+          "correct": false,
+          "explanation": "MCP tools are discovered automatically; you do not redeclare them in CLAUDE.md."
+        },
+        {
+          "id": "C",
+          "text": "Only once the user manually types each tool name into the prompt.",
+          "correct": false,
+          "explanation": "Discovery is automatic at connection; users need not name tools manually."
+        },
+        {
+          "id": "D",
+          "text": "Never, until the project is rebuilt and the CLI binary reinstalled.",
+          "correct": false,
+          "explanation": "No rebuild or reinstall is needed; reconnecting discovers the tools."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-013",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A teammate reports that a shared MCP server defined in `.mcp.json` fails to authenticate on their machine, though the config references `${JIRA_TOKEN}`. What is the most likely root cause?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Environment variable expansion is unsupported, so the token never resolves.",
+          "correct": false,
+          "explanation": "Environment variable expansion is supported; that is the intended mechanism."
+        },
+        {
+          "id": "B",
+          "text": "The teammate has not set the `JIRA_TOKEN` environment variable in their shell.",
+          "correct": true,
+          "explanation": "The committed config references `${JIRA_TOKEN}` by design; each developer must supply their own value via the environment variable, which the teammate has not set."
+        },
+        {
+          "id": "C",
+          "text": "The token must be committed inline in `.mcp.json` to authenticate at all.",
+          "correct": false,
+          "explanation": "Committing secrets is wrong; expansion exists precisely to avoid that."
+        },
+        {
+          "id": "D",
+          "text": "Shared servers can only ever live in user-level `~/.claude.json`.",
+          "correct": false,
+          "explanation": "Shared servers belong in project `.mcp.json`; user config is for personal servers."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-014",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "Two MCP server scopes are available: project-level `.mcp.json` and user-level `~/.claude.json`. Which statement best captures the trade-off?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Both scopes are identical except that one uses JSON and one uses YAML.",
+          "correct": false,
+          "explanation": "Both are JSON; the real difference is sharing scope, not format."
+        },
+        {
+          "id": "B",
+          "text": "User-level config is committed and shared with the whole team, while project-level config stays private to you.",
+          "correct": false,
+          "explanation": "This reverses the truth: project-level is shared, user-level is private."
+        },
+        {
+          "id": "C",
+          "text": "Project-level config is committed and shared; user-level is personal to your machine.",
+          "correct": true,
+          "explanation": "Project `.mcp.json` is checked in for shared team tooling, while user-level `~/.claude.json` holds personal or experimental servers for your machine only."
+        },
+        {
+          "id": "D",
+          "text": "Project-level config can hold secrets safely while user-level cannot.",
+          "correct": false,
+          "explanation": "Neither scope should hold raw secrets; both rely on env var expansion."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-015",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A docs MCP server exposes a catalog of library documentation as resources. Why prefer reading that resource over having the agent Grep the codebase for usage examples?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The built-in Grep tool is automatically disabled whenever any MCP server is connected to the current session.",
+          "correct": false,
+          "explanation": "Grep remains available; MCP servers do not disable built-in tools."
+        },
+        {
+          "id": "B",
+          "text": "The resource provides authoritative content directly, cutting exploratory tool calls.",
+          "correct": true,
+          "explanation": "Resources expose curated documentation as content, so the agent reads authoritative material instead of inferring usage from many exploratory searches."
+        },
+        {
+          "id": "C",
+          "text": "Resources execute the library code so the agent sees real runtime output.",
+          "correct": false,
+          "explanation": "Resources expose content, not executed code or runtime output."
+        },
+        {
+          "id": "D",
+          "text": "Grep cannot search any file that a library has installed under node_modules.",
+          "correct": false,
+          "explanation": "Grep can search those files; the advantage is reduced exploration, not a Grep limitation."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-016",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "When running the agent in CI (e.g. GitHub Actions) with an MCP server, how must tool permissions be handled compared to local development?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Each tool from each MCP server must be listed explicitly in allowed tools.",
+          "correct": true,
+          "explanation": "Unlike local development, CI has no permission shortcut: every tool from every MCP server must be individually listed in the allowed tools."
+        },
+        {
+          "id": "B",
+          "text": "Permissions are inherited automatically from the repository settings.",
+          "correct": false,
+          "explanation": "CI does not auto-inherit tool permissions from repo settings."
+        },
+        {
+          "id": "C",
+          "text": "A single blanket permission covers every MCP operation in CI runs.",
+          "correct": false,
+          "explanation": "There is no blanket permission; tools must be enumerated."
+        },
+        {
+          "id": "D",
+          "text": "No permissions are needed because CI is a trusted environment.",
+          "correct": false,
+          "explanation": "CI still requires explicit allow-listing of each tool."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-017",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "A custom MCP tool named `query_db` is frequently misused by the agent, which passes free-text questions instead of SQL. The schema is correct. What should you improve first?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rename the tool to `db` so the agent thinks less about what it does.",
+          "correct": false,
+          "explanation": "A shorter name gives the model less, not more, guidance about correct use."
+        },
+        {
+          "id": "B",
+          "text": "Lower the model's effort level so that it spends fewer reasoning tokens deciding how to make the call.",
+          "correct": false,
+          "explanation": "Effort level does not fix an ambiguous tool contract."
+        },
+        {
+          "id": "C",
+          "text": "Sharpen the tool description and parameter descriptions to state SQL is required.",
+          "correct": true,
+          "explanation": "Clear, specific tool and parameter descriptions are what guide the model to call a tool correctly; stating that a valid SQL string is required fixes the misuse."
+        },
+        {
+          "id": "D",
+          "text": "Add three more parameters so the agent has more options to choose from.",
+          "correct": false,
+          "explanation": "More parameters add confusion; the issue is unclear guidance, not missing inputs."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-018",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "When defining an MCP tool with the Python SDK, what is the role of the `Field(description=...)` on each parameter?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It encrypts the parameter value before the tool function receives it.",
+          "correct": false,
+          "explanation": "Field descriptions do not encrypt anything; they document the parameter."
+        },
+        {
+          "id": "B",
+          "text": "It helps the model understand what each parameter expects when calling the tool.",
+          "correct": true,
+          "explanation": "Parameter field descriptions tell the model what each argument means, which is essential for the model to call the tool correctly."
+        },
+        {
+          "id": "C",
+          "text": "It sets a default value used whenever the model omits the parameter.",
+          "correct": false,
+          "explanation": "A description is documentation, not a default-value mechanism."
+        },
+        {
+          "id": "D",
+          "text": "It registers the parameter as a separate standalone MCP resource exposed under its own URI.",
+          "correct": false,
+          "explanation": "Descriptions do not create resources; they annotate tool parameters."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-019",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "Your agent has many MCP servers connected, and `/context` shows tool definitions consuming a large share of the window before any work begins. What is the most effective remedy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Disable the MCP servers not relevant to the current task to free context.",
+          "correct": true,
+          "explanation": "MCP servers load all their tool definitions into context even when unused, so disabling irrelevant servers reclaims that space."
+        },
+        {
+          "id": "B",
+          "text": "Increase the effort level so the model can reason past the clutter.",
+          "correct": false,
+          "explanation": "Effort level does not reduce the context cost of tool definitions."
+        },
+        {
+          "id": "C",
+          "text": "Read fewer project files so the tool definitions take relatively less.",
+          "correct": false,
+          "explanation": "Reading fewer files does not shrink the always-loaded tool definitions."
+        },
+        {
+          "id": "D",
+          "text": "Commit the tool definitions to CLAUDE.md so they load only once.",
+          "correct": false,
+          "explanation": "Putting definitions in CLAUDE.md would add context, not save it."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-020",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "A tool has a CLI equivalent like `gh` for GitHub. Why might invoking the CLI through Bash be more context-efficient than the equivalent MCP server?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The CLI runs faster because it is compiled and the MCP server is interpreted.",
+          "correct": false,
+          "explanation": "Execution speed is not the context argument; persistent definitions are."
+        },
+        {
+          "id": "B",
+          "text": "The CLI returns smaller results that the model never has to read at all.",
+          "correct": false,
+          "explanation": "CLI output still enters context; the saving is on tool definitions, not results."
+        },
+        {
+          "id": "C",
+          "text": "The CLI does not add persistent tool definitions to the context window.",
+          "correct": true,
+          "explanation": "An MCP server loads tool definitions into context persistently; a CLI invoked via Bash adds no such definitions, so it is more context-efficient."
+        },
+        {
+          "id": "D",
+          "text": "The CLI bypasses the agentic loop and answers the user directly itself.",
+          "correct": false,
+          "explanation": "The CLI runs through the Bash tool inside the loop; it does not bypass it."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-021",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "If your MCP tools exceed roughly 10% of the context window, what does Claude Code do automatically?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It silently disconnects the least-recently-used MCP server until total usage falls back below 10%.",
+          "correct": false,
+          "explanation": "It does not drop servers; it changes how tools are surfaced."
+        },
+        {
+          "id": "B",
+          "text": "It switches to tool search mode, discovering the right tools on demand.",
+          "correct": true,
+          "explanation": "When MCP tools exceed about 10% of the window, Claude Code switches to tool search mode, discovering tools on demand rather than loading them all."
+        },
+        {
+          "id": "C",
+          "text": "It compacts the entire conversation history to make room for tools.",
+          "correct": false,
+          "explanation": "Compaction summarizes conversation, not tool definitions, and is a different trigger."
+        },
+        {
+          "id": "D",
+          "text": "It refuses to start the session until servers are manually disabled.",
+          "correct": false,
+          "explanation": "The session still starts; it just adopts tool search mode."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-022",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "An architect wants frequently-loaded capabilities that do not consume context up front the way MCP tool definitions do. Which option fits that goal?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Skills, which load only a name and description until Claude needs them.",
+          "correct": true,
+          "explanation": "Skills keep just a name and description in context and load the full contents only when needed, unlike MCP servers that load all tool definitions upfront."
+        },
+        {
+          "id": "B",
+          "text": "Adding every server to `.mcp.json` so they share one definition block.",
+          "correct": false,
+          "explanation": "More servers in `.mcp.json` add more definitions, increasing context cost."
+        },
+        {
+          "id": "C",
+          "text": "Raising the effort level so the model tolerates larger tool payloads.",
+          "correct": false,
+          "explanation": "Effort level has no effect on how tool definitions consume context."
+        },
+        {
+          "id": "D",
+          "text": "Pasting the tool schemas directly into the user prompt each session.",
+          "correct": false,
+          "explanation": "Pasting schemas into the prompt adds context rather than saving it."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-023",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "The agent must replace a config value but the surrounding text it picked is not unique in the file. Which sequence avoids the failure while still making a precise change?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Expand the matched text to include enough surrounding context to be unique, then Edit.",
+          "correct": true,
+          "explanation": "Edit requires a unique match, so widening the snippet with surrounding context makes it unique and lets the targeted Edit succeed."
+        },
+        {
+          "id": "B",
+          "text": "Glob the file repeatedly until the duplicate lines are filtered out.",
+          "correct": false,
+          "explanation": "Glob matches paths, not lines, and cannot disambiguate text."
+        },
+        {
+          "id": "C",
+          "text": "Grep the value and let Grep overwrite the first occurrence it finds.",
+          "correct": false,
+          "explanation": "Grep does not modify files; it only searches content."
+        },
+        {
+          "id": "D",
+          "text": "Read the file and then report back to the user that this particular value cannot be edited safely at all.",
+          "correct": false,
+          "explanation": "The edit is achievable by making the match unique or by Read plus Write."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-024",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "An engineer asks the agent to find all TODO comments and also list every YAML file in the repo. Which pairing of tools is correct?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Glob for the TODO comments inside file content, and Grep for the `**/*.yaml` file paths by name.",
+          "correct": false,
+          "explanation": "This swaps the tools: Glob does not search content and Grep does not match paths."
+        },
+        {
+          "id": "B",
+          "text": "Grep for `TODO` across file contents, and Glob for `**/*.yaml` file paths.",
+          "correct": true,
+          "explanation": "Grep searches contents (the TODO comments) while Glob matches file paths by pattern (the YAML files); each tool is used for its purpose."
+        },
+        {
+          "id": "C",
+          "text": "Read every file for TODOs, and Read the directory tree for YAML files.",
+          "correct": false,
+          "explanation": "Read works on single files and cannot enumerate matches across a tree."
+        },
+        {
+          "id": "D",
+          "text": "Bash grep for both tasks since the built-in tools cannot do either job.",
+          "correct": false,
+          "explanation": "The built-in Grep and Glob handle these tasks directly; Bash is unnecessary."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-025",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "The agent has the file path and wants the complete current contents of a 50-line module before reasoning about a refactor. Which tool should it use?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Edit, since reading and editing are the same underlying operation.",
+          "correct": false,
+          "explanation": "Edit modifies text; it is not for retrieving full contents."
+        },
+        {
+          "id": "B",
+          "text": "Glob, since matching the path returns the file's full contents.",
+          "correct": false,
+          "explanation": "Glob returns matching paths, not the contents of files."
+        },
+        {
+          "id": "C",
+          "text": "Read, which performs a full-file operation to return the contents.",
+          "correct": true,
+          "explanation": "Read is the full-file operation for retrieving a file's complete contents, which is what the refactor reasoning needs."
+        },
+        {
+          "id": "D",
+          "text": "Grep, since searching for any character returns the whole file.",
+          "correct": false,
+          "explanation": "Grep returns matching lines with context, not a guaranteed full-file read."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-026",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "A team standardizes on a Playwright MCP server for browser-driven UI checks. What is the cleanest way to ensure every teammate gets it automatically?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Email teammates the `claude mcp add` command to run individually.",
+          "correct": false,
+          "explanation": "Manual per-developer setup is error-prone and not automatic."
+        },
+        {
+          "id": "B",
+          "text": "Define it in the committed project `.mcp.json` so it is shared on checkout.",
+          "correct": true,
+          "explanation": "A project-scoped `.mcp.json` under version control gives everyone on the codebase the same server automatically when they check it out."
+        },
+        {
+          "id": "C",
+          "text": "Add it to each person's user-level `~/.claude.json` together over a guided screen-share session.",
+          "correct": false,
+          "explanation": "User-level config is personal and not shared with the team."
+        },
+        {
+          "id": "D",
+          "text": "Document the install steps in a wiki and ask everyone to follow them.",
+          "correct": false,
+          "explanation": "A wiki relies on manual action; committed config is automatic."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-001",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "A team coding convention (use server actions, not API routes) should apply to everyone on the project. Where should it live so the whole team benefits via source control?",
+      "options": [
+        {
+          "id": "A",
+          "text": "In the user-level `~/.claude/CLAUDE.md`, which applies to every project on your own machine.",
+          "correct": false,
+          "explanation": "User-level memory is personal to your machine and is not shared with the team."
+        },
+        {
+          "id": "B",
+          "text": "In the project root `CLAUDE.md`, which is committed and shared with the team.",
+          "correct": true,
+          "explanation": "Project-root CLAUDE.md is committed to source control and shared, so team conventions belong there."
+        },
+        {
+          "id": "C",
+          "text": "In `CLAUDE.local.md`, which holds personal, uncommitted instructions.",
+          "correct": false,
+          "explanation": "CLAUDE.local.md is not shared with other engineers; it is for personal customizations."
+        },
+        {
+          "id": "D",
+          "text": "In a custom slash command file under `.claude/commands/`.",
+          "correct": false,
+          "explanation": "Commands automate workflows; they are not the place for always-on conventions."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-002",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You want certain instructions to apply across every project you personally work on, regardless of the repo. Which file is appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The project root `CLAUDE.md`, committed separately in each and every repository you happen to touch.",
+          "correct": false,
+          "explanation": "Project-root files apply per repo and are shared, not personal across all projects."
+        },
+        {
+          "id": "B",
+          "text": "A `.claude/rules/` file added separately to every repository you use.",
+          "correct": false,
+          "explanation": "Per-repo rules files do not span all your projects automatically."
+        },
+        {
+          "id": "C",
+          "text": "The user-level `~/.claude/CLAUDE.md`, used across all projects on your machine.",
+          "correct": true,
+          "explanation": "The user-level `~/.claude/CLAUDE.md` applies to all projects on your machine, which is exactly the personal cross-project scope."
+        },
+        {
+          "id": "D",
+          "text": "A `CLAUDE.local.md` placed once in your home directory's root.",
+          "correct": false,
+          "explanation": "CLAUDE.local.md is a per-project, uncommitted file, not a global personal one."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-003",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "Your repo already has an `AGENTS.md` for another tool and you do not want to duplicate its content into `CLAUDE.md`. What is the recommended approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Copy the full AGENTS.md text into CLAUDE.md and then keep both copies in sync manually by hand.",
+          "correct": false,
+          "explanation": "Manual duplication is exactly what the @import syntax avoids."
+        },
+        {
+          "id": "B",
+          "text": "Rename AGENTS.md to CLAUDE.md so Claude reads it as project memory.",
+          "correct": false,
+          "explanation": "Renaming breaks the other tool that relies on AGENTS.md."
+        },
+        {
+          "id": "C",
+          "text": "Add `@AGENTS.md` on the first line of CLAUDE.md to import its contents.",
+          "correct": true,
+          "explanation": "The @import syntax (`@AGENTS.md` on the first line of CLAUDE.md) loads that file's contents first, avoiding duplication while keeping Claude-specific notes below."
+        },
+        {
+          "id": "D",
+          "text": "Configure the import inside the project `.mcp.json` server block.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures servers, not memory-file imports."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-004",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "You added a new directory-level `CLAUDE.md` and edited the project root one, but suspect the agent is not loading what you expect. How do you verify which memory files are active?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Run `/memory` to see and verify the loaded memory files.",
+          "correct": true,
+          "explanation": "The `/memory` command lets you view and verify which CLAUDE.md files are currently loaded into the session."
+        },
+        {
+          "id": "B",
+          "text": "Run `/compact` and read the summary to infer which files loaded.",
+          "correct": false,
+          "explanation": "Compaction summarizes conversation; it does not report loaded memory files."
+        },
+        {
+          "id": "C",
+          "text": "Delete the root file and watch whether the agent's behavior changes.",
+          "correct": false,
+          "explanation": "Destructive trial-and-error is unnecessary when `/memory` reports the truth."
+        },
+        {
+          "id": "D",
+          "text": "Inspect `.mcp.json` to confirm the memory files are registered there.",
+          "correct": false,
+          "explanation": "Memory files are not registered in `.mcp.json`; that file configures servers."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-005",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "An engineer keeps personal scratch notes and shortcuts that should never reach teammates. Which file should hold them?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The committed project root `CLAUDE.md` so they are versioned safely.",
+          "correct": false,
+          "explanation": "The root file is shared with the team, so personal notes do not belong there."
+        },
+        {
+          "id": "B",
+          "text": "`CLAUDE.local.md`, which holds personal instructions and is not shared.",
+          "correct": true,
+          "explanation": "CLAUDE.local.md is the uncommitted, personal file meant for instructions you do not share with other engineers."
+        },
+        {
+          "id": "C",
+          "text": "A `.claude/rules/` file committed alongside the team's shared rules.",
+          "correct": false,
+          "explanation": "Committed rules files are shared; they are not for personal-only notes."
+        },
+        {
+          "id": "D",
+          "text": "The user-level config file so that the personal notes follow them into every single project they open.",
+          "correct": false,
+          "explanation": "User-level memory spans all projects, which is broader than per-project personal notes."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-006",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "A database schema file is relevant to many tasks, and you want its contents available without the agent searching for it each time. How should you wire this into project memory?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Paste the entire schema file's text directly into the body of CLAUDE.md and maintain it there.",
+          "correct": false,
+          "explanation": "Pasting the full schema bloats CLAUDE.md and drifts out of sync with the source."
+        },
+        {
+          "id": "B",
+          "text": "Reference it with `@prisma/schema.prisma` so its contents load each request.",
+          "correct": true,
+          "explanation": "Using @import in CLAUDE.md pulls the file's contents into every request, so the agent can answer schema questions without searching."
+        },
+        {
+          "id": "C",
+          "text": "Add the schema path to the deny list in `.claude/settings.json`.",
+          "correct": false,
+          "explanation": "A deny rule blocks access; it does not preload the file."
+        },
+        {
+          "id": "D",
+          "text": "Expose it only through a custom slash command the user must invoke.",
+          "correct": false,
+          "explanation": "A command requires manual invocation; @import makes the content always available."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-007",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "When two CLAUDE.md instructions conflict — one in the user-level file and one in the project root file — which guidance reflects the intended hierarchy for a project?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Project-level memory governs project work; user-level holds personal defaults.",
+          "correct": true,
+          "explanation": "Project-level CLAUDE.md captures project-specific, team-shared guidance, while user-level holds your personal cross-project defaults that the project context refines."
+        },
+        {
+          "id": "B",
+          "text": "User-level always wins because it is loaded earliest in the session.",
+          "correct": false,
+          "explanation": "Load order does not make user-level override project-specific guidance for a project."
+        },
+        {
+          "id": "C",
+          "text": "Whichever file is larger in bytes is treated as authoritative by Claude.",
+          "correct": false,
+          "explanation": "File size has no bearing on precedence."
+        },
+        {
+          "id": "D",
+          "text": "Both memory files are ignored entirely unless the same instruction is also repeated inside a slash command.",
+          "correct": false,
+          "explanation": "Memory files are honored without needing a slash command to restate them."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-008",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "An engineer is about to ask the agent for a multi-file feature touching an unfamiliar pipeline and wants to review the approach before any code is written. Which mode fits best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plan mode, which reads files and returns a reviewable plan before executing.",
+          "correct": true,
+          "explanation": "Plan mode uses read-only tools to research the codebase and produce a plan you approve before any edits, ideal for broad multi-file work."
+        },
+        {
+          "id": "B",
+          "text": "Direct execution with auto-accept so edits land as fast as possible.",
+          "correct": false,
+          "explanation": "Auto-accept skips the review step the engineer explicitly wants."
+        },
+        {
+          "id": "C",
+          "text": "Raising the effort level, which produces the plan and then immediately applies it all at once without review.",
+          "correct": false,
+          "explanation": "Effort level controls reasoning depth, not the plan-then-approve gate."
+        },
+        {
+          "id": "D",
+          "text": "A custom slash command that commits the change without a plan step.",
+          "correct": false,
+          "explanation": "A commit command does not provide the pre-implementation review requested."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-009",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "Choosing between plan mode and a higher effort level: which framing best describes when to use each?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plan mode is strictly for making fast edits, whereas a higher effort level is strictly for slow and careful edits.",
+          "correct": false,
+          "explanation": "Neither is primarily about edit speed; they address breadth versus depth."
+        },
+        {
+          "id": "B",
+          "text": "Plan mode handles breadth across the codebase; higher effort handles depth on hard logic.",
+          "correct": true,
+          "explanation": "Plan mode suits multi-step, multi-file breadth, while a higher effort level suits deep reasoning on complex logic or debugging."
+        },
+        {
+          "id": "C",
+          "text": "Plan mode disables tools entirely; higher effort enables every tool.",
+          "correct": false,
+          "explanation": "Plan mode still uses read-only tools; effort level does not toggle tool access."
+        },
+        {
+          "id": "D",
+          "text": "Plan mode is cheaper in tokens; higher effort is always free to use.",
+          "correct": false,
+          "explanation": "Both consume extra tokens; cost is not the distinguishing factor here."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-010",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "An engineer only wants a summary of where authentication lives, with the verbose file-by-file discovery kept out of the main conversation. What is the best approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Read every candidate auth file directly in the main thread and skim through all of the output yourself.",
+          "correct": false,
+          "explanation": "Reading in the main thread is exactly the verbose clutter to avoid."
+        },
+        {
+          "id": "B",
+          "text": "Use the Explore subagent so discovery runs in isolation and returns a summary.",
+          "correct": true,
+          "explanation": "The Explore subagent runs the verbose exploration in its own context and returns just a summary, keeping the main context clean."
+        },
+        {
+          "id": "C",
+          "text": "Enter plan mode and approve the plan to surface the discovery inline.",
+          "correct": false,
+          "explanation": "Plan mode is for planning changes; here no change is intended, just a summary."
+        },
+        {
+          "id": "D",
+          "text": "Run `/compact` first so the discovery output is summarized afterward.",
+          "correct": false,
+          "explanation": "Compaction acts after the fact; it does not isolate discovery up front."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-011",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "While reviewing a generated plan, an engineer notices a missing edge case. What is the appropriate action before any code is written?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Approve the plan as written and then circle back to fix the missing edge case in a follow-up prompt later.",
+          "correct": false,
+          "explanation": "Approving locks in the gap; the pre-code review is the cheapest place to fix it."
+        },
+        {
+          "id": "B",
+          "text": "Revise the plan (or edit it) so the edge case is covered before approving.",
+          "correct": true,
+          "explanation": "Plan mode exists precisely so you can course-correct before code is written; revise or edit the plan to cover the edge case, then approve."
+        },
+        {
+          "id": "C",
+          "text": "Switch to a higher effort level and resubmit the same prompt verbatim.",
+          "correct": false,
+          "explanation": "Effort level does not address a specific missing requirement in the plan."
+        },
+        {
+          "id": "D",
+          "text": "Clear the session so the planner forgets the flawed first attempt.",
+          "correct": false,
+          "explanation": "Clearing discards useful context; revising the plan is the targeted fix."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-012",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "Your team runs the same boilerplate-generation steps constantly with project-specific conventions. What is the cleanest way to standardize this into one repeatable invocation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Paste the full instructions into the prompt manually on each run.",
+          "correct": false,
+          "explanation": "Manual pasting is the repetition a custom command eliminates."
+        },
+        {
+          "id": "B",
+          "text": "Create a custom slash command markdown file under `.claude/commands/`.",
+          "correct": true,
+          "explanation": "A markdown file in `.claude/commands/` becomes a slash command, turning the repeated workflow with its conventions into one reusable invocation."
+        },
+        {
+          "id": "C",
+          "text": "Add the steps to `.mcp.json` so a server runs them automatically.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures servers, not reusable prompt workflows."
+        },
+        {
+          "id": "D",
+          "text": "Define a PreToolUse hook that emits the boilerplate instructions.",
+          "correct": false,
+          "explanation": "Hooks intercept tool calls; they are not an on-demand workflow command."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-013",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "A custom command should accept a file path the engineer passes at runtime, like `/write_tests the use-auth.ts file`. How do you make it accept that input?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include the `$ARGUMENTS` placeholder in the command's markdown file.",
+          "correct": true,
+          "explanation": "The `$ARGUMENTS` placeholder in the command file captures whatever the user passes at runtime, making the command reusable with different inputs."
+        },
+        {
+          "id": "B",
+          "text": "Add a `@parameters` decorator at the top of the command file.",
+          "correct": false,
+          "explanation": "There is no `@parameters` decorator for custom commands."
+        },
+        {
+          "id": "C",
+          "text": "Declare the parameters inside `.claude/settings.json` permissions.",
+          "correct": false,
+          "explanation": "Settings configure permissions and hooks, not command arguments."
+        },
+        {
+          "id": "D",
+          "text": "Append command-line flags when invoking the command in the prompt.",
+          "correct": false,
+          "explanation": "Arguments flow through `$ARGUMENTS`, not CLI flags typed into the prompt."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-014",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "After creating a new file `audit.md` in `.claude/commands/`, what must the engineer do for the `/audit` command to become available?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Nothing extra; Claude Code picks the command up automatically without a restart.",
+          "correct": true,
+          "explanation": "After creating the command file, Claude Code detects it automatically and no restart is required."
+        },
+        {
+          "id": "B",
+          "text": "Restart Claude Code so it rescans the commands directory on launch.",
+          "correct": false,
+          "explanation": "No restart is needed; the command is picked up automatically."
+        },
+        {
+          "id": "C",
+          "text": "Register the command name inside `.claude/settings.json` first.",
+          "correct": false,
+          "explanation": "Commands are not registered in settings; the filename defines the command."
+        },
+        {
+          "id": "D",
+          "text": "Run `/init` once again so that Claude regenerates its entire command index from scratch on launch.",
+          "correct": false,
+          "explanation": "`/init` analyzes the codebase for CLAUDE.md; it is unrelated to command discovery."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-015",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "An engineer wants a capability with a name and short description loaded into context, where the full instructions load only when Claude decides to use it. Which mechanism is that?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A Skill, whose full contents load on demand when Claude needs it.",
+          "correct": true,
+          "explanation": "A Skill keeps only its name and description in context and loads the full instructions only when Claude determines it should use it."
+        },
+        {
+          "id": "B",
+          "text": "An MCP server, which loads only metadata until the first tool call.",
+          "correct": false,
+          "explanation": "MCP servers load all their tool definitions into context upfront, not lazily."
+        },
+        {
+          "id": "C",
+          "text": "A CLAUDE.md @import, which streams its target file in piece by piece.",
+          "correct": false,
+          "explanation": "An @import loads the full referenced file into every request, not on demand."
+        },
+        {
+          "id": "D",
+          "text": "A PostToolUse hook, which injects instructions after each tool call.",
+          "correct": false,
+          "explanation": "Hooks run commands around tool calls; they are not lazily-loaded capabilities."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-016",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "A team wants the full commit, push, and PR-creation flow handled in one step instead of three manual commands. Which built-in feature does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The `/commit-push-pr` skill, which handles all three steps in one invocation.",
+          "correct": true,
+          "explanation": "The `/commit-push-pr` skill performs the commit, push, and PR creation together in a single step."
+        },
+        {
+          "id": "B",
+          "text": "A PreToolUse hook matched to the Bash tool running git commands.",
+          "correct": false,
+          "explanation": "A hook intercepts tool calls; it does not orchestrate the full PR workflow on request."
+        },
+        {
+          "id": "C",
+          "text": "The `/init` command, which sets up the repository for committing.",
+          "correct": false,
+          "explanation": "`/init` generates a CLAUDE.md; it does not commit or open PRs."
+        },
+        {
+          "id": "D",
+          "text": "An MCP resource that exposes the full git history and pending diff as readable content for review.",
+          "correct": false,
+          "explanation": "A resource exposes content; it does not perform commits or PRs."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-017",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "An engineer keeps correcting the agent to never add API routes. To stop the repetition across future sessions, what is the most durable fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Repeat the correction at the start of every new session manually.",
+          "correct": false,
+          "explanation": "Manual repetition each session is the toil a memory file removes."
+        },
+        {
+          "id": "B",
+          "text": "Save the rule to CLAUDE.md so it loads automatically next session.",
+          "correct": true,
+          "explanation": "Persisting the correction in CLAUDE.md means the agent reads it at the start of every session, preventing the repeated mistake."
+        },
+        {
+          "id": "C",
+          "text": "Lower the effort level so the agent makes fewer creative choices.",
+          "correct": false,
+          "explanation": "Effort level does not encode a specific project rule."
+        },
+        {
+          "id": "D",
+          "text": "Disable the Write tool so it cannot create API route files at all.",
+          "correct": false,
+          "explanation": "Disabling Write blocks legitimate edits too; a memory rule is the right scope."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-018",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "A task requires both broad understanding across many files and deep reasoning about a tricky algorithm. What is a reasonable configuration?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use plan mode for the breadth and raise the effort level for the depth.",
+          "correct": true,
+          "explanation": "The two features compose: plan mode handles broad multi-file understanding while a higher effort level handles the deep algorithmic reasoning."
+        },
+        {
+          "id": "B",
+          "text": "Use only auto-accept mode, which covers both breadth and depth at once.",
+          "correct": false,
+          "explanation": "Auto-accept governs edit approval, not breadth or reasoning depth."
+        },
+        {
+          "id": "C",
+          "text": "Use only the lowest effort level to keep the long task affordable.",
+          "correct": false,
+          "explanation": "Lowest effort undercuts the deep reasoning the algorithm needs."
+        },
+        {
+          "id": "D",
+          "text": "Avoid both features since combining them is not supported together.",
+          "correct": false,
+          "explanation": "Combining plan mode and higher effort is explicitly supported."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-019",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "When you start a fresh session in a project that has a project-root `CLAUDE.md`, how is that file used?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Claude reads it automatically at the start and appends it to your prompt.",
+          "correct": true,
+          "explanation": "Claude reads the project CLAUDE.md automatically at session start and appends its contents, acting like a persistent project system prompt."
+        },
+        {
+          "id": "B",
+          "text": "It loads only after you explicitly run `/init` in the session.",
+          "correct": false,
+          "explanation": "`/init` generates the file; an existing one loads automatically without it."
+        },
+        {
+          "id": "C",
+          "text": "It loads only when you mention a file in it with the `@` symbol.",
+          "correct": false,
+          "explanation": "The file loads regardless; @import additionally pulls referenced files."
+        },
+        {
+          "id": "D",
+          "text": "It is ignored unless it is also copied into `.claude/settings.json`.",
+          "correct": false,
+          "explanation": "CLAUDE.md is read directly; it is not registered in settings."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-020",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "An engineer wants a reusable code-reviewer that runs with fresh context and is restricted to read-only tools so it never edits files. What should they configure?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A subagent definition checked into the repo, scoped to read-only tools.",
+          "correct": true,
+          "explanation": "A code-reviewer subagent runs in its own fresh context and should be restricted to read-only tools and committed so the whole team uses the same reviewer."
+        },
+        {
+          "id": "B",
+          "text": "A PostToolUse hook that re-runs the linter after every file edit.",
+          "correct": false,
+          "explanation": "A linter hook formats or checks; it is not a fresh-context reviewer agent."
+        },
+        {
+          "id": "C",
+          "text": "An MCP resource exposing the diff so the main agent reviews itself.",
+          "correct": false,
+          "explanation": "Self-review carries the main agent's bias and a resource is not a reviewer."
+        },
+        {
+          "id": "D",
+          "text": "A user-level CLAUDE.md note asking the agent to be more careful.",
+          "correct": false,
+          "explanation": "A memory note does not create an isolated read-only reviewer."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-002",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "While hand-rolling the agent loop, the model returns a `tool_use` block. After you execute the tool, how must you send the result back so the conversation stays valid?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Append a `tool_result` block keyed to the matching `tool_use_id`.",
+          "correct": true,
+          "explanation": "Each tool result must be a `tool_result` block carrying the same `tool_use_id` as the request so the model can correlate it with the call."
+        },
+        {
+          "id": "B",
+          "text": "Append the output as a plain assistant text message in the history.",
+          "correct": false,
+          "explanation": "Tool output must be a structured tool_result, not free assistant text."
+        },
+        {
+          "id": "C",
+          "text": "Send the output as a brand-new system prompt for the next turn.",
+          "correct": false,
+          "explanation": "Results do not go in the system prompt; they are user-role tool_result blocks."
+        },
+        {
+          "id": "D",
+          "text": "Discard the output and let the model re-derive it on the next call.",
+          "correct": false,
+          "explanation": "Discarding the result breaks the loop; the model needs the tool_result to proceed."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-003",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Your hand-built loop returns a response whose `stop_reason` is `end_turn`. What does this signal about the agentic loop?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The model wants another tool executed before it can continue.",
+          "correct": false,
+          "explanation": "A pending tool request is signaled by `tool_use`, not `end_turn`."
+        },
+        {
+          "id": "B",
+          "text": "The model has finished this turn and the loop should stop iterating.",
+          "correct": true,
+          "explanation": "`end_turn` means the model has completed its turn, so the loop terminates rather than executing more tools."
+        },
+        {
+          "id": "C",
+          "text": "The request hit the token limit and must be retried with more budget.",
+          "correct": false,
+          "explanation": "A length cutoff has its own stop reason; `end_turn` is normal completion."
+        },
+        {
+          "id": "D",
+          "text": "An error occurred and the loop should restart from the first prompt.",
+          "correct": false,
+          "explanation": "`end_turn` is a clean finish, not an error condition."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-004",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "A response contains two `tool_use` blocks in a single assistant turn. How should the loop respond before the next model call?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Execute only the first tool and ignore the second to keep it simple.",
+          "correct": false,
+          "explanation": "Ignoring a requested tool leaves an unmatched tool_use and breaks the turn."
+        },
+        {
+          "id": "B",
+          "text": "Merge both requests into one tool call and return a single result.",
+          "correct": false,
+          "explanation": "Each tool_use is distinct and needs its own correlated result."
+        },
+        {
+          "id": "C",
+          "text": "Execute both tools and append a tool_result for each, keyed by its id.",
+          "correct": true,
+          "explanation": "Every tool_use block must get its own tool_result keyed to the matching tool_use_id before the next model call."
+        },
+        {
+          "id": "D",
+          "text": "Stop the loop because multiple tool calls indicate a malformed reply.",
+          "correct": false,
+          "explanation": "Multiple tool_use blocks are valid; the loop handles each one."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-005",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "An agent's main context is filling with verbose exploration output from answering 'where are the auth endpoints?'. Which technique keeps the main context clean?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Delegate the exploration to a subagent that returns only a summary.",
+          "correct": true,
+          "explanation": "A subagent works in its own isolated context and returns just the answer, so the verbose exploration never clutters the main context."
+        },
+        {
+          "id": "B",
+          "text": "Raise the effort level so the model reasons through the clutter faster.",
+          "correct": false,
+          "explanation": "Effort level does not reduce how much exploration output enters context."
+        },
+        {
+          "id": "C",
+          "text": "Read every candidate file in the main thread to settle it quickly.",
+          "correct": false,
+          "explanation": "Reading in the main thread is what fills the context in the first place."
+        },
+        {
+          "id": "D",
+          "text": "Add the endpoints to `.mcp.json` so they no longer need exploring.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures servers; it does not store discovered endpoints."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-006",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "What is the defining property of a subagent's context relative to the main agent?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It shares the very same context window, so both agents see every piece of intermediate output produced.",
+          "correct": false,
+          "explanation": "Sharing context would defeat the purpose; subagents are isolated."
+        },
+        {
+          "id": "B",
+          "text": "It operates in its own isolated context window separate from the main agent.",
+          "correct": true,
+          "explanation": "Each subagent runs in a completely separate context window, which is why only its summary returns to the main agent."
+        },
+        {
+          "id": "C",
+          "text": "It can only ever run after the main agent has fully stopped.",
+          "correct": false,
+          "explanation": "Subagents run in parallel with the main agent, not strictly afterward."
+        },
+        {
+          "id": "D",
+          "text": "It permanently inherits every tool result the main agent produced.",
+          "correct": false,
+          "explanation": "Isolated context means it does not inherit the main agent's tool results."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-007",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "Why is a subagent recommended for a pre-push code review rather than asking the main agent to review its own work?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A subagent runs faster because it skips the agentic loop entirely.",
+          "correct": false,
+          "explanation": "Subagents still use the loop; the value is fresh, unbiased context."
+        },
+        {
+          "id": "B",
+          "text": "A subagent can edit files directly while the main agent cannot.",
+          "correct": false,
+          "explanation": "A reviewer should be read-only; editing is not the reason to use one."
+        },
+        {
+          "id": "C",
+          "text": "A subagent gives a fresh perspective without the main agent's session bias.",
+          "correct": true,
+          "explanation": "A reviewer subagent has fresh context and does not carry the bias the main agent built up while writing the code."
+        },
+        {
+          "id": "D",
+          "text": "A subagent is the only component permitted to call the Bash tool.",
+          "correct": false,
+          "explanation": "Both can call Bash subject to permissions; that is not the rationale."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-008",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "An engineer ended a session yesterday mid-refactor and wants to continue exactly where they left off today. Which capability does that?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Resuming the prior session so its accumulated context is restored.",
+          "correct": true,
+          "explanation": "Resuming a session restores the prior conversation and context so work continues from where it stopped."
+        },
+        {
+          "id": "B",
+          "text": "Running `/clear`, which starts fresh while keeping yesterday's memory.",
+          "correct": false,
+          "explanation": "`/clear` discards context; it does not resume the prior session."
+        },
+        {
+          "id": "C",
+          "text": "Running `/init`, which reloads the previous conversation automatically.",
+          "correct": false,
+          "explanation": "`/init` generates a CLAUDE.md; it does not restore a session."
+        },
+        {
+          "id": "D",
+          "text": "Adding the work to `.mcp.json` so the next session reconnects to it.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures servers; it does not persist a session's progress."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-009",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "Using the Agent SDK, an engineer wants to branch from an existing session to try an alternative approach without disturbing the original. Which option supports this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`fork_session`, which branches from the existing session into a new one.",
+          "correct": true,
+          "explanation": "Forking a session branches off the existing one, letting you explore an alternative path while preserving the original session."
+        },
+        {
+          "id": "B",
+          "text": "`allowedTools`, which restricts the tool set the new branch may use.",
+          "correct": false,
+          "explanation": "`allowedTools` limits tools; it does not branch a session."
+        },
+        {
+          "id": "C",
+          "text": "`/compact`, which copies the session into a summarized duplicate.",
+          "correct": false,
+          "explanation": "Compaction summarizes the current session; it does not fork a branch."
+        },
+        {
+          "id": "D",
+          "text": "A PreToolUse hook, which automatically clones the entire conversation just before each and every tool call.",
+          "correct": false,
+          "explanation": "Hooks intercept tool calls; they do not fork sessions."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-010",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "After resuming a session with `--resume`, the engineer had edited several files outside Claude in the meantime. What is the most effective first step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Immediately ask for edits, trusting the resumed context is still accurate.",
+          "correct": false,
+          "explanation": "The resumed context predates the external edits, so it may be stale."
+        },
+        {
+          "id": "B",
+          "text": "Inform the resumed session which files changed so its context is current.",
+          "correct": true,
+          "explanation": "A resumed session holds a stale view, so telling it which files changed lets it re-read them and avoid acting on outdated content."
+        },
+        {
+          "id": "C",
+          "text": "Fork the session first so the stale context is duplicated safely.",
+          "correct": false,
+          "explanation": "Forking copies the stale state; it does not refresh it."
+        },
+        {
+          "id": "D",
+          "text": "Lower the effort level so the model relies less on remembered files.",
+          "correct": false,
+          "explanation": "Effort level does not update the session's stale file knowledge."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-011",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "When Claude opens a PR via `gh pr create`, the session is linked to that PR. How does the engineer later resume work on that PR?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Re-run `/init` inside the PR branch to relink the session to it.",
+          "correct": false,
+          "explanation": "`/init` generates CLAUDE.md; it does not resume a PR-linked session."
+        },
+        {
+          "id": "B",
+          "text": "Run `claude --from-pr <PR_NUMBER>` to pick up where they left off.",
+          "correct": true,
+          "explanation": "`claude --from-pr <PR_NUMBER>` resumes the session linked to that PR, restoring context to address reviews or fix builds."
+        },
+        {
+          "id": "C",
+          "text": "Open a brand-new session and paste the PR diff into the first prompt.",
+          "correct": false,
+          "explanation": "A fresh session loses the linked context that --from-pr restores."
+        },
+        {
+          "id": "D",
+          "text": "Add the PR number to `.mcp.json` so the server reattaches the session.",
+          "correct": false,
+          "explanation": "`.mcp.json` configures servers and has nothing to do with PR linkage."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-012",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "An engineer wants the agent to think harder on a single difficult prompt without changing the session's effort level. What achieves that?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include the keyword `ultrathink` in that prompt to signal extra reasoning.",
+          "correct": true,
+          "explanation": "The `ultrathink` keyword signals more reasoning for that single turn without altering the session-wide effort level."
+        },
+        {
+          "id": "B",
+          "text": "Run `/effort max`, which only ever affects the one next prompt.",
+          "correct": false,
+          "explanation": "`/effort` changes the session's level persistently, not just one prompt."
+        },
+        {
+          "id": "C",
+          "text": "Switch to plan mode, which forces deep reasoning on every reply.",
+          "correct": false,
+          "explanation": "Plan mode adds breadth and a planning gate, not per-prompt reasoning depth."
+        },
+        {
+          "id": "D",
+          "text": "Add a Stop hook that re-prompts the model to reconsider its answer.",
+          "correct": false,
+          "explanation": "A Stop hook runs after responses; it is not a per-prompt reasoning signal."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-013",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "A subagent is configured to preload a skill. How does skill loading differ inside a subagent compared to the main conversation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The subagent loads the entire skill into context, unlike the main conversation.",
+          "correct": true,
+          "explanation": "When preloaded into a subagent, the whole skill is loaded into its context, whereas in the main conversation a skill loads its full contents only on demand."
+        },
+        {
+          "id": "B",
+          "text": "The subagent loads only the skill's name, never its instructions.",
+          "correct": false,
+          "explanation": "Preloading puts the full skill into the subagent, not just the name."
+        },
+        {
+          "id": "C",
+          "text": "The subagent cannot use skills at all and must use MCP tools instead.",
+          "correct": false,
+          "explanation": "Subagents can preload skills; they are not limited to MCP tools."
+        },
+        {
+          "id": "D",
+          "text": "The subagent simply shares the main conversation's already-loaded skill state instead of loading its own.",
+          "correct": false,
+          "explanation": "Subagents have isolated context; they do not share loaded skill state."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-014",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "An engineer hand-builds an SDK loop but forgets to feed each tool's output back before the next model call. What failure should they expect?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The model keeps acting as if the tool never ran, unable to use the result.",
+          "correct": true,
+          "explanation": "Without appending the tool_result keyed to its tool_use_id, the model has no record of the output and cannot progress on it."
+        },
+        {
+          "id": "B",
+          "text": "The model automatically re-runs every tool until results appear on their own.",
+          "correct": false,
+          "explanation": "The model does not auto-rerun tools; the loop owner must supply results."
+        },
+        {
+          "id": "C",
+          "text": "The session immediately ends with a permanent permission error.",
+          "correct": false,
+          "explanation": "Missing results are a protocol gap, not a permission error."
+        },
+        {
+          "id": "D",
+          "text": "The CLI silently switches to tool search mode to recover the output.",
+          "correct": false,
+          "explanation": "Tool search mode addresses context size of definitions, not missing results."
+        }
+      ]
+    }
+  ]
+}
