@@ -1,0 +1,56 @@
+{
+  "domains": [
+    { "id": "D1", "name": "Agentic Architecture & Orchestration", "weight": 0.27 },
+    { "id": "D2", "name": "Tool Design & MCP Integration", "weight": 0.18 },
+    { "id": "D3", "name": "Claude Code Configuration & Workflows", "weight": 0.20 },
+    { "id": "D4", "name": "Prompt Engineering & Structured Output", "weight": 0.20 },
+    { "id": "D5", "name": "Context Management & Reliability", "weight": 0.15 }
+  ],
+  "scenarios": [
+    {
+      "id": "S1",
+      "name": "Customer Support Resolution Agent",
+      "description": "An agent built with the Claude Agent SDK that handles high-ambiguity requests like returns, billing disputes, and account issues. It accesses backend systems through custom MCP tools (get_customer, lookup_order, process_refund, escalate_to_human). Target: 80%+ first-contact resolution while knowing when to escalate.",
+      "primary_domains": ["D1", "D2", "D5"]
+    },
+    {
+      "id": "S2",
+      "name": "Code Generation with Claude Code",
+      "description": "Using Claude Code to accelerate development: code generation, refactoring, debugging, and documentation. Integrated into the workflow with custom slash commands, CLAUDE.md configurations, and judgment about plan mode vs direct execution.",
+      "primary_domains": ["D3", "D5"]
+    },
+    {
+      "id": "S3",
+      "name": "Multi-Agent Research System",
+      "description": "A multi-agent research system on the Claude Agent SDK. A coordinator delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, one generates reports. Produces comprehensive, cited reports.",
+      "primary_domains": ["D1", "D2", "D5"]
+    },
+    {
+      "id": "S4",
+      "name": "Developer Productivity with Claude",
+      "description": "Developer productivity tools on the Claude Agent SDK. The agent explores unfamiliar codebases, understands legacy systems, generates boilerplate, and automates repetitive tasks using built-in tools (Read, Write, Bash, Grep, Glob) and MCP servers.",
+      "primary_domains": ["D2", "D3", "D1"]
+    },
+    {
+      "id": "S5",
+      "name": "Claude Code for Continuous Integration",
+      "description": "Integrating Claude Code into a CI/CD pipeline that runs automated code reviews, generates test cases, and provides feedback on pull requests. Prompts must give actionable feedback and minimize false positives.",
+      "primary_domains": ["D3", "D4"]
+    },
+    {
+      "id": "S6",
+      "name": "Structured Data Extraction",
+      "description": "A structured data extraction system using Claude. It extracts information from unstructured documents, validates output with JSON schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems.",
+      "primary_domains": ["D4", "D5"]
+    }
+  ],
+  "session": {
+    "total_questions": 60,
+    "scenarios_per_session": 4,
+    "questions_per_scenario": 15,
+    "default_minutes": 90,
+    "pass_scaled": 720,
+    "scaled_min": 100,
+    "scaled_max": 1000
+  }
+}

@@ -1,0 +1,2050 @@
+{
+  "questions": [
+    {
+      "id": "S5-D3-001",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your pipeline script runs `claude \"Analyze this pull request for security issues\"` but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach to run Claude Code in an automated pipeline?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add the `-p` flag: `claude -p \"Analyze this pull request for security issues\"`.",
+          "correct": true,
+          "explanation": "The `-p` (or `--print`) flag is the documented way to run Claude Code in non-interactive mode. It processes the prompt, outputs the result to stdout, and exits without waiting for user input — exactly what CI/CD pipelines require."
+        },
+        {
+          "id": "B",
+          "text": "Set the environment variable `CLAUDE_HEADLESS=true` before running the command.",
+          "correct": false,
+          "explanation": "This references a non-existent feature."
+        },
+        {
+          "id": "C",
+          "text": "Redirect stdin from /dev/null: `claude \"...\" < /dev/null`.",
+          "correct": false,
+          "explanation": "A Unix workaround that doesn't properly address Claude Code's command syntax."
+        },
+        {
+          "id": "D",
+          "text": "Add the `--batch` flag: `claude --batch \"...\"`.",
+          "correct": false,
+          "explanation": "This references a non-existent flag."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-001",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your team wants to reduce API costs. Real-time Claude calls power two workflows: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight for review the next morning. Your manager proposes switching both to the Message Batches API for its 50% cost savings. How should you evaluate this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks.",
+          "correct": true,
+          "explanation": "The Batches API offers 50% savings but has processing times up to 24 hours with no latency SLA — unsuitable for blocking pre-merge checks where developers wait, but ideal for overnight batch jobs."
+        },
+        {
+          "id": "B",
+          "text": "Switch both workflows to batch processing with status polling to check for completion.",
+          "correct": false,
+          "explanation": "Relying on \"often faster\" completion isn't acceptable for blocking workflows."
+        },
+        {
+          "id": "C",
+          "text": "Keep real-time calls for both workflows to avoid batch result ordering issues.",
+          "correct": false,
+          "explanation": "A misconception — batch results can be correlated using `custom_id` fields."
+        },
+        {
+          "id": "D",
+          "text": "Switch both to batch processing with a timeout fallback to real-time if batches take too long.",
+          "correct": false,
+          "explanation": "Adds unnecessary complexity when matching each API to its appropriate use case is simpler."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-002",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "A pull request modifies 14 files across the stock tracking module. Your single-pass review analyzing all files together produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback. How should you restructure the review?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow.",
+          "correct": true,
+          "explanation": "Splitting reviews into focused passes addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, and a separate integration pass catches cross-file issues."
+        },
+        {
+          "id": "B",
+          "text": "Require developers to split large PRs into smaller submissions of 3-4 files before the automated review runs.",
+          "correct": false,
+          "explanation": "Shifts burden to developers without addressing the review architecture."
+        },
+        {
+          "id": "C",
+          "text": "Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass.",
+          "correct": false,
+          "explanation": "A larger window doesn't solve attention dilution across many simultaneous files."
+        },
+        {
+          "id": "D",
+          "text": "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs.",
+          "correct": false,
+          "explanation": "Voting across full-PR passes still suffers the same per-pass attention dilution."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-003",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Developers complain your CI review bot flags too many false positives on comment style and local naming, eroding trust even though its security findings are accurate. What's the most effective prompt change?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Write specific review criteria defining which issues to report (bugs, security) versus skip (minor style, local patterns), rather than relying on confidence-based filtering.",
+          "correct": true,
+          "explanation": "Explicit categorical criteria outperform vague instructions like \"be conservative.\" Defining exactly what to report and what to skip restores trust without suppressing accurate categories."
+        },
+        {
+          "id": "B",
+          "text": "Add \"only report high-confidence findings\" to the prompt.",
+          "correct": false,
+          "explanation": "General confidence-based instructions fail to improve precision compared to specific categorical criteria."
+        },
+        {
+          "id": "C",
+          "text": "Reduce the model temperature so it produces fewer findings overall.",
+          "correct": false,
+          "explanation": "Temperature reduces variability, not the rate of low-value categories; it could also suppress accurate findings."
+        },
+        {
+          "id": "D",
+          "text": "Have the bot post every finding but sort them by a self-reported severity score.",
+          "correct": false,
+          "explanation": "This still floods developers with the false positives that erode trust."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-002",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your CI job posts Claude's review as a PR comment, but a downstream script must parse the findings to set a pass/fail status. Right now it tries to regex the plain-text output and frequently breaks. What's the most reliable way to get machine-parseable findings?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Run `claude -p` with `--output-format json` so the result is a structured object.",
+          "correct": true,
+          "explanation": "`--output-format json` produces a structured, machine-parseable result instead of free-form prose, removing the brittle regex parsing that breaks on formatting changes."
+        },
+        {
+          "id": "B",
+          "text": "Ask Claude in the prompt to \"always format your output as valid JSON\" and parse the stdout text.",
+          "correct": false,
+          "explanation": "Prompt-only formatting is unreliable; Claude may still wrap output in prose or code fences, so a dedicated output format is preferable."
+        },
+        {
+          "id": "C",
+          "text": "Pipe the text output through a second `claude -p` call that reformats it into JSON.",
+          "correct": false,
+          "explanation": "A second model call adds cost and latency and is unnecessary when a structured output format exists."
+        },
+        {
+          "id": "D",
+          "text": "Set `--output-format markdown` and parse the headings with a Markdown library.",
+          "correct": false,
+          "explanation": "Parsing Markdown headings is still brittle, and the goal is a guaranteed machine-readable shape, not prose."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-003",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You use `--output-format json`, but the schema of the findings varies between runs — sometimes a `severity` field is present, sometimes not — which breaks your PR-comment formatter. How do you constrain the output shape?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Provide a schema via `--json-schema` so findings share required fields.",
+          "correct": true,
+          "explanation": "Supplying a `--json-schema` constrains the output to a defined shape with required fields, so the formatter receives a consistent structure every run."
+        },
+        {
+          "id": "B",
+          "text": "Add a retry loop that re-runs the job until the output happens to include all fields.",
+          "correct": false,
+          "explanation": "Retrying until the shape matches is wasteful and non-deterministic; a schema enforces the structure directly."
+        },
+        {
+          "id": "C",
+          "text": "Lower the temperature to zero so the field set is deterministic across runs.",
+          "correct": false,
+          "explanation": "Temperature affects token sampling, not which optional fields appear; it does not guarantee a schema."
+        },
+        {
+          "id": "D",
+          "text": "Have the formatter default any missing fields to `null` and ignore the inconsistency.",
+          "correct": false,
+          "explanation": "Patching downstream hides the problem but loses required severity data; enforcing the schema at the source is correct."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-004",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "A new engineer asks why the CI review job pairs `-p` with `--output-format json` instead of just using `-p` alone. What's the best explanation of what each part contributes?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`-p` makes the run non-interactive so it won't hang; `--output-format json` makes results parseable.",
+          "correct": true,
+          "explanation": "`-p` handles the headless/non-interactive concern (no hang), and `--output-format json` handles machine-readability — two distinct needs in CI."
+        },
+        {
+          "id": "B",
+          "text": "`-p` enables JSON internally and `--output-format json` is only a redundant alias for older versions.",
+          "correct": false,
+          "explanation": "`-p` controls interactivity, not output format; the two flags are not aliases."
+        },
+        {
+          "id": "C",
+          "text": "`--output-format json` runs the job headless and `-p` pretty-prints the JSON for humans.",
+          "correct": false,
+          "explanation": "This reverses the roles of the two flags."
+        },
+        {
+          "id": "D",
+          "text": "Both flags are required only when an MCP server is attached and are optional otherwise.",
+          "correct": false,
+          "explanation": "Neither flag is tied to MCP usage; they address interactivity and output shape generally."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-005",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "The CI review repeatedly criticizes the team's intentional use of integration tests over unit tests and flags the use of a custom logging wrapper as \"non-standard.\" The criteria are correct in general but wrong for this project. What's the most effective fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Document the project's testing standards and accepted conventions in `CLAUDE.md`.",
+          "correct": true,
+          "explanation": "`CLAUDE.md` provides project-specific context, testing standards, and review criteria to the CI-invoked Claude, so it stops applying generic norms that conflict with the team's deliberate choices."
+        },
+        {
+          "id": "B",
+          "text": "Append the conventions to every PR description so they appear in the diff Claude reviews.",
+          "correct": false,
+          "explanation": "PR descriptions are inconsistent and not guaranteed context; CLAUDE.md is read automatically each run."
+        },
+        {
+          "id": "C",
+          "text": "Lower the model's effort level so it reasons less about testing philosophy.",
+          "correct": false,
+          "explanation": "Reducing effort degrades review quality broadly and doesn't convey the project's actual standards."
+        },
+        {
+          "id": "D",
+          "text": "Switch the review to a smaller model that has weaker opinions about conventions.",
+          "correct": false,
+          "explanation": "Model choice doesn't communicate the project's standards; providing them as context does."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-006",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your team maintains a `CLAUDE.md` for local development. You want the CI review bot to apply the same review criteria the team uses interactively. What's the relationship you should rely on?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The CI-invoked Claude reads the committed `CLAUDE.md`, giving CI and local sessions the same context.",
+          "correct": true,
+          "explanation": "Because CLAUDE.md is committed and read at session start, a CI-invoked instance inherits the same project context and review criteria as interactive sessions."
+        },
+        {
+          "id": "B",
+          "text": "CI runs ignore `CLAUDE.md` entirely, so review criteria must be passed as a command-line argument each time.",
+          "correct": false,
+          "explanation": "CI-invoked Claude does read CLAUDE.md; it is not ignored in headless mode."
+        },
+        {
+          "id": "C",
+          "text": "Only `CLAUDE.local.md` is read in CI, so criteria must be duplicated into that uncommitted file.",
+          "correct": false,
+          "explanation": "CLAUDE.local.md is personal and not committed, so it cannot be the shared CI source; the committed CLAUDE.md is."
+        },
+        {
+          "id": "D",
+          "text": "CI reads a separate `CI.md` file that must be created specifically for pipeline runs.",
+          "correct": false,
+          "explanation": "There is no special CI.md convention; the committed CLAUDE.md provides the context."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-007",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your workflow generates code with one Claude session, then asks that same session to review the code it just wrote. Reviewers notice it rarely flags its own design flaws. What's the most effective architectural change?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Have an independent Claude instance review the code, separate from the session that generated it.",
+          "correct": true,
+          "explanation": "The generating session retains its own reasoning and is biased toward defending its decisions; an independent instance reviews with fresh context and catches more issues."
+        },
+        {
+          "id": "B",
+          "text": "Increase the generating session's effort level so it reasons harder when reviewing its own code.",
+          "correct": false,
+          "explanation": "Extra reasoning in the same session doesn't remove the bias of having authored the code."
+        },
+        {
+          "id": "C",
+          "text": "Ask the generating session to re-read its output twice before reporting findings.",
+          "correct": false,
+          "explanation": "Re-reading within the same session still carries the original reasoning and self-justification."
+        },
+        {
+          "id": "D",
+          "text": "Instruct the session to adopt a skeptical persona while reviewing its own output.",
+          "correct": false,
+          "explanation": "A persona prompt doesn't overcome the structural bias of self-review; an independent instance does."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-008",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "A teammate argues that running review in the same session that wrote the code is fine because \"it already understands the context best.\" Why is this reasoning flawed for catching defects?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It retains the reasoning that produced the code, so it rarely questions its own decisions.",
+          "correct": true,
+          "explanation": "Retained generation reasoning biases the model toward its earlier choices, reducing its likelihood of questioning them — the core self-review limitation."
+        },
+        {
+          "id": "B",
+          "text": "A same-session review always exceeds the context window and silently truncates the code.",
+          "correct": false,
+          "explanation": "Context exhaustion is a separate concern and not the reason self-review underperforms."
+        },
+        {
+          "id": "C",
+          "text": "The session caches its tool results, which prevents it from re-reading the files at all.",
+          "correct": false,
+          "explanation": "Tool-result caching is not the mechanism; the issue is reasoning bias toward its own decisions."
+        },
+        {
+          "id": "D",
+          "text": "Reviewing in the same session forces a lower temperature that suppresses findings.",
+          "correct": false,
+          "explanation": "Self-review doesn't change temperature; the limitation is the retained reasoning bias."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-009",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "After a PR's first review, the author pushes new commits to address feedback and the pipeline re-runs the review. Developers complain the bot re-reports the same issues they already fixed or acknowledged. What's the best fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pass the prior review findings into the re-run so Claude reports only new or still-unaddressed issues.",
+          "correct": true,
+          "explanation": "Including prior findings gives the re-run a baseline, so it focuses on what changed and stops repeating issues that were resolved or acknowledged."
+        },
+        {
+          "id": "B",
+          "text": "Only review the files touched by the newest commit and ignore the rest of the PR.",
+          "correct": false,
+          "explanation": "Limiting to the newest commit can miss interactions and still re-flags issues without knowing what was already addressed."
+        },
+        {
+          "id": "C",
+          "text": "Suppress all comments on a re-run and require a human to re-trigger review manually.",
+          "correct": false,
+          "explanation": "Silencing the re-run loses value; supplying prior findings is the targeted solution."
+        },
+        {
+          "id": "D",
+          "text": "Lower the severity threshold on every re-run so that far fewer findings appear in the comment overall.",
+          "correct": false,
+          "explanation": "A blunt threshold change can hide genuine new issues and doesn't address the duplication."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-010",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your test-generation step in CI keeps producing tests that duplicate scenarios already covered in the existing suite, bloating the suite. What's the most effective way to reduce duplicate generation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Provide the existing test files as context so generation avoids scenarios that are already covered.",
+          "correct": true,
+          "explanation": "Giving Claude the existing tests lets it see what's already covered and target gaps instead of re-creating duplicate scenarios."
+        },
+        {
+          "id": "B",
+          "text": "Cap the number of generated tests per file so duplicates are statistically less likely.",
+          "correct": false,
+          "explanation": "A cap limits volume but doesn't tell Claude what's already covered, so duplicates persist."
+        },
+        {
+          "id": "C",
+          "text": "Run the suite first and feed only the coverage percentage into the prompt.",
+          "correct": false,
+          "explanation": "A bare coverage number doesn't identify which specific scenarios exist; the actual test files do."
+        },
+        {
+          "id": "D",
+          "text": "Delete and regenerate the entire existing test suite from scratch on every CI run for consistency.",
+          "correct": false,
+          "explanation": "Regenerating everything is destructive and wasteful; supplying existing tests as context is targeted."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-011",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You build a CI step that launches a second Claude instance to review changes made by the first, modeled on the query-duplication hook pattern. Which SDK/tooling fact about this design is accurate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "An independent reviewing instance gives unbiased feedback but adds API usage and time per run.",
+          "correct": true,
+          "explanation": "Spawning a separate instance for review yields fresh-eyes feedback (no generation bias) at the cost of additional API usage and runtime — the documented trade-off."
+        },
+        {
+          "id": "B",
+          "text": "A second instance shares the first instance's context window, so it needs no extra tokens.",
+          "correct": false,
+          "explanation": "Separate instances have separate context windows and consume their own tokens."
+        },
+        {
+          "id": "C",
+          "text": "The reviewing instance can edit the first instance's files automatically without permissions.",
+          "correct": false,
+          "explanation": "A reviewer should be read-only; it doesn't silently edit, and tools must be permitted explicitly."
+        },
+        {
+          "id": "D",
+          "text": "Launching a second instance is free because reviews don't count against rate limits.",
+          "correct": false,
+          "explanation": "Every instance consumes API usage and counts toward limits; reviews are not exempt."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-012",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "When configuring the review subagent that runs in CI, which tool restriction best matches its role and reduces risk?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Restrict the reviewer to read-only tools so it flags issues rather than editing files.",
+          "correct": true,
+          "explanation": "A code reviewer should surface issues, not modify code; restricting it to read-only tools matches its role and prevents unintended edits."
+        },
+        {
+          "id": "B",
+          "text": "Grant the reviewer full write access so that it can fix any issues it finds inline as it reviews.",
+          "correct": false,
+          "explanation": "A reviewer that edits code blurs review and authorship and reintroduces self-review bias on its own fixes."
+        },
+        {
+          "id": "C",
+          "text": "Grant only Bash so it can run formatters and commit the corrected files.",
+          "correct": false,
+          "explanation": "Committing from the reviewer mixes responsibilities and risks unreviewed changes; read-only is appropriate."
+        },
+        {
+          "id": "D",
+          "text": "Disable all tools so the reviewer works purely from the diff text in the prompt.",
+          "correct": false,
+          "explanation": "Read-only tools let the reviewer inspect related files for context; disabling all tools is overly limiting."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-013",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "You're adding a new CI capability: a large refactor of how reviews are orchestrated across many files, touching several workflow scripts and the review prompt templates. Before writing code, which approach fits best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use Plan Mode first so Claude explores the scripts and proposes a plan.",
+          "correct": true,
+          "explanation": "Plan Mode suits multi-file, multi-step changes requiring broad codebase understanding; it lets you review and redirect before any code is written."
+        },
+        {
+          "id": "B",
+          "text": "Skip planning and prompt Claude to make all edits directly to move faster.",
+          "correct": false,
+          "explanation": "Direct edits on a broad refactor lead to course-correction later; planning is best for multi-file changes."
+        },
+        {
+          "id": "C",
+          "text": "Raise the effort level to max and prompt for the edits without exploring files.",
+          "correct": false,
+          "explanation": "Effort helps with hard logic, not with breadth across many files; Plan Mode addresses the breadth need."
+        },
+        {
+          "id": "D",
+          "text": "Run the change as a batch job overnight so it doesn't block your workflow.",
+          "correct": false,
+          "explanation": "Batching is for cost/latency on independent requests, not for a single interactive multi-file refactor."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-014",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "A reviewer asks you to fix a single off-by-one in one well-understood line of a CI script. Which approach is most appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Prompt Claude to make the one-line edit directly, since it is small and understood.",
+          "correct": true,
+          "explanation": "Direct editing fits a small, well-scoped change; Plan Mode's exploration overhead is unnecessary for a single known line."
+        },
+        {
+          "id": "B",
+          "text": "Enter Plan Mode so Claude can explore the whole repository before touching the line.",
+          "correct": false,
+          "explanation": "Full exploration is overkill for a trivial, well-understood one-line fix."
+        },
+        {
+          "id": "C",
+          "text": "Spawn an independent review instance before making any edit to the line.",
+          "correct": false,
+          "explanation": "An independent review is for catching defects in non-trivial work, not for a single known one-line fix."
+        },
+        {
+          "id": "D",
+          "text": "Submit the fix as part of an overnight Batches API job to save cost.",
+          "correct": false,
+          "explanation": "Batching targets latency-tolerant bulk work, not a quick interactive one-line edit."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-015",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "Your team disagrees about when to use Plan Mode versus a higher effort level while building review tooling. Which framing is correct?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plan Mode handles breadth across files; higher effort handles depth on logic.",
+          "correct": true,
+          "explanation": "Plan Mode is for multi-file breadth and exploration; effort level is for depth on complex logic — distinct axes that can be combined when a task needs both."
+        },
+        {
+          "id": "B",
+          "text": "Plan Mode is simply a slower but more accurate version of raising the effort level on a task.",
+          "correct": false,
+          "explanation": "They address different complexity types (breadth vs depth), not speed-vs-accuracy of the same thing."
+        },
+        {
+          "id": "C",
+          "text": "Higher effort is for writing code and Plan Mode is only for debugging.",
+          "correct": false,
+          "explanation": "This mislabels both: Plan Mode is for exploration/multi-step work, effort is for hard reasoning."
+        },
+        {
+          "id": "D",
+          "text": "Plan Mode disables tools entirely, while higher effort enables every tool.",
+          "correct": false,
+          "explanation": "Plan Mode uses read-only tools to plan; effort level does not toggle tool availability."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-016",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "Every PR in your repo should run the same review steps the same way. You want to package those steps so any engineer (and the CI workflow) invokes them consistently. What's the most appropriate Claude Code mechanism?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Create a custom slash command in `.claude/commands/` that encodes the steps.",
+          "correct": true,
+          "explanation": "Custom commands are markdown files in .claude/commands/ that capture repeatable, project-specific workflows with consistent steps — ideal for a standardized review routine."
+        },
+        {
+          "id": "B",
+          "text": "Tell each engineer to paste the same long review prompt manually every single time they review.",
+          "correct": false,
+          "explanation": "Manual pasting is error-prone and inconsistent; a custom command enforces the same steps."
+        },
+        {
+          "id": "C",
+          "text": "Add the steps to `CLAUDE.local.md` so they're available in every session.",
+          "correct": false,
+          "explanation": "CLAUDE.local.md is personal and uncommitted; it neither shares with the team nor packages an invokable command."
+        },
+        {
+          "id": "D",
+          "text": "Register the steps as an MCP server so they load as tools on startup.",
+          "correct": false,
+          "explanation": "An MCP server exposes external tools, not a packaged prompt workflow; a custom command fits better and avoids context cost."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-017",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "You want one review command to accept the path of the file or module under review so it can be reused across PRs. How do you make a custom command accept that input?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include the `$ARGUMENTS` placeholder in the command's markdown file.",
+          "correct": true,
+          "explanation": "`$ARGUMENTS` lets a custom command accept runtime input (such as a file path), making one command reusable across different targets."
+        },
+        {
+          "id": "B",
+          "text": "Define an `@parameters` decorator at the top of the command file.",
+          "correct": false,
+          "explanation": "There is no @parameters decorator for custom commands; arguments use the $ARGUMENTS placeholder."
+        },
+        {
+          "id": "C",
+          "text": "Declare the parameters in `settings.json` under a command schema block.",
+          "correct": false,
+          "explanation": "Command arguments are not declared in settings.json; the $ARGUMENTS placeholder handles them."
+        },
+        {
+          "id": "D",
+          "text": "Pass the path as an environment variable the command reads at startup.",
+          "correct": false,
+          "explanation": "Custom commands take arguments via $ARGUMENTS, not via ad hoc environment variables."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-018",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "After committing a new `/review-pr` command file into `.claude/commands/` during an active session, a teammate asks whether they must restart Claude Code to use it. What's correct?",
+      "options": [
+        {
+          "id": "A",
+          "text": "No restart is needed; Claude Code picks up new command files automatically.",
+          "correct": true,
+          "explanation": "Custom commands are detected automatically after the file is created — no session restart required."
+        },
+        {
+          "id": "B",
+          "text": "Yes; commands are only loaded at startup, so the session must be restarted.",
+          "correct": false,
+          "explanation": "Commands are picked up automatically without restarting."
+        },
+        {
+          "id": "C",
+          "text": "Only after running `/reload-commands` will the new command appear.",
+          "correct": false,
+          "explanation": "There is no reload-commands step; detection is automatic."
+        },
+        {
+          "id": "D",
+          "text": "Only after committing and pushing to the remote will the command be usable.",
+          "correct": false,
+          "explanation": "Local file presence is enough; pushing to a remote is unrelated to command discovery."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-019",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "The official GitHub integration auto-runs Claude on each pull request. Your team wants Claude to use Playwright tools during PR review in CI. What permissions configuration is required?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Explicitly list each MCP tool in `allowed_tools`; Actions has no shortcut.",
+          "correct": true,
+          "explanation": "In GitHub Actions there is no interactive permission shortcut; every tool from each MCP server must be individually listed in allowed_tools."
+        },
+        {
+          "id": "B",
+          "text": "No special permissions are needed because Actions inherits repository settings.",
+          "correct": false,
+          "explanation": "Repository settings do not grant tool permissions to Claude; tools must be listed explicitly."
+        },
+        {
+          "id": "C",
+          "text": "A single blanket permission covering all MCP operations is sufficient.",
+          "correct": false,
+          "explanation": "There is no blanket MCP permission in Actions; each tool is enumerated."
+        },
+        {
+          "id": "D",
+          "text": "Permissions are pulled automatically from `.claude/settings.local.json` in CI.",
+          "correct": false,
+          "explanation": "The local settings shortcut applies to local development, not GitHub Actions, which requires explicit listing."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-020",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You want the CI-run Claude to have the dev server already running and to know how to query the database during review. In the GitHub Actions workflow, where do you convey that environment context?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Put it in `custom_instructions`, describing the server, logs, and db access.",
+          "correct": true,
+          "explanation": "custom_instructions in the workflow conveys project setup context (server already running, log location, db query method) to the CI-invoked Claude."
+        },
+        {
+          "id": "B",
+          "text": "Embed the context as comments inside the pull request diff.",
+          "correct": false,
+          "explanation": "Diff comments are not a reliable channel for environment setup context; custom_instructions is the documented field."
+        },
+        {
+          "id": "C",
+          "text": "Add the context to the GitHub repository description field.",
+          "correct": false,
+          "explanation": "The repository description is metadata Claude doesn't consume as setup context."
+        },
+        {
+          "id": "D",
+          "text": "Pass it as a positional prompt argument to the `claude` binary inside the run step of the job.",
+          "correct": false,
+          "explanation": "Environment/setup context belongs in custom_instructions, not as a raw positional prompt argument."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-021",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "A type-checking hook is proposed for CI so that when Claude edits a function signature, missed call sites are caught immediately. Which hook type and behavior fits this need?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A PostToolUse hook running `tsc --noEmit` after edits, feeding errors back.",
+          "correct": true,
+          "explanation": "A PostToolUse hook fires after file edits, runs the type checker, and feeds errors back so Claude fixes affected call sites — exactly the documented pattern."
+        },
+        {
+          "id": "B",
+          "text": "A PreToolUse hook that blocks the edit until types are manually verified.",
+          "correct": false,
+          "explanation": "PreToolUse runs before the edit, so it cannot type-check the result; PostToolUse is correct."
+        },
+        {
+          "id": "C",
+          "text": "A Stop hook that runs the compiler only once Claude finishes the entire session.",
+          "correct": false,
+          "explanation": "Waiting until Stop delays feedback; PostToolUse gives immediate per-edit checking."
+        },
+        {
+          "id": "D",
+          "text": "A Notification hook that emails the type errors to the developer.",
+          "correct": false,
+          "explanation": "Notification hooks fire on notifications/idle, not after edits, and emailing doesn't feed errors back to Claude."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-022",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your CI must guarantee that commits to the `main` branch are blocked during automated runs, not merely discouraged via a prompt instruction. What's the most reliable mechanism?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A PreToolUse hook that blocks the command and returns feedback via exit code 2.",
+          "correct": true,
+          "explanation": "Hooks are deterministic — they always run. A PreToolUse hook can block the action (exit code 2) and feed the reason back, unlike a prompt instruction that may be ignored."
+        },
+        {
+          "id": "B",
+          "text": "An instruction in `CLAUDE.md` telling Claude that it must never commit directly to the `main` branch.",
+          "correct": false,
+          "explanation": "CLAUDE.md guidance is usually followed but not guaranteed; a hard guarantee requires a hook."
+        },
+        {
+          "id": "C",
+          "text": "A PostToolUse hook that reverts the commit after it happens.",
+          "correct": false,
+          "explanation": "PostToolUse cannot block the action; the commit would already have occurred."
+        },
+        {
+          "id": "D",
+          "text": "Lowering the effort level so Claude is less likely to attempt a commit.",
+          "correct": false,
+          "explanation": "Effort level has no bearing on enforcing a hard branch-protection rule."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-023",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "When the PreToolUse hook blocks a forbidden command in CI, how should the hook communicate the reason so Claude can adjust its next action?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Exit with code 2 and write the reason to stderr, which is fed back to Claude.",
+          "correct": true,
+          "explanation": "Exit code 2 blocks the tool call, and the stderr message is delivered to Claude as feedback explaining why, so it can adapt."
+        },
+        {
+          "id": "B",
+          "text": "Exit with code 0 and write the reason to standard output for Claude to read and act upon.",
+          "correct": false,
+          "explanation": "Exit code 0 allows the call to proceed, so it would not block anything."
+        },
+        {
+          "id": "C",
+          "text": "Exit with code 1 and write the reason to a log file Claude polls.",
+          "correct": false,
+          "explanation": "Other non-zero codes surface a non-blocking error to the user and don't block the call; code 2 is the blocking signal."
+        },
+        {
+          "id": "D",
+          "text": "Throw an uncaught exception so the runner aborts the whole job.",
+          "correct": false,
+          "explanation": "Aborting the job is heavy-handed and loses the targeted feedback path of exit code 2 plus stderr."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-024",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "You share review hooks across the team and store the hook script inside the repo. Which practice ensures the hook command resolves regardless of Claude's working directory in CI?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Reference the script via the `CLAUDE_PROJECT_DIR` environment variable in the command.",
+          "correct": true,
+          "explanation": "CLAUDE_PROJECT_DIR lets the hook command reference repo-stored scripts so they work no matter what the current working directory is."
+        },
+        {
+          "id": "B",
+          "text": "Hardcode an absolute path to one developer's checkout location.",
+          "correct": false,
+          "explanation": "A hardcoded personal path breaks for teammates and CI; use CLAUDE_PROJECT_DIR."
+        },
+        {
+          "id": "C",
+          "text": "Rely on a relative path and require everyone on the team to always run Claude from the repository root.",
+          "correct": false,
+          "explanation": "Relative paths are fragile across directories; the project-dir variable is the documented solution."
+        },
+        {
+          "id": "D",
+          "text": "Copy the script into `~/.claude/` on every machine before each run.",
+          "correct": false,
+          "explanation": "Per-machine copying is unmaintainable; referencing it via CLAUDE_PROJECT_DIR keeps it in-repo and portable."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-025",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Hooks are configured at three levels. For review hooks that the whole team should get automatically when they clone the repo, which settings file should hold them?",
+      "options": [
+        {
+          "id": "A",
+          "text": "`.claude/settings.json`, the project-level file checked into the repo.",
+          "correct": true,
+          "explanation": "Project-level .claude/settings.json is committed and shared, so the whole team inherits the same hooks on clone."
+        },
+        {
+          "id": "B",
+          "text": "`~/.claude/settings.json`, the global file on each developer's machine.",
+          "correct": false,
+          "explanation": "The global file affects only that machine and isn't shared via the repo."
+        },
+        {
+          "id": "C",
+          "text": "`.claude/settings.local.json`, the personal uncommitted file.",
+          "correct": false,
+          "explanation": "settings.local.json is personal and not committed, so teammates wouldn't receive it."
+        },
+        {
+          "id": "D",
+          "text": "A `hooks.json` file placed in the repository root.",
+          "correct": false,
+          "explanation": "Hooks live in Claude settings files under .claude/, not a root hooks.json."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-026",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your reviewers want Claude's CI findings to reference exact files and line numbers so comments anchor correctly on the PR. What's the most effective way to ensure this in the headless run?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define a schema requiring `file` and `line` fields and emit JSON.",
+          "correct": true,
+          "explanation": "A required-field schema plus JSON output forces each finding to carry file and line, so the formatter can anchor PR comments precisely."
+        },
+        {
+          "id": "B",
+          "text": "Ask Claude in prose to \"mention line numbers when relevant\" and parse them out later.",
+          "correct": false,
+          "explanation": "Prose instructions don't guarantee the fields exist or are machine-extractable; a schema does."
+        },
+        {
+          "id": "C",
+          "text": "Increase the context window so Claude can see every line of the diff.",
+          "correct": false,
+          "explanation": "Window size doesn't force structured location fields into the output."
+        },
+        {
+          "id": "D",
+          "text": "Run the review twice and only keep findings whose text mentions a number.",
+          "correct": false,
+          "explanation": "Text-matching numbers is unreliable; a schema requiring file/line fields is the correct enforcement."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-027",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your nightly job uses the Agent SDK to programmatically review many directories. You want each reviewer run constrained to inspection only. Which SDK option matches the local `--allowedTools` behavior?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pass `allowedTools` in the query options, e.g. limited to `Read` and `Glob`.",
+          "correct": true,
+          "explanation": "The SDK's allowedTools option narrows the tool set (e.g., Read and Glob) and is the SDK equivalent of the CLI's --allowedTools flag — appropriate for a read-only reviewer."
+        },
+        {
+          "id": "B",
+          "text": "Set `readOnly: true` in the query options to disable all writes.",
+          "correct": false,
+          "explanation": "There is no readOnly flag; you restrict capability by listing allowedTools."
+        },
+        {
+          "id": "C",
+          "text": "Call `query()` without any options at all, since the SDK already defaults to a read-only tool set.",
+          "correct": false,
+          "explanation": "By default the SDK has the full tool set; you must pass allowedTools to narrow it."
+        },
+        {
+          "id": "D",
+          "text": "Import `@anthropic-ai/claude-code` and toggle its review mode.",
+          "correct": false,
+          "explanation": "@anthropic-ai/claude-code is the CLI and can't be imported; the SDK package is @anthropic-ai/claude-agent-sdk."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-028",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Before merging, the team wants Claude to act as a fresh-eyes reviewer that doesn't carry the bias of the session that wrote the feature. Which built-in Claude Code feature is designed for this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A code-reviewer subagent, which runs in its own isolated context window.",
+          "correct": true,
+          "explanation": "A subagent reviews with a separate context window and fresh eyes, avoiding the main session's authorship bias — the documented pre-push review approach."
+        },
+        {
+          "id": "B",
+          "text": "The `/compact` command, which summarizes the entire current session right before the review step.",
+          "correct": false,
+          "explanation": "Compacting condenses the same session's history; it doesn't remove authorship bias the way a separate context does."
+        },
+        {
+          "id": "C",
+          "text": "Raising the effort level so the main agent reviews more thoroughly.",
+          "correct": false,
+          "explanation": "More effort in the same session retains the original reasoning bias."
+        },
+        {
+          "id": "D",
+          "text": "The `/rewind` command, which removes distracting history before review.",
+          "correct": false,
+          "explanation": "Rewinding edits the same session's history; it isn't a separate-context reviewer."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-029",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "A teammate added the review prompt to `CLAUDE.md` but it's now enormous, listing dozens of niche rules, and CI reviews have gotten less focused. What's the best corrective principle?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Keep `CLAUDE.md` compact; too much irrelevant context hurts performance.",
+          "correct": true,
+          "explanation": "Because CLAUDE.md is appended to every request, bloated irrelevant context dilutes focus and degrades performance; keep it lean and relevant."
+        },
+        {
+          "id": "B",
+          "text": "Move the rules into more files and @-import all of them on the first line.",
+          "correct": false,
+          "explanation": "Importing the same bloat just relocates it; the issue is excessive irrelevant context, not file count."
+        },
+        {
+          "id": "C",
+          "text": "Raise the effort level to compensate for the larger instruction set.",
+          "correct": false,
+          "explanation": "Effort doesn't counteract context dilution from an overloaded CLAUDE.md."
+        },
+        {
+          "id": "D",
+          "text": "Duplicate the rules into each PR description so they reinforce CLAUDE.md.",
+          "correct": false,
+          "explanation": "Duplication adds more noise; trimming CLAUDE.md to the essentials is the fix."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-030",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your CI wraps `claude -p` and parses `--output-format json`, but occasionally a finding's free-text `message` field contains characters that break your naive string parsing. What's the root-cause fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Parse the emitted result with a real JSON parser instead of string matching on stdout.",
+          "correct": true,
+          "explanation": "JSON output is meant to be consumed by a JSON parser, which correctly handles escaping; ad hoc string matching is the actual defect."
+        },
+        {
+          "id": "B",
+          "text": "Add a prompt rule that bans all special characters from appearing in the `message` field of findings.",
+          "correct": false,
+          "explanation": "Constraining message content is fragile and unnecessary when a JSON parser handles escaping correctly."
+        },
+        {
+          "id": "C",
+          "text": "Switch back to plain-text output and parse with regexes instead.",
+          "correct": false,
+          "explanation": "Plain text is even harder to parse reliably; the JSON output with a real parser is the goal."
+        },
+        {
+          "id": "D",
+          "text": "Strip all punctuation from the output before parsing it.",
+          "correct": false,
+          "explanation": "Stripping punctuation corrupts findings; using a proper JSON parser is the correct approach."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-004",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Your review prompt says \"check that code comments are accurate,\" and the bot flags comments for tone, wording, and outdated phrasing — mostly noise. You want it to flag only genuinely misleading comments. Which instruction is most effective?",
+      "options": [
+        {
+          "id": "A",
+          "text": "\"Flag a comment only when its claimed behavior contradicts what the code actually does.\"",
+          "correct": true,
+          "explanation": "A precise, testable criterion (claimed behavior contradicting actual code) targets real defects and excludes tone/wording noise, unlike the vague \"check accuracy.\""
+        },
+        {
+          "id": "B",
+          "text": "\"Check that all of the code comments are accurate and well written throughout the file.\"",
+          "correct": false,
+          "explanation": "This is still vague and invites tone/style nitpicking — the original problem."
+        },
+        {
+          "id": "C",
+          "text": "\"Review comments carefully and report anything that seems off to you.\"",
+          "correct": false,
+          "explanation": "\"Seems off\" is subjective and produces noisy, low-value flags."
+        },
+        {
+          "id": "D",
+          "text": "\"Be conservative when commenting on code comments in the diff.\"",
+          "correct": false,
+          "explanation": "General \"be conservative\" guidance fails to define what counts; specific categorical criteria work better."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-005",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Two prompt variants are proposed to cut false positives. Variant 1: \"only flag high-confidence issues.\" Variant 2: a list of explicit categories to report (e.g., null dereference, injection) and categories to skip (e.g., formatting). Which is likely to perform better and why?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Variant 2, because explicit categorical criteria outperform vague confidence-based instructions.",
+          "correct": true,
+          "explanation": "Specific, categorical definitions of what to report and skip improve precision more reliably than general \"high-confidence\" or \"be conservative\" phrasing."
+        },
+        {
+          "id": "B",
+          "text": "Variant 1, because asking for high confidence directly tells the model to suppress weak findings.",
+          "correct": false,
+          "explanation": "General confidence instructions don't reliably improve precision; categories do."
+        },
+        {
+          "id": "C",
+          "text": "Neither differs in practice; both phrasings yield the same false-positive rate.",
+          "correct": false,
+          "explanation": "They differ meaningfully; explicit criteria measurably reduce noise versus vague instructions."
+        },
+        {
+          "id": "D",
+          "text": "Variant 1, since shorter prompts always reduce the chance of over-flagging.",
+          "correct": false,
+          "explanation": "Brevity isn't the determinant; specificity of criteria is."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-006",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "One review category — \"possible performance concerns\" — accounts for most false positives and is destroying developer trust, while security and correctness categories are accurate. You need a fix this sprint. What's the most pragmatic step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Temporarily disable the high-false-positive performance category while keeping the accurate ones.",
+          "correct": true,
+          "explanation": "Disabling the specific noisy category preserves trust and the value of accurate categories while you refine criteria — a sound short-term move."
+        },
+        {
+          "id": "B",
+          "text": "Disable the entire review bot until every category is perfected.",
+          "correct": false,
+          "explanation": "Turning everything off discards the accurate, high-value categories unnecessarily."
+        },
+        {
+          "id": "C",
+          "text": "Keep every category enabled but append \"please be especially careful about performance claims\" to the prompt.",
+          "correct": false,
+          "explanation": "Vague softening rarely cuts a category's false-positive rate meaningfully."
+        },
+        {
+          "id": "D",
+          "text": "Raise the model temperature so performance findings vary run to run.",
+          "correct": false,
+          "explanation": "Adding randomness doesn't reduce the category's noise and harms reproducibility."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-007",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Developers disagree about what counts as a \"high\" severity finding, so the bot's labels feel arbitrary. What prompt change most improves consistency of severity labeling?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define explicit severity criteria with concrete code examples for each level.",
+          "correct": true,
+          "explanation": "Concrete, example-anchored severity definitions give the model unambiguous boundaries, producing consistent labels rather than arbitrary ones."
+        },
+        {
+          "id": "B",
+          "text": "Tell the model to \"use your best judgment\" when assigning severity.",
+          "correct": false,
+          "explanation": "Best-judgment phrasing is exactly the ambiguity causing inconsistency."
+        },
+        {
+          "id": "C",
+          "text": "Ask the model to assign a numeric score from 1 to 10 without ever defining what the scale means.",
+          "correct": false,
+          "explanation": "An undefined numeric scale is just as arbitrary as undefined words."
+        },
+        {
+          "id": "D",
+          "text": "Have the model copy whatever severity the previous reviewer assigned.",
+          "correct": false,
+          "explanation": "Copying prior labels propagates inconsistency rather than defining clear criteria."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-008",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "A post-incident review finds the bot's high false-positive rate caused developers to start ignoring all its comments, including a real SQL injection it had flagged. What's the key lesson for prompt design?",
+      "options": [
+        {
+          "id": "A",
+          "text": "High-false-positive categories undermine trust, so accurate findings get ignored alongside the noise.",
+          "correct": true,
+          "explanation": "When noise erodes trust, developers tune out everything — even correct, severe findings — so suppressing low-value categories protects the high-value ones."
+        },
+        {
+          "id": "B",
+          "text": "False positives are harmless as long as the true positives are also present.",
+          "correct": false,
+          "explanation": "False positives are not harmless; they cause real findings to be ignored."
+        },
+        {
+          "id": "C",
+          "text": "The fix is to post even more findings so the real ones are statistically included.",
+          "correct": false,
+          "explanation": "More volume worsens trust erosion rather than helping."
+        },
+        {
+          "id": "D",
+          "text": "Severity labels matter far more than precision, so just refine the labels and keep posting all findings.",
+          "correct": false,
+          "explanation": "Labeling doesn't fix the trust problem caused by noisy categories; precision does."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-009",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Your prompt currently reads: \"Carefully review the diff and point out any problems you notice.\" Findings are wildly inconsistent across PRs. What's the single most impactful improvement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Replace the vague instruction with explicit criteria listing what to report and what to ignore.",
+          "correct": true,
+          "explanation": "Explicit criteria replace subjective \"problems you notice\" with defined report/skip categories, the most impactful lever for consistency."
+        },
+        {
+          "id": "B",
+          "text": "Add the word \"thoroughly\" so the model reviews more aggressively.",
+          "correct": false,
+          "explanation": "Intensifiers don't define scope; they can increase noise."
+        },
+        {
+          "id": "C",
+          "text": "Tell the model to strictly limit itself to no more than exactly five findings on each pull request.",
+          "correct": false,
+          "explanation": "An arbitrary cap can drop real issues and doesn't address vague criteria."
+        },
+        {
+          "id": "D",
+          "text": "Ask the model to rephrase its findings more politely for developers.",
+          "correct": false,
+          "explanation": "Tone changes nothing about which issues are surfaced or skipped."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-010",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "You want the review bot to skip stylistic patterns that are intentional in your codebase (such as snapshot tests and a custom result type). How should you express this in the prompt for best precision?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Name the accepted patterns explicitly and instruct the model to treat them as out of scope.",
+          "correct": true,
+          "explanation": "Explicitly enumerating accepted patterns as out-of-scope is far more precise than a general plea to avoid style nits."
+        },
+        {
+          "id": "B",
+          "text": "Add \"please avoid nitpicking style\" and hope the model correctly infers all of your team's conventions.",
+          "correct": false,
+          "explanation": "Vague \"avoid nitpicking\" leaves your specific conventions undefined, so violations persist."
+        },
+        {
+          "id": "C",
+          "text": "Reduce max tokens so the model has no room to mention style issues.",
+          "correct": false,
+          "explanation": "Truncating output can drop important findings and doesn't target style specifically."
+        },
+        {
+          "id": "D",
+          "text": "Ask the model to rank style findings last so they're easy to ignore.",
+          "correct": false,
+          "explanation": "Ranking still posts the noise; naming patterns as out-of-scope removes it."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-011",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "A teammate proposes that instead of an independent reviewer, you just enable extended thinking on the generating model so it scrutinizes its own output harder. Why is an independent review instance still preferable for catching defects?",
+      "options": [
+        {
+          "id": "A",
+          "text": "An independent instance lacks the generation reasoning, so it questions the author's decisions.",
+          "correct": true,
+          "explanation": "Independent review instances catch more than self-review or extended thinking because they don't carry the generation reasoning that makes a model defend its own choices."
+        },
+        {
+          "id": "B",
+          "text": "Extended thinking disables all tool use, so the generating model cannot inspect the code under review at all.",
+          "correct": false,
+          "explanation": "Extended thinking doesn't disable tools; the real issue is retained authorship bias."
+        },
+        {
+          "id": "C",
+          "text": "An independent instance is always cheaper than enabling extended thinking.",
+          "correct": false,
+          "explanation": "A separate instance costs additional tokens; the advantage is bias removal, not cost."
+        },
+        {
+          "id": "D",
+          "text": "Extended thinking only works on the first message of a session.",
+          "correct": false,
+          "explanation": "This is false and not the reason; the point is the self-review limitation."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-012",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Your review for a large PR runs one local pass per file but misses a bug where one file's changed return type breaks a caller in another file. What additional pass closes this gap?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a cross-file integration pass that examines how the changed files interact together.",
+          "correct": true,
+          "explanation": "Per-file passes catch local issues; a dedicated cross-file integration pass catches interactions like a changed return type breaking a caller elsewhere."
+        },
+        {
+          "id": "B",
+          "text": "Re-run the per-file passes a second time to double-check each file.",
+          "correct": false,
+          "explanation": "Repeating local passes still never examines cross-file interaction."
+        },
+        {
+          "id": "C",
+          "text": "Increase the max tokens on each individual per-file pass so that much more detail can fit in the output.",
+          "correct": false,
+          "explanation": "More tokens per file doesn't surface relationships between files."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature on the per-file passes for steadier output.",
+          "correct": false,
+          "explanation": "Temperature doesn't address the missing cross-file analysis."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-013",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Why does splitting a many-file review into per-file passes plus one integration pass tend to outperform a single pass over all files at once?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A single combined pass dilutes attention across files; focused passes keep depth consistent.",
+          "correct": true,
+          "explanation": "Processing many files together dilutes attention, causing uneven depth and missed bugs; focused passes maintain consistent scrutiny, with integration handled separately."
+        },
+        {
+          "id": "B",
+          "text": "Per-file passes are cheaper, which is the only reason to prefer them.",
+          "correct": false,
+          "explanation": "The primary driver is attention/quality, not cost — and multiple passes can cost more."
+        },
+        {
+          "id": "C",
+          "text": "A single combined pass simply cannot read more than one file at a time, no matter the context size.",
+          "correct": false,
+          "explanation": "A single pass can read many files; the problem is diluted attention, not an inability to read."
+        },
+        {
+          "id": "D",
+          "text": "Per-file passes guarantee zero false positives by construction.",
+          "correct": false,
+          "explanation": "They improve focus but don't guarantee zero false positives."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-014",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "You want to route only uncertain findings to a slower, more expensive verification step, while auto-posting confident ones. What design supports this calibrated routing?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Have the review report a confidence per finding and route low-confidence ones to verification.",
+          "correct": true,
+          "explanation": "Verification passes with self-reported confidence enable calibrated routing: confident findings post directly while uncertain ones get a second-pass check."
+        },
+        {
+          "id": "B",
+          "text": "Route every single finding through the slower verification step regardless of its reported confidence level.",
+          "correct": false,
+          "explanation": "Verifying everything wastes the cost savings that calibrated routing provides."
+        },
+        {
+          "id": "C",
+          "text": "Skip verification entirely and trust the first pass for all findings.",
+          "correct": false,
+          "explanation": "No verification means uncertain findings go unfiltered, raising false positives."
+        },
+        {
+          "id": "D",
+          "text": "Route findings by their alphabetical category name to the verifier.",
+          "correct": false,
+          "explanation": "Alphabetical routing is arbitrary and unrelated to a finding's uncertainty."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-015",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "An engineer claims that running three identical full-PR review passes and majority-voting is the best way to raise reliability on a 20-file PR. What's the strongest critique?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Each full-PR pass still suffers attention dilution, so voting averages flawed passes.",
+          "correct": true,
+          "explanation": "Voting across full-PR passes doesn't fix the underlying dilution; per-file plus integration passes address the root cause instead."
+        },
+        {
+          "id": "B",
+          "text": "Voting is completely invalid because the model is deterministic and so all three passes are identical.",
+          "correct": false,
+          "explanation": "The passes can vary, but the real problem is dilution per pass, not determinism."
+        },
+        {
+          "id": "C",
+          "text": "Three passes always exceed rate limits, making the approach impossible.",
+          "correct": false,
+          "explanation": "Rate limits aren't the conceptual flaw; diluted per-pass attention is."
+        },
+        {
+          "id": "D",
+          "text": "Majority voting only works with an even number of passes.",
+          "correct": false,
+          "explanation": "Voting works with odd counts; the substantive issue is dilution, not the count's parity."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-016",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Your hook-based design has Claude generate a database query and then asks a second Claude instance to check it against existing queries for duplication. Which statement about why this works is correct?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The second instance reviews without the first's reasoning, so it spots reuse the author missed.",
+          "correct": true,
+          "explanation": "A separate instance has fresh context and no attachment to the generated query, so it more readily identifies an existing function that should have been reused."
+        },
+        {
+          "id": "B",
+          "text": "The second instance fully inherits the first instance's plan, which ensures that it agrees with the original choice.",
+          "correct": false,
+          "explanation": "Inheriting the plan would reproduce the bias; independence is what makes it effective."
+        },
+        {
+          "id": "C",
+          "text": "Both instances share one context window, so no extra tokens are spent reviewing.",
+          "correct": false,
+          "explanation": "They are separate instances with separate context and token usage."
+        },
+        {
+          "id": "D",
+          "text": "The first instance is more reliable at reviewing its own query than a second instance.",
+          "correct": false,
+          "explanation": "Self-review is weaker due to retained reasoning; the independent instance is preferred."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-017",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "For a small two-file PR, your team debates whether the per-file-plus-integration multi-pass design is worth it. What's the most reasonable guidance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Multi-pass mainly pays off as file count grows; a small PR can use a single focused pass.",
+          "correct": true,
+          "explanation": "Attention dilution scales with file count, so the multi-pass overhead is justified for large PRs but unnecessary for a tiny two-file change."
+        },
+        {
+          "id": "B",
+          "text": "Always use the complete multi-pass design on every PR regardless of its size, purely for the sake of consistency.",
+          "correct": false,
+          "explanation": "For tiny PRs the multi-pass overhead adds cost with little benefit."
+        },
+        {
+          "id": "C",
+          "text": "Never use multi-pass; a single pass is always sufficient at any scale.",
+          "correct": false,
+          "explanation": "Large PRs clearly benefit from multi-pass; \"never\" is wrong."
+        },
+        {
+          "id": "D",
+          "text": "Use multi-pass only when the PR contains zero tests.",
+          "correct": false,
+          "explanation": "The relevant factor is file count and interaction complexity, not the presence of tests."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-018",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "A reviewer wants the verification pass to recompute confidence rather than trust the first pass's self-reported value blindly. What's the calibration benefit of a separate verification pass?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A fresh pass re-assesses the finding independently, improving the confidence used to route it.",
+          "correct": true,
+          "explanation": "An independent verification pass gives a second, unbiased confidence assessment, making routing decisions better calibrated than trusting a single self-report."
+        },
+        {
+          "id": "B",
+          "text": "It guarantees the confidence value will always increase after verification.",
+          "correct": false,
+          "explanation": "Verification can lower confidence; it doesn't always raise it."
+        },
+        {
+          "id": "C",
+          "text": "It replaces the need to define any severity criteria at all.",
+          "correct": false,
+          "explanation": "Verification complements, not replaces, explicit severity criteria."
+        },
+        {
+          "id": "D",
+          "text": "It lets you safely skip all of the per-file passes entirely, since the verification pass already covers everything.",
+          "correct": false,
+          "explanation": "Verification refines findings; it doesn't substitute for the focused per-file passes."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-019",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "You move the nightly tech-debt scan of 4,000 files to the Message Batches API. After submitting, you need to map each returned result back to the file it analyzed. What's the correct mechanism?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Set a `custom_id` per request and use it to correlate each result back to its file.",
+          "correct": true,
+          "explanation": "The Batches API uses custom_id to correlate each request with its response, which is how you map a result back to its source file."
+        },
+        {
+          "id": "B",
+          "text": "Rely on the results always being returned in exactly the same order in which you originally submitted them.",
+          "correct": false,
+          "explanation": "Batch results are not guaranteed to be ordered; custom_id is the correlation key."
+        },
+        {
+          "id": "C",
+          "text": "Include the filename in the prompt and grep for it in the response text.",
+          "correct": false,
+          "explanation": "Parsing the prompt out of responses is fragile; custom_id is the designed mechanism."
+        },
+        {
+          "id": "D",
+          "text": "Submit one batch per file so there is only ever one result to match.",
+          "correct": false,
+          "explanation": "One batch per file defeats the purpose of batching; custom_id correlates many requests in one batch."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-020",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "A blocking pre-merge gate currently times out at 90 seconds. Someone suggests using the Batches API for it to cut cost. Why is this inappropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Batches have no latency SLA and may take up to 24 hours, so they can't satisfy a blocking gate.",
+          "correct": true,
+          "explanation": "The Batches API offers no latency guarantee and can take up to 24 hours, making it unsuitable for a synchronous, blocking pre-merge check."
+        },
+        {
+          "id": "B",
+          "text": "Batches reject prompts longer than 90 seconds of compute time.",
+          "correct": false,
+          "explanation": "There's no such per-prompt compute limit; the issue is the asynchronous, no-SLA processing model."
+        },
+        {
+          "id": "C",
+          "text": "Batches cost more than real-time calls, so they never help with cost.",
+          "correct": false,
+          "explanation": "Batches actually cost less (about 50% savings); the disqualifier is latency, not cost."
+        },
+        {
+          "id": "D",
+          "text": "Batches simply cannot return JSON output at all, so the blocking gate would have no way to parse the result.",
+          "correct": false,
+          "explanation": "Batches can return structured content; the real reason is the lack of a latency SLA."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-021",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your reviewer design relies on multi-turn tool calling (read a file, then decide to read another) within a single request. A teammate wants to run it through the Batches API for the cost savings. What's the blocking limitation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A batch request does not support multi-turn tool calling, so the interactive loop won't run.",
+          "correct": true,
+          "explanation": "The Batches API does not support multi-turn tool calling within a request, so an interactive read-then-decide review loop cannot run as a batch job."
+        },
+        {
+          "id": "B",
+          "text": "Batches support tool calling but cap it at one tool per minute.",
+          "correct": false,
+          "explanation": "There's no per-minute tool cap; multi-turn tool calling simply isn't supported in a batch request."
+        },
+        {
+          "id": "C",
+          "text": "Batches require every tool to be defined as an MCP server, which this particular reviewer design completely lacks.",
+          "correct": false,
+          "explanation": "The limitation is the lack of multi-turn tool calling, not an MCP requirement."
+        },
+        {
+          "id": "D",
+          "text": "Batches allow tool calling only when `custom_id` is omitted.",
+          "correct": false,
+          "explanation": "custom_id is unrelated to tool calling; multi-turn tool use is the actual constraint."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-022",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Which workload is the best fit for the Message Batches API given its 50% cost savings and up-to-24-hour window?",
+      "options": [
+        {
+          "id": "A",
+          "text": "An overnight batch summarizing review trends across yesterday's merged PRs for a morning report.",
+          "correct": true,
+          "explanation": "Overnight, latency-tolerant, independent-request jobs are the ideal batch use case — cost savings with no need for fast turnaround."
+        },
+        {
+          "id": "B",
+          "text": "A blocking pre-commit hook that must return its findings before the developer is allowed to push the change.",
+          "correct": false,
+          "explanation": "Pre-commit is synchronous and blocking, which batches' no-SLA model cannot serve."
+        },
+        {
+          "id": "C",
+          "text": "An interactive review that reads files and follows up based on what it finds.",
+          "correct": false,
+          "explanation": "Interactive multi-turn tool use isn't supported in a batch request."
+        },
+        {
+          "id": "D",
+          "text": "A live PR comment that must appear within seconds of opening the PR.",
+          "correct": false,
+          "explanation": "Second-level latency requirements rule out the asynchronous batch model."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-023",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Finance asks for the most accurate one-line reason the nightly review job is half the cost of running the same prompts in real time. What should you say?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It uses the Message Batches API, which trades latency for roughly 50% lower cost.",
+          "correct": true,
+          "explanation": "The Batches API provides about 50% cost savings in exchange for relaxed latency — the accurate explanation for the cost difference."
+        },
+        {
+          "id": "B",
+          "text": "It uses a smaller model, which is what halves the cost.",
+          "correct": false,
+          "explanation": "The savings come from batch pricing, not necessarily a model change."
+        },
+        {
+          "id": "C",
+          "text": "It caches every response, so repeated runs are free after the first.",
+          "correct": false,
+          "explanation": "Caching is a different mechanism; the ~50% figure here is batch pricing."
+        },
+        {
+          "id": "D",
+          "text": "It skips all of the tool calls, which is where the majority of the per-request cost normally goes.",
+          "correct": false,
+          "explanation": "The savings are from batch pricing, not from omitting tool calls."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-024",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your nightly batch of 10,000 file-review requests returns, but a few hundred results seem mismatched to files in your tracking spreadsheet. The spreadsheet assumed submission order. What's the root cause and fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Order isn't guaranteed; correlate each result by its `custom_id` instead of position.",
+          "correct": true,
+          "explanation": "Because batch results aren't guaranteed to be in submission order, correlation must use custom_id rather than assuming positional alignment."
+        },
+        {
+          "id": "B",
+          "text": "The batch silently dropped some requests; resubmit the entire batch again to fix the result ordering.",
+          "correct": false,
+          "explanation": "The mismatch is from relying on order, not dropped requests; custom_id resolves it without resubmitting."
+        },
+        {
+          "id": "C",
+          "text": "The model reordered findings; lower the temperature to keep order stable.",
+          "correct": false,
+          "explanation": "Temperature doesn't control result ordering; custom_id correlation does."
+        },
+        {
+          "id": "D",
+          "text": "The spreadsheet is fine; the API must return results in submission order.",
+          "correct": false,
+          "explanation": "The API does not promise submission order, so the spreadsheet's assumption is the bug."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-025",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "Your team wants both nightly cost savings and the ability for the reviewer to iteratively read related files. How should you reconcile these with the Batches API constraints?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pre-gather each file's context up front so each batch request is a single self-contained turn.",
+          "correct": true,
+          "explanation": "Since batches don't support multi-turn tool calling, you make each request self-contained by assembling the needed context beforehand, preserving batch eligibility and savings."
+        },
+        {
+          "id": "B",
+          "text": "Keep the interactive multi-turn loop and submit it as a batch anyway.",
+          "correct": false,
+          "explanation": "Multi-turn tool calling isn't supported in a batch request, so this won't run."
+        },
+        {
+          "id": "C",
+          "text": "Run the interactive loop in real time but bill it at the batch rate.",
+          "correct": false,
+          "explanation": "Real-time calls don't get batch pricing; you can't mix the two that way."
+        },
+        {
+          "id": "D",
+          "text": "Split each file into two separate batches so that the second batch can react to the output of the first.",
+          "correct": false,
+          "explanation": "Batches process independently with no cross-request reactivity; pre-gathering context is the correct approach."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-026",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "A developer expects batch results within a guaranteed five minutes so they can chain a follow-up job. Why is hard-coding a five-minute wait risky?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Batches provide no latency SLA and may take up to 24 hours, so a fixed wait can fail.",
+          "correct": true,
+          "explanation": "Without a latency guarantee (up to 24 hours), assuming a fixed five-minute completion will intermittently break the chained job."
+        },
+        {
+          "id": "B",
+          "text": "Batches always complete in exactly five minutes, so hard-coding the five-minute wait is perfectly fine here.",
+          "correct": false,
+          "explanation": "There is no fixed completion time; the window can extend to 24 hours."
+        },
+        {
+          "id": "C",
+          "text": "Batches return instantly, so any wait at all is wasted time.",
+          "correct": false,
+          "explanation": "Batches are asynchronous, not instant; the risk is the opposite of instant."
+        },
+        {
+          "id": "D",
+          "text": "Batches only complete on the hour, so five minutes never aligns.",
+          "correct": false,
+          "explanation": "There's no hourly schedule; the issue is the absence of any latency SLA."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-027",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Your review prompt describes what a good finding looks like in prose, but the bot keeps formatting findings inconsistently and mislabeling borderline cases. Which technique most reliably teaches it the desired shape?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add a few example input diffs paired with ideal findings, wrapped in XML tags.",
+          "correct": true,
+          "explanation": "Multi-shot examples of input/ideal-output pairs (clearly delimited with XML tags) show rather than tell, producing more consistent formatting and labeling than prose alone."
+        },
+        {
+          "id": "B",
+          "text": "Rewrite the prose description of a good finding to be considerably longer and far more detailed than before.",
+          "correct": false,
+          "explanation": "More prose still tells rather than shows; concrete examples are more effective for subtle requirements."
+        },
+        {
+          "id": "C",
+          "text": "Raise the temperature so the model explores formatting variations.",
+          "correct": false,
+          "explanation": "Higher temperature increases variability, worsening consistency."
+        },
+        {
+          "id": "D",
+          "text": "Ask the model to invent its own examples before reviewing.",
+          "correct": false,
+          "explanation": "Self-generated examples don't anchor to your desired output; curated examples do."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-028",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "The bot handles common bugs well but mislabels tricky edge cases — e.g., a defensive null check that looks redundant but is intentional. You have a few real cases like this. How should you use them?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add multi-shot examples covering these edge cases with their correct ideal outputs.",
+          "correct": true,
+          "explanation": "Multi-shot prompting is especially useful for handling tricky edge cases; showing examples of those exact corner cases with ideal labels teaches the desired handling."
+        },
+        {
+          "id": "B",
+          "text": "Add a single generic example and assume it generalizes to all edge cases.",
+          "correct": false,
+          "explanation": "One generic example may not cover diverse corner cases; multi-shot across them is better."
+        },
+        {
+          "id": "C",
+          "text": "Remove all examples so the model reasons from first principles.",
+          "correct": false,
+          "explanation": "Removing examples loses the strongest tool for steering edge-case behavior."
+        },
+        {
+          "id": "D",
+          "text": "Describe each of the tricky edge cases only in words, without providing any concrete worked examples at all.",
+          "correct": false,
+          "explanation": "Words alone are exactly what's failing; demonstrating the cases is more reliable."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-029",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "After running an evaluation suite on your review prompt, you want to pick which sample findings to embed as few-shot examples. Which selection strategy is recommended?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use the highest-scoring outputs from the evaluation as the example input/output pairs.",
+          "correct": true,
+          "explanation": "Selecting your top-scoring evaluation outputs as examples shows Claude what ideal output looks like for your specific task."
+        },
+        {
+          "id": "B",
+          "text": "Use the lowest-scoring outputs so the model learns what to avoid.",
+          "correct": false,
+          "explanation": "Examples demonstrate the target; showing poor outputs as examples risks reinforcing them."
+        },
+        {
+          "id": "C",
+          "text": "Pick examples at random to avoid biasing the model.",
+          "correct": false,
+          "explanation": "Random examples may include mediocre outputs; high-scoring ones are the recommended choice."
+        },
+        {
+          "id": "D",
+          "text": "Use the longest outputs from the evaluation run, since longer outputs always contain the most detail.",
+          "correct": false,
+          "explanation": "Length isn't the criterion; quality (score) is what makes a good exemplar."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-030",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "You add example findings to the review prompt but the model still confuses where your examples end and the diff under review begins. What's the most effective structural fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Wrap each example and the target diff in distinct XML tags to delimit them clearly.",
+          "correct": true,
+          "explanation": "XML tags create clear delimiters so the model distinguishes example input/output from the actual content to review, reducing parsing confusion."
+        },
+        {
+          "id": "B",
+          "text": "Put the examples and the diff in one block separated by blank lines.",
+          "correct": false,
+          "explanation": "Blank lines are weak delimiters; XML tags make the structure unambiguous."
+        },
+        {
+          "id": "C",
+          "text": "Reduce to a single example so there's nothing to confuse.",
+          "correct": false,
+          "explanation": "Dropping examples weakens guidance; clear delimiting solves the confusion without losing them."
+        },
+        {
+          "id": "D",
+          "text": "Move all of the examples into `CLAUDE.md` and remove them from the review prompt entirely to avoid the confusion.",
+          "correct": false,
+          "explanation": "Relocating doesn't address delimiting; the diff and examples still need clear boundaries via tags."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-031",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Your team adds review examples but writes them as bare pairs with no commentary. A reviewer suggests explaining each example. What's the benefit of annotating why an example output is ideal?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Explaining why an output is ideal helps the model grasp subtle requirements.",
+          "correct": true,
+          "explanation": "Annotating examples with why they're ideal conveys subtle intent the raw pair alone may not, improving how the model generalizes."
+        },
+        {
+          "id": "B",
+          "text": "Annotations like this are only ever useful for one-shot prompts and provide no benefit in multi-shot prompts.",
+          "correct": false,
+          "explanation": "Explaining ideal outputs helps regardless of the number of examples."
+        },
+        {
+          "id": "C",
+          "text": "Annotations replace the need for XML tags around examples.",
+          "correct": false,
+          "explanation": "Annotations and delimiting are complementary; tags are still recommended for structure."
+        },
+        {
+          "id": "D",
+          "text": "Annotations let you skip the example outputs entirely.",
+          "correct": false,
+          "explanation": "The input/output pair is the core of the example; annotation supplements, not replaces it."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-032",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "For a sentiment-style classification step that tags review comments as actionable or informational, the model handles obvious cases but misreads sarcastic or hedged wording. Which approach best addresses this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Provide examples including sarcastic and hedged phrasings mapped to the correct label.",
+          "correct": true,
+          "explanation": "Examples that demonstrate tricky phrasings (sarcasm, hedging) with their ideal labels teach the model to handle exactly those corner cases."
+        },
+        {
+          "id": "B",
+          "text": "Instruct the model to \"watch out for sarcasm\" without any examples.",
+          "correct": false,
+          "explanation": "A bare warning rarely fixes nuanced misreads; demonstrating the cases does."
+        },
+        {
+          "id": "C",
+          "text": "Lower the max tokens setting so that the model is forced to commit to a single label much faster.",
+          "correct": false,
+          "explanation": "Token limits don't improve interpretation of sarcasm or hedging."
+        },
+        {
+          "id": "D",
+          "text": "Switch the labels to numeric codes to remove ambiguity.",
+          "correct": false,
+          "explanation": "Relabeling doesn't help the model interpret tricky language; examples do."
+        }
+      ]
+    }
+  ]
+}

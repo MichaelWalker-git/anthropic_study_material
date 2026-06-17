@@ -1,0 +1,836 @@
+{
+  "questions": [
+    {
+      "id": "S1-D1-001",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Production data shows that in 12% of cases, your agent skips `get_customer` entirely and calls `lookup_order` using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?",
+      "options": [
+        { "id": "A", "text": "Add a programmatic prerequisite that blocks `lookup_order` and `process_refund` calls until `get_customer` has returned a verified customer ID.", "correct": true, "explanation": "When a specific tool sequence is required for critical business logic (verifying identity before refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot." },
+        { "id": "B", "text": "Enhance the system prompt to state that customer verification via `get_customer` is mandatory before any order operations.", "correct": false, "explanation": "Prompt instructions rely on probabilistic LLM compliance, which has a non-zero failure rate — insufficient when errors have financial consequences." },
+        { "id": "C", "text": "Add few-shot examples showing the agent always calling `get_customer` first, even when customers volunteer order details.", "correct": false, "explanation": "Few-shot examples improve but do not guarantee compliance; they remain probabilistic and cannot enforce a hard prerequisite for financial operations." },
+        { "id": "D", "text": "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type.", "correct": false, "explanation": "This addresses tool availability rather than tool ordering, which is the actual problem here." }
+      ]
+    },
+    {
+      "id": "S1-D2-001",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "Production logs show the agent frequently calls `get_customer` when users ask about orders (e.g., \"check my order #12345\"), instead of calling `lookup_order`. Both tools have minimal descriptions (\"Retrieves customer information\" / \"Retrieves order details\") and accept similar identifier formats. What's the most effective first step to improve tool selection reliability?",
+      "options": [
+        { "id": "A", "text": "Add few-shot examples to the system prompt demonstrating correct tool selection patterns, with 5-8 examples showing order-related queries routing to `lookup_order`.", "correct": false, "explanation": "Few-shot examples add token overhead without fixing the underlying issue — the inadequate descriptions the model relies on for selection." },
+        { "id": "B", "text": "Expand each tool's description to include input formats it handles, example queries, edge cases, and boundaries explaining when to use it versus similar tools.", "correct": true, "explanation": "Tool descriptions are the primary mechanism LLMs use for tool selection. When descriptions are minimal, models lack context to differentiate similar tools. This is the low-effort, high-leverage root-cause fix." },
+        { "id": "C", "text": "Implement a routing layer that parses user input before each turn and pre-selects the appropriate tool based on detected keywords and identifier patterns.", "correct": false, "explanation": "A routing layer is over-engineered and bypasses the LLM's natural language understanding." },
+        { "id": "D", "text": "Consolidate both tools into a single `lookup_entity` tool that accepts any identifier and internally determines which backend to query.", "correct": false, "explanation": "Consolidating tools is a valid architectural choice but requires more effort than a \"first step\" warrants when the immediate problem is inadequate descriptions." }
+      ]
+    },
+    {
+      "id": "S1-D5-001",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?",
+      "options": [
+        { "id": "A", "text": "Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously.", "correct": true, "explanation": "Adding explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. This is the proportionate first response before adding infrastructure." },
+        { "id": "B", "text": "Have the agent self-report a confidence score (1-10) before each response and automatically route requests to humans when confidence falls below a threshold.", "correct": false, "explanation": "LLM self-reported confidence is poorly calibrated — the agent is already incorrectly confident on hard cases." },
+        { "id": "C", "text": "Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent begins processing.", "correct": false, "explanation": "Over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried." },
+        { "id": "D", "text": "Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold.", "correct": false, "explanation": "Solves a different problem; sentiment doesn't correlate with case complexity, which is the actual issue." }
+      ]
+    },
+    {
+      "id": "S1-D2-002",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "When `process_refund` fails because the requested amount exceeds the customer's order total, the MCP tool currently returns the generic string \"Operation failed\". The agent then retries the same call repeatedly. What error-response design best prevents this?",
+      "options": [
+        { "id": "A", "text": "Return structured metadata: an `errorCategory`, an `isRetryable: false` flag, and a clear reason.", "correct": true, "explanation": "Structured error metadata distinguishing retryable from non-retryable errors lets the agent stop wasting retries and communicate the real reason to the customer." },
+        { "id": "B", "text": "Increase the agent's max retry count so it eventually gives up after enough attempts.", "correct": false, "explanation": "Retrying a non-retryable validation error is wasteful regardless of the cap; the real fix is signaling that the error is not retryable." },
+        { "id": "C", "text": "Have the tool raise an exception that terminates the whole conversation.", "correct": false, "explanation": "Terminating the conversation removes the agent's ability to recover or explain the issue to the customer." },
+        { "id": "D", "text": "Return an empty result so the agent treats the refund as completed.", "correct": false, "explanation": "Masking a failure as success causes silent incorrect behavior — a serious anti-pattern for financial operations." }
+      ]
+    },
+    {
+      "id": "S1-D5-002",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "In long multi-issue support conversations, the agent begins to \"forget\" exact order numbers and refund amounts mentioned earlier, because progressive summarization has condensed them into vague phrases. What's the most effective mitigation?",
+      "options": [
+        { "id": "A", "text": "Pin transactional facts in a persistent \"case facts\" block, outside the summarized history.", "correct": true, "explanation": "Persisting structured transactional facts outside the summarized history protects critical values from being condensed into vague summaries." },
+        { "id": "B", "text": "Disable summarization entirely and always send the full transcript.", "correct": false, "explanation": "This eventually exhausts the context window on long conversations; the targeted fix is persisting the key facts, not retaining everything verbatim." },
+        { "id": "C", "text": "Instruct the model in the system prompt to \"remember all important details\".", "correct": false, "explanation": "A vague instruction does not prevent summarization from dropping specific numeric values." },
+        { "id": "D", "text": "Lower the temperature so the model produces more deterministic summaries.", "correct": false, "explanation": "Temperature does not control what information summarization preserves; the issue is loss of facts, not randomness." }
+      ]
+    },
+    {
+      "id": "S1-D1-002",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "You are hand-implementing the agentic loop for the support agent against the Claude API. After Claude returns a response containing a `tool_use` block, what must your loop do to continue correctly?",
+      "options": [
+        { "id": "A", "text": "Execute the tool and append a `tool_result` block (matching the `tool_use_id`), then re-send the messages.", "correct": true, "explanation": "The loop executes the tool, returns its output as a `tool_result` keyed to the originating `tool_use_id`, and re-invokes the model so it can reason about the result on the next iteration." },
+        { "id": "B", "text": "Parse the assistant's text for the tool name and reply with a plain user message describing the result in prose.", "correct": false, "explanation": "Tool results must be returned as structured `tool_result` blocks tied to the `tool_use_id`, not as free-form prose, or the model cannot reliably associate the result with its call." },
+        { "id": "C", "text": "Immediately stop the loop, since a `tool_use` stop reason indicates the task has already been completed.", "correct": false, "explanation": "`tool_use` means the model wants a tool executed and the loop should continue; `end_turn` is the completion signal." },
+        { "id": "D", "text": "Start a brand-new conversation containing only the latest tool output so the running context stays small.", "correct": false, "explanation": "Discarding prior history breaks the model's ability to reason about the ongoing task; the tool result is appended to the existing conversation." }
+      ]
+    },
+    {
+      "id": "S1-D1-003",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Which `stop_reason` value indicates the support agent's loop should terminate because Claude has finished responding rather than requesting another tool?",
+      "options": [
+        { "id": "A", "text": "`end_turn`", "correct": true, "explanation": "`end_turn` signals the model has completed its turn with no further tool request; the loop should stop iterating." },
+        { "id": "B", "text": "`tool_use`", "correct": false, "explanation": "`tool_use` means the model is requesting a tool execution, so the loop must continue, not terminate." },
+        { "id": "C", "text": "`max_tokens`", "correct": false, "explanation": "`max_tokens` means the response was truncated by the token limit — a degraded outcome to handle, not a clean completion signal." },
+        { "id": "D", "text": "`pause_turn`", "correct": false, "explanation": "`pause_turn` relates to long-running server-tool turns; it is not the normal completion signal for a custom tool loop." }
+      ]
+    },
+    {
+      "id": "S1-D1-004",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "A junior engineer proposes ending the agentic loop as soon as any assistant message contains text content, reasoning that \"if Claude wrote something, it's done.\" Why is this an anti-pattern?",
+      "options": [
+        { "id": "A", "text": "Turns can mix text with `tool_use` blocks, so text presence isn't a completion signal.", "correct": true, "explanation": "Claude often narrates what it is doing before emitting `tool_use` blocks. Treating any text as completion would terminate the loop mid-task; `stop_reason` is the correct signal." },
+        { "id": "B", "text": "Assistant messages never contain text when tools are enabled, so the check would never fire.", "correct": false, "explanation": "Assistant messages frequently contain both text and tool_use blocks, so the premise is false." },
+        { "id": "C", "text": "Text content is only returned after `end_turn`, making the check redundant but harmless.", "correct": false, "explanation": "Text can appear on tool_use turns too, so the check is actively harmful, not merely redundant." },
+        { "id": "D", "text": "The API forbids reading text content programmatically.", "correct": false, "explanation": "There is no such restriction; the issue is that text presence does not indicate completion." }
+      ]
+    },
+    {
+      "id": "S1-D1-005",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "A customer message contains three distinct concerns: a refund request, a shipping-address change, and a question about loyalty points. What is the most effective way for the agent to handle this multi-concern request?",
+      "options": [
+        { "id": "A", "text": "Split it into the three items, investigate each in parallel, then synthesize one reply.", "correct": true, "explanation": "Breaking a multi-concern request into distinct items and addressing each before synthesizing a unified response ensures nothing is dropped and the customer gets one coherent reply." },
+        { "id": "B", "text": "Respond only to the first concern and ask the customer to open separate tickets for the others.", "correct": false, "explanation": "Forcing separate tickets degrades first-contact resolution and customer experience when the agent could handle all three." },
+        { "id": "C", "text": "Pick whichever concern the agent is most confident about and silently ignore the rest.", "correct": false, "explanation": "Silently ignoring concerns leaves the customer's issues unresolved and erodes trust." },
+        { "id": "D", "text": "Escalate the entire conversation to a human because it contains more than one topic.", "correct": false, "explanation": "Multi-topic requests are not inherently escalation-worthy; the agent should decompose and resolve what it can." }
+      ]
+    },
+    {
+      "id": "S1-D1-006",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Compliance requires that identity is verified before any refund is issued. The team currently relies on a system-prompt instruction stating this rule. Why is a programmatic prerequisite gate preferable here?",
+      "options": [
+        { "id": "A", "text": "Prompts have a non-zero failure rate; a gate deterministically blocks refunds until ID is verified.", "correct": true, "explanation": "When deterministic compliance is required (identity before financial operations), prompt guidance alone is insufficient; programmatic enforcement guarantees the ordering." },
+        { "id": "B", "text": "Prompt instructions consume too many tokens to be cost-effective.", "correct": false, "explanation": "Token cost is negligible and is not the reason; the reason is the non-zero failure rate of probabilistic compliance." },
+        { "id": "C", "text": "A prerequisite gate lets the agent skip identity verification when it is confident, improving latency.", "correct": false, "explanation": "The gate exists precisely to prevent skipping verification; it does not allow bypass." },
+        { "id": "D", "text": "Programmatic gates are only needed because Claude cannot read system prompts reliably.", "correct": false, "explanation": "Claude reads system prompts fine; the issue is that following them is probabilistic, not that they are unread." }
+      ]
+    },
+    {
+      "id": "S1-D1-007",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "When the agent must hand off a refund dispute to a human who lacks access to the conversation transcript, what should the handoff include to be most useful?",
+      "options": [
+        { "id": "A", "text": "A structured summary with customer ID, root cause, amount, and a recommended action.", "correct": true, "explanation": "A structured handoff (customer ID, root cause, amount, recommended action) gives the human everything needed to act without reading the full transcript." },
+        { "id": "B", "text": "Only the raw, unsummarized conversation transcript with no structured fields at all.", "correct": false, "explanation": "The human lacks transcript access in this scenario, and even with it, an unsummarized dump is slow to act on." },
+        { "id": "C", "text": "A one-line note saying \"customer is unhappy, please help.\"", "correct": false, "explanation": "This omits the concrete details (IDs, amounts, root cause) the human needs to resolve the case efficiently." },
+        { "id": "D", "text": "The agent's internal chain-of-thought tokens verbatim.", "correct": false, "explanation": "Raw reasoning traces are noisy and not a substitute for a structured, actionable handoff summary." }
+      ]
+    },
+    {
+      "id": "S1-D1-008",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "Different MCP tools return timestamps inconsistently — `lookup_order` uses Unix epoch seconds while `get_customer` uses ISO 8601 strings — and the agent occasionally miscompares dates. What's the cleanest way to give the agent consistent inputs?",
+      "options": [
+        { "id": "A", "text": "Add a `PostToolUse` hook that normalizes the timestamp formats before the model sees them.", "correct": true, "explanation": "A PostToolUse hook intercepts and normalizes tool results (e.g., unifying timestamp formats) before the model sees them, eliminating a class of reasoning errors deterministically." },
+        { "id": "B", "text": "Tell the agent in the system prompt to be careful about differing date formats.", "correct": false, "explanation": "Prompt cautions are probabilistic; a normalization hook fixes the data deterministically." },
+        { "id": "C", "text": "Ask customers to restate dates in a single format.", "correct": false, "explanation": "This pushes an internal data-consistency problem onto customers and doesn't address tool output formats." },
+        { "id": "D", "text": "Disable whichever tool uses the less convenient format.", "correct": false, "explanation": "Disabling a needed tool removes capability rather than normalizing its output." }
+      ]
+    },
+    {
+      "id": "S1-D1-009",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "Policy forbids refunds above $500 without manager approval. You want a guarantee that the agent can never issue such a refund autonomously. Which approach provides that guarantee?",
+      "options": [
+        { "id": "A", "text": "An interception hook that blocks `process_refund` over $500 and redirects to escalation.", "correct": true, "explanation": "An interception hook that blocks policy-violating tool calls (refunds over $500) and redirects to escalation gives a deterministic guarantee that prompt rules cannot." },
+        { "id": "B", "text": "A system-prompt rule stating the agent must never refund more than $500.", "correct": false, "explanation": "Prompt rules are probabilistic and can be violated; they don't provide a guarantee for a hard policy limit." },
+        { "id": "C", "text": "Few-shot examples showing the agent declining large refunds.", "correct": false, "explanation": "Examples improve behavior but cannot guarantee the threshold is never crossed." },
+        { "id": "D", "text": "Lowering the model temperature so it behaves more predictably around limits.", "correct": false, "explanation": "Temperature does not enforce business thresholds; only programmatic interception does." }
+      ]
+    },
+    {
+      "id": "S1-D1-010",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "Your team debates whether to enforce the \"verify identity before refund\" rule via a hook or via stronger prompt wording. Which principle best guides the decision?",
+      "options": [
+        { "id": "A", "text": "Use hooks where a rule needs a guaranteed outcome; use prompts where deviation is acceptable.", "correct": true, "explanation": "The distinction is deterministic guarantee (hooks) versus probabilistic guidance (prompts). Compliance-critical rules belong in hooks." },
+        { "id": "B", "text": "Always prefer prompts because hooks add latency that customers will notice.", "correct": false, "explanation": "Hook latency is minor and not the deciding factor; the deciding factor is whether a guarantee is required." },
+        { "id": "C", "text": "Always prefer hooks for every rule, since prompts are never reliable.", "correct": false, "explanation": "Prompts are appropriate for soft guidance; hooks aren't needed for every rule, only compliance-critical ones." },
+        { "id": "D", "text": "Choose whichever the engineer can implement fastest, since both are equivalent in effect.", "correct": false, "explanation": "They are not equivalent: one is a guarantee, the other is probabilistic. Effect, not implementation speed, should drive the choice." }
+      ]
+    },
+    {
+      "id": "S1-D1-011",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "The agent handles two kinds of work: predictable, well-defined return processing and open-ended account investigations where each step depends on what's discovered. How should task decomposition differ between them?",
+      "options": [
+        { "id": "A", "text": "Fixed prompt-chaining for predictable returns; adaptive decomposition for open-ended work.", "correct": true, "explanation": "Predictable multi-step work suits fixed chaining; open-ended investigation needs adaptive decomposition that generates subtasks from intermediate findings." },
+        { "id": "B", "text": "Always use a single fixed pipeline for both to keep the architecture simple.", "correct": false, "explanation": "A fixed pipeline is poorly suited to open-ended investigation where steps depend on discoveries." },
+        { "id": "C", "text": "Always use fully dynamic decomposition for both, since it is the most flexible.", "correct": false, "explanation": "Dynamic decomposition adds needless overhead and variability for predictable, well-defined tasks." },
+        { "id": "D", "text": "Avoid decomposition entirely and let the model handle everything in one pass.", "correct": false, "explanation": "Complex multi-step work benefits from explicit decomposition; a single pass tends to drop steps." }
+      ]
+    },
+    {
+      "id": "S1-D1-012",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "After executing a tool, your loop appends the result but mistakenly omits the prior assistant message that contained the `tool_use` block. What is the likely consequence?",
+      "options": [
+        { "id": "A", "text": "The request/result pairing breaks, causing an API error or confused reasoning.", "correct": true, "explanation": "The `tool_result` must follow the assistant `tool_use` it answers; dropping the request message breaks the request/result pairing the model relies on." },
+        { "id": "B", "text": "Nothing changes; only the tool_result matters.", "correct": false, "explanation": "The result is meaningless without the preceding tool_use it corresponds to." },
+        { "id": "C", "text": "The model will automatically re-request the tool, fixing itself.", "correct": false, "explanation": "There is no guaranteed self-repair; the malformed history typically causes an error or confused reasoning." },
+        { "id": "D", "text": "The conversation cost doubles but behavior is unaffected.", "correct": false, "explanation": "The problem is correctness of the message sequence, not cost." }
+      ]
+    },
+    {
+      "id": "S1-D1-013",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "A multi-step refund workflow requires: (1) verify identity, (2) confirm the order, (3) check the return window, (4) issue the refund. Steps 1–3 are compliance gates. Where should this ordering be enforced?",
+      "options": [
+        { "id": "A", "text": "As prerequisite gates that block each tool until its required prior step succeeds.", "correct": true, "explanation": "Compliance-critical ordering should be enforced with prerequisite gates so a later step cannot run until the earlier required step has succeeded." },
+        { "id": "B", "text": "By listing the steps in order in the system prompt and trusting the model to follow them.", "correct": false, "explanation": "Prompt ordering is probabilistic and unsuitable for compliance gates." },
+        { "id": "C", "text": "By giving the model only one tool at a time and swapping tools between turns manually.", "correct": false, "explanation": "Manually swapping tools per turn is brittle and doesn't enforce successful completion of prerequisites." },
+        { "id": "D", "text": "By raising the temperature so the model explores the steps more thoroughly.", "correct": false, "explanation": "Temperature has nothing to do with enforcing step ordering." }
+      ]
+    },
+    {
+      "id": "S1-D1-014",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Your support agent occasionally enters very long tool loops on ambiguous tickets. A teammate suggests capping iterations at 3 as the primary stopping mechanism. What's the best critique?",
+      "options": [
+        { "id": "A", "text": "A cap as the primary stop is an anti-pattern; terminate on `end_turn`.", "correct": true, "explanation": "Termination should be driven by `stop_reason` (`end_turn`); a hard cap as the main mechanism cuts off legitimate work. A generous cap can exist as a safety net only." },
+        { "id": "B", "text": "Capping at 3 is ideal because most tasks need exactly three tool calls.", "correct": false, "explanation": "There is no universal correct iteration count; the model should stop when it is genuinely done." },
+        { "id": "C", "text": "Iteration caps are impossible to implement in an agentic loop.", "correct": false, "explanation": "Caps are trivially implementable; the issue is using them as the primary stop rather than `stop_reason`." },
+        { "id": "D", "text": "The loop should instead stop whenever the model outputs any text.", "correct": false, "explanation": "Text can appear on tool_use turns, so that is also unreliable; `stop_reason` is the correct signal." }
+      ]
+    },
+    {
+      "id": "S1-D1-015",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "What is the key distinction between a `PostToolUse` hook and a tool-call interception (pre-execution) hook in this agent?",
+      "options": [
+        { "id": "A", "text": "PostToolUse edits results after a tool runs; interception blocks a call before it runs.", "correct": true, "explanation": "PostToolUse normalizes/edits outputs after a tool runs; pre-execution interception evaluates and can block or redirect a call before it executes (e.g., enforcing a refund cap)." },
+        { "id": "B", "text": "They are effectively identical, so the two hook names can be used interchangeably.", "correct": false, "explanation": "They operate at different points — before vs. after tool execution — with different purposes." },
+        { "id": "C", "text": "PostToolUse blocks calls and interception hooks format results.", "correct": false, "explanation": "This reverses their roles; PostToolUse handles results, interception handles blocking/redirecting." },
+        { "id": "D", "text": "Only PostToolUse can run on MCP tools; interception hooks cannot.", "correct": false, "explanation": "Both can apply to tool calls; the distinction is timing and purpose, not tool source." }
+      ]
+    },
+    {
+      "id": "S1-D1-016",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "The agent decomposes a complaint into three issues but resolves them sequentially, re-querying the same customer record three times. Each investigation is independent. What's the most efficient improvement?",
+      "options": [
+        { "id": "A", "text": "Investigate the issues in parallel over the shared customer record, then synthesize.", "correct": true, "explanation": "Independent sub-investigations can run in parallel against shared, already-fetched context, avoiding redundant lookups and reducing latency before a unified synthesis." },
+        { "id": "B", "text": "Keep them sequential but cache nothing, to ensure the freshest data each time.", "correct": false, "explanation": "Re-fetching the same record three times within one interaction is wasteful and slower with no real freshness benefit." },
+        { "id": "C", "text": "Merge the three issues into one vague question to the backend.", "correct": false, "explanation": "Collapsing distinct issues loses specificity and can drop concerns." },
+        { "id": "D", "text": "Escalate to a human because three issues exceed agent capacity.", "correct": false, "explanation": "Three issues are well within scope; the fix is parallel investigation, not escalation." }
+      ]
+    },
+    {
+      "id": "S1-D1-017",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Which statement best captures the difference between model-driven decision-making and a pre-configured decision tree in this agent?",
+      "options": [
+        { "id": "A", "text": "Model-driven control lets Claude pick each next tool from context; a tree hard-codes the sequence in advance.", "correct": true, "explanation": "Model-driven loops let Claude choose the next action contextually; decision trees fix the path ahead of time and can't adapt to novel inputs." },
+        { "id": "B", "text": "Model-driven control means the developer specifies every tool call; decision trees let the model choose.", "correct": false, "explanation": "This reverses the definitions." },
+        { "id": "C", "text": "They are the same thing implemented differently.", "correct": false, "explanation": "They differ fundamentally in who decides the next action — the model versus a fixed structure." },
+        { "id": "D", "text": "Decision trees are always superior because they are deterministic.", "correct": false, "explanation": "Determinism isn't universally superior; many ambiguous support requests benefit from model-driven adaptability, with gates only where compliance demands them." }
+      ]
+    },
+    {
+      "id": "S1-D1-018",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "You want the agent to attempt autonomous resolution but compile a clean escalation package the moment it cannot make meaningful progress. What design supports both goals?",
+      "options": [
+        { "id": "A", "text": "Resolve autonomously within policy, with a defined trigger that packages a structured handoff.", "correct": true, "explanation": "Combine adaptive autonomous resolution with a defined escalation trigger and a structured handoff payload, so escalations are both well-timed and immediately actionable." },
+        { "id": "B", "text": "Escalate every ticket so a human always has full context.", "correct": false, "explanation": "Escalating everything defeats the 80% first-contact-resolution goal." },
+        { "id": "C", "text": "Never escalate; require the agent to resolve everything itself.", "correct": false, "explanation": "Some cases legitimately require human judgment or policy exceptions; never escalating harms outcomes." },
+        { "id": "D", "text": "Let the agent decide to escalate but send only an unstructured transcript dump.", "correct": false, "explanation": "Unstructured dumps slow the human; a structured handoff is far more useful." }
+      ]
+    },
+    {
+      "id": "S1-D1-019",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "A `process_refund` MCP tool sometimes returns amounts as cents (integer) and sometimes as dollars (decimal), causing the agent to misstate refunds by 100x. What is the most robust fix?",
+      "options": [
+        { "id": "A", "text": "Add a PostToolUse hook normalizing all amounts to one canonical unit before the model reads them.", "correct": true, "explanation": "Normalizing heterogeneous numeric formats in a PostToolUse hook removes the ambiguity deterministically before the model reasons about amounts." },
+        { "id": "B", "text": "Instruct the model to double-check whether amounts are cents or dollars.", "correct": false, "explanation": "Prompt-based checks are unreliable for a data-format inconsistency; normalize at the source instead." },
+        { "id": "C", "text": "Round all amounts to the nearest dollar to avoid confusion.", "correct": false, "explanation": "Rounding corrupts amounts and doesn't resolve the cents-vs-dollars ambiguity." },
+        { "id": "D", "text": "Ask the customer to confirm whether the refund amount is expressed in cents or dollars.", "correct": false, "explanation": "This offloads an internal data problem onto the customer and remains error-prone." }
+      ]
+    },
+    {
+      "id": "S1-D1-020",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Across loop iterations, why is it important to append each tool result to the conversation rather than maintaining results only in a separate local variable?",
+      "options": [
+        { "id": "A", "text": "Anything not in the conversation is invisible to Claude on the next turn.", "correct": true, "explanation": "Claude only reasons over the conversation it receives; tool results must be appended to context so they influence the next decision." },
+        { "id": "B", "text": "Because the API bills only for messages stored in local variables.", "correct": false, "explanation": "Billing is based on tokens sent to the API, and the reason to append results is reasoning continuity, not billing." },
+        { "id": "C", "text": "Because local variables are wiped between iterations automatically.", "correct": false, "explanation": "Whether locals persist is irrelevant; the model can't see anything not placed in the conversation." },
+        { "id": "D", "text": "It is not important; the model infers prior results from the latest user message.", "correct": false, "explanation": "The model cannot infer results it was never shown; they must be in context." }
+      ]
+    },
+    {
+      "id": "S1-D1-021",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "For a straightforward \"where is my order #555\" request, the team's adaptive planning layer generates a multi-step investigation plan, adding latency. What's the appropriate adjustment?",
+      "options": [
+        { "id": "A", "text": "Reserve adaptive planning for open-ended tasks; use a direct path for simple lookups.", "correct": true, "explanation": "Match decomposition to task type: simple lookups need a direct path, not heavyweight adaptive planning meant for open-ended work." },
+        { "id": "B", "text": "Always run the adaptive planner for consistency across all requests.", "correct": false, "explanation": "Uniform heavyweight planning wastes latency on trivial requests." },
+        { "id": "C", "text": "Remove the planner entirely so even complex cases skip planning.", "correct": false, "explanation": "Complex cases still benefit from planning; the fix is to gate it, not remove it." },
+        { "id": "D", "text": "Escalate simple lookups to humans to avoid planning overhead.", "correct": false, "explanation": "Escalating trivial lookups is the opposite of efficient and harms resolution rates." }
+      ]
+    },
+    {
+      "id": "S1-D1-022",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Which scenario most clearly calls for programmatic enforcement rather than prompt-based guidance?",
+      "options": [
+        { "id": "A", "text": "Blocking `process_refund` until identity is verified, given the financial consequences.", "correct": true, "explanation": "Financial/compliance-critical ordering demands a deterministic guarantee, which only programmatic enforcement provides." },
+        { "id": "B", "text": "Encouraging the agent to use a friendly tone with customers.", "correct": false, "explanation": "Tone is a soft preference well suited to prompt guidance." },
+        { "id": "C", "text": "Suggesting the agent keep its replies concise and summarize long responses for readability.", "correct": false, "explanation": "A stylistic suggestion is fine as prompt guidance, not a hard gate." },
+        { "id": "D", "text": "Asking the agent to prefer concise answers when possible.", "correct": false, "explanation": "Conciseness is a soft preference, not a compliance requirement." }
+      ]
+    },
+    {
+      "id": "S1-D1-023",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Your loop sends a request, receives `stop_reason: \"tool_use\"` with two `tool_use` blocks in a single assistant message. What is the correct handling?",
+      "options": [
+        { "id": "A", "text": "Execute both tools and return both `tool_result` blocks, each keyed to its `tool_use_id`.", "correct": true, "explanation": "A turn can contain multiple tool_use blocks; execute each and return all corresponding tool_result blocks, matched by tool_use_id, before re-invoking the model." },
+        { "id": "B", "text": "Execute only the first tool and ignore the second.", "correct": false, "explanation": "Ignoring a requested tool leaves the model's request unanswered and breaks reasoning." },
+        { "id": "C", "text": "Reject the response as malformed because only one tool_use is allowed per turn.", "correct": false, "explanation": "Multiple tool_use blocks per turn are valid and should all be handled." },
+        { "id": "D", "text": "Combine both results into a single tool_result with no IDs.", "correct": false, "explanation": "Each result must reference its own tool_use_id; merging without IDs breaks the pairing." }
+      ]
+    },
+    {
+      "id": "S1-D2-003",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "A transient backend timeout and a permanent policy rejection both currently surface to the agent as \"Operation failed.\" Why does this uniform error harm the agent's behavior?",
+      "options": [
+        { "id": "A", "text": "It can't tell transient from non-retryable, so it can't choose retry, escalate, or explain.", "correct": true, "explanation": "Uniform errors hide the category the agent needs to choose a recovery path; structured metadata (category, retryable) enables correct decisions." },
+        { "id": "B", "text": "Uniform errors are fine because the agent should always retry on any failure.", "correct": false, "explanation": "Blind retrying is wrong for non-retryable policy errors and wastes calls." },
+        { "id": "C", "text": "The problem is only cosmetic; behavior is unaffected by error text.", "correct": false, "explanation": "Error content directly drives the agent's recovery decisions, so it is not cosmetic." },
+        { "id": "D", "text": "Uniform errors improve security by hiding internal details from the model.", "correct": false, "explanation": "The agent is a trusted component that needs category information to recover; hiding it harms reliability." }
+      ]
+    },
+    {
+      "id": "S1-D2-004",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "How should a refund declined for a legitimate business-policy reason (e.g., outside the return window) be represented so the agent communicates appropriately with the customer?",
+      "options": [
+        { "id": "A", "text": "Mark it non-retryable with a customer-friendly reason.", "correct": true, "explanation": "Business-rule violations should carry a `retriable: false` flag plus a clear, customer-friendly reason so the agent explains rather than retries." },
+        { "id": "B", "text": "Return a generic 500-style server error so the agent automatically retries it.", "correct": false, "explanation": "A policy decline is not transient; signaling it as a retryable server error causes pointless retries." },
+        { "id": "C", "text": "Return success with a zero-dollar refund.", "correct": false, "explanation": "Reporting success for a declined refund is misleading and incorrect." },
+        { "id": "D", "text": "Throw an exception that ends the conversation.", "correct": false, "explanation": "Ending the conversation prevents the agent from explaining the decline to the customer." }
+      ]
+    },
+    {
+      "id": "S1-D2-005",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "`lookup_order` runs successfully but finds no orders for a verified customer. How should the tool represent this versus a backend that was unreachable?",
+      "options": [
+        { "id": "A", "text": "Return an empty result for \"no matches\" but a distinct error for \"unreachable.\"", "correct": true, "explanation": "A successful query with no matches is not a failure; distinguishing valid empty results from access failures lets the agent respond correctly rather than retrying a non-error." },
+        { "id": "B", "text": "Return the same error for both so the agent always retries.", "correct": false, "explanation": "Conflating \"no results\" with \"unreachable\" causes needless retries and wrong messaging." },
+        { "id": "C", "text": "Return an error for the empty case to prompt the agent to escalate.", "correct": false, "explanation": "An empty result is a normal outcome, not an error warranting escalation." },
+        { "id": "D", "text": "Return success for the unreachable case so the agent moves on.", "correct": false, "explanation": "Masking an access failure as success hides a real problem the agent must handle." }
+      ]
+    },
+    {
+      "id": "S1-D2-006",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "You add a third tool, `get_account_status`, whose description overlaps heavily with `get_customer`. The agent now misroutes between them. What's the best fix?",
+      "options": [
+        { "id": "A", "text": "Rewrite both descriptions to differentiate purpose, inputs, outputs, and when to use each.", "correct": true, "explanation": "Overlapping descriptions cause misrouting; differentiating each tool's purpose, I/O, and boundaries restores reliable selection." },
+        { "id": "B", "text": "Keep both descriptions identical so the model treats them as interchangeable.", "correct": false, "explanation": "Identical descriptions are exactly what cause misrouting between similar tools." },
+        { "id": "C", "text": "Remove `get_customer` and force all queries through `get_account_status`.", "correct": false, "explanation": "Removing a needed tool loses capability; the issue is description clarity, not tool count." },
+        { "id": "D", "text": "Add a sentence to the system prompt naming the agent's favorite tool.", "correct": false, "explanation": "A blanket preference doesn't teach the model when each tool actually applies." }
+      ]
+    },
+    {
+      "id": "S1-D2-007",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "A keyword-sensitive phrase in the system prompt (\"always look up the customer's account first\") is causing the agent to over-call `get_customer` even for general FAQ questions. What does this illustrate?",
+      "options": [
+        { "id": "A", "text": "Prompt wording can create tool associations that override good tool descriptions.", "correct": true, "explanation": "Keyword-sensitive instructions can bias tool selection beyond intent; system prompts should be reviewed for phrases that inadvertently steer tool use." },
+        { "id": "B", "text": "Tool descriptions are irrelevant when a system prompt exists.", "correct": false, "explanation": "Descriptions still matter; the point is that prompt wording can override them in unintended ways." },
+        { "id": "C", "text": "The model is malfunctioning and should be replaced.", "correct": false, "explanation": "This is expected sensitivity to prompt wording, not a malfunction." },
+        { "id": "D", "text": "FAQ questions always require a customer lookup anyway.", "correct": false, "explanation": "General FAQs typically don't need account lookups; the over-calling is the problem." }
+      ]
+    },
+    {
+      "id": "S1-D2-008",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "The support agent has grown to 16 tools and tool-selection accuracy has dropped noticeably. Based on tool-design principles, what is the most likely cause and fix?",
+      "options": [
+        { "id": "A", "text": "Too many tools raise decision complexity; scope to the 4–5 needed and route rare ops elsewhere.", "correct": true, "explanation": "Giving an agent too many tools degrades selection reliability; restricting to the few relevant tools (with rarer ops routed elsewhere) improves accuracy." },
+        { "id": "B", "text": "The model is too small for the workload; upgrade it and keep all 16 tools available.", "correct": false, "explanation": "Even capable models degrade with excessive tool counts; reducing decision complexity is the targeted fix." },
+        { "id": "C", "text": "Add four more specialized tools so each one covers a narrower, more specific operation.", "correct": false, "explanation": "Adding tools worsens the decision-complexity problem." },
+        { "id": "D", "text": "Lower the sampling temperature so that tool selection becomes fully deterministic.", "correct": false, "explanation": "Temperature doesn't resolve selection ambiguity created by too many overlapping tools." }
+      ]
+    },
+    {
+      "id": "S1-D2-009",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "For a batch reconciliation job, you need to guarantee the agent calls a tool rather than replying with conversational text. Which `tool_choice` setting accomplishes this?",
+      "options": [
+        { "id": "A", "text": "`tool_choice: \"any\"`", "correct": true, "explanation": "`any` forces the model to call one of the provided tools (its choice) rather than returning plain text — useful to guarantee a tool call." },
+        { "id": "B", "text": "`tool_choice: \"auto\"`", "correct": false, "explanation": "`auto` lets the model decide whether to call a tool at all, so it may return text instead." },
+        { "id": "C", "text": "`tool_choice: \"none\"`", "correct": false, "explanation": "`none` prevents tool use entirely — the opposite of the requirement." },
+        { "id": "D", "text": "Setting `max_tokens` to a small value", "correct": false, "explanation": "Limiting tokens truncates output; it does not force a tool call." }
+      ]
+    },
+    {
+      "id": "S1-D2-010",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "A compliance step requires that `verify_identity` is always the first tool invoked on a new refund request. Which `tool_choice` configuration forces exactly that tool on the first call?",
+      "options": [
+        { "id": "A", "text": "`tool_choice: {\"type\": \"tool\", \"name\": \"verify_identity\"}`", "correct": true, "explanation": "Forced tool selection (`type: tool, name: ...`) makes the model call that specific tool first; subsequent turns can return to `auto`." },
+        { "id": "B", "text": "`tool_choice: \"auto\"`", "correct": false, "explanation": "`auto` allows the model to skip or choose another tool, which can't guarantee `verify_identity` runs first." },
+        { "id": "C", "text": "`tool_choice: \"any\"`", "correct": false, "explanation": "`any` forces some tool but not the specific `verify_identity` tool." },
+        { "id": "D", "text": "Renaming the tool to `aaa_verify_identity` so it sorts first", "correct": false, "explanation": "Tool ordering by name does not force selection; forced `tool_choice` does." }
+      ]
+    },
+    {
+      "id": "S1-D2-011",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "Which set of fields best constitutes a well-structured MCP error response for this agent?",
+      "options": [
+        { "id": "A", "text": "An `errorCategory`, an `isRetryable` boolean, and a human-readable message.", "correct": true, "explanation": "Category + retryable flag + human-readable description give the agent what it needs to choose retry, escalate, or explain." },
+        { "id": "B", "text": "A single opaque numeric code with no description.", "correct": false, "explanation": "An opaque code without category or retryability leaves the agent guessing how to recover." },
+        { "id": "C", "text": "Just the generic string \"error\" returned uniformly for every kind of failure.", "correct": false, "explanation": "A uniform string prevents any informed recovery decision." },
+        { "id": "D", "text": "The full backend stack trace dumped verbatim.", "correct": false, "explanation": "Raw stack traces are noisy, leak internals, and don't give the agent a clean recovery signal." }
+      ]
+    },
+    {
+      "id": "S1-D2-012",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "A new hire writes the description \"Handles orders\" for `lookup_order`. According to tool-design best practices, what is the most important improvement?",
+      "options": [
+        { "id": "A", "text": "Detail what it does, when to use it (and not), its inputs, and its outputs.", "correct": true, "explanation": "Detailed descriptions (purpose, when/when-not, inputs, outputs) are the single most important factor in reliable tool selection." },
+        { "id": "B", "text": "Leave it short so the model isn't biased by verbose text.", "correct": false, "explanation": "Minimal descriptions are a leading cause of misrouting; detail helps, not hurts." },
+        { "id": "C", "text": "Replace words with an example identifier only.", "correct": false, "explanation": "An example alone, without explaining purpose and boundaries, is insufficient." },
+        { "id": "D", "text": "Copy the description from `get_customer` for consistency.", "correct": false, "explanation": "Duplicating descriptions across tools causes overlap and misrouting." }
+      ]
+    },
+    {
+      "id": "S1-D2-013",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "The agent rarely needs an address-validation capability but must have it available for occasional shipping corrections. How should this be provisioned without harming core tool selection?",
+      "options": [
+        { "id": "A", "text": "Expose one scoped tool for the frequent need and route rare ops through a separate path.", "correct": true, "explanation": "Keep the core tool set small for reliable selection; expose only scoped high-frequency tools and route rare operations elsewhere." },
+        { "id": "B", "text": "Add every address-related tool the backend offers, just in case.", "correct": false, "explanation": "Loading many rarely-used tools degrades selection accuracy." },
+        { "id": "C", "text": "Embed address validation inside the system prompt as instructions.", "correct": false, "explanation": "Validation is an operation that needs a tool, not prose instructions." },
+        { "id": "D", "text": "Force the address-validation tool with `tool_choice` on every single turn of the conversation.", "correct": false, "explanation": "Forcing a rare tool on every turn is incorrect; it should only run when needed." }
+      ]
+    },
+    {
+      "id": "S1-D2-014",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "A subagent helper that fetches order history hits a transient timeout. According to error-handling best practice, what should it do before propagating anything to the main agent?",
+      "options": [
+        { "id": "A", "text": "Recover locally first; propagate only if unresolved, with attempt detail and partial results.", "correct": true, "explanation": "Transient failures should be recovered locally where possible; only unresolved errors propagate, carrying attempt context and partial results for informed recovery." },
+        { "id": "B", "text": "Immediately propagate a generic failure up to the coordinator and stop all work.", "correct": false, "explanation": "Propagating a generic failure without local recovery or context wastes the chance to self-heal and hides useful detail." },
+        { "id": "C", "text": "Return a success status with empty results so the overall flow keeps moving along.", "correct": false, "explanation": "Masking a transient failure as success loses data and prevents recovery." },
+        { "id": "D", "text": "Retry the failing call in a tight loop indefinitely until it eventually succeeds.", "correct": false, "explanation": "Unbounded retries can hang the agent; bounded local recovery with eventual structured propagation is correct." }
+      ]
+    },
+    {
+      "id": "S1-D5-003",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "A customer explicitly says \"I want to speak to a human right now.\" The issue itself looks routine and resolvable. What's the correct behavior?",
+      "options": [
+        { "id": "A", "text": "Honor the request and escalate immediately, without first attempting resolution.", "correct": true, "explanation": "An explicit customer demand for a human is a valid escalation trigger; the agent should escalate immediately rather than insisting on resolving it itself." },
+        { "id": "B", "text": "Refuse the request and resolve the issue autonomously, since it looks routine enough.", "correct": false, "explanation": "Overriding an explicit human request damages trust even when the issue is simple." },
+        { "id": "C", "text": "Run a sentiment analysis check first and only escalate if the customer sounds angry.", "correct": false, "explanation": "Sentiment is an unreliable proxy; the explicit request alone justifies escalation." },
+        { "id": "D", "text": "Ask the customer three clarifying questions before deciding whether to route them.", "correct": false, "explanation": "Delaying an explicit human request with interrogation worsens the experience." }
+      ]
+    },
+    {
+      "id": "S1-D5-004",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "The agent's policy covers refunds for its own pricing errors but is silent on matching a competitor's price. A customer requests a competitor price match. What's the best action?",
+      "options": [
+        { "id": "A", "text": "Escalate: the policy is silent on this request — a policy gap, not just complexity.", "correct": true, "explanation": "Policy gaps and exceptions (not merely complex cases) are appropriate escalation triggers; the agent shouldn't invent policy for situations it doesn't cover." },
+        { "id": "B", "text": "Approve the competitor price match using the agent's own best judgment of fairness.", "correct": false, "explanation": "Inventing policy for an uncovered request risks unauthorized financial commitments." },
+        { "id": "C", "text": "Deny the request outright and then immediately close out the conversation.", "correct": false, "explanation": "A flat denial on an ambiguous policy gap may be wrong and harms the customer; escalation is warranted." },
+        { "id": "D", "text": "Tell the customer that company policy clearly and explicitly forbids price matching.", "correct": false, "explanation": "The policy is silent, not prohibitive; misstating it is incorrect." }
+      ]
+    },
+    {
+      "id": "S1-D5-005",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "`get_customer` returns two customers matching the name and partial info the caller provided. What should the agent do?",
+      "options": [
+        { "id": "A", "text": "Ask for an extra identifier to disambiguate rather than guessing the record.", "correct": true, "explanation": "Multiple matches require clarification (requesting another identifier); heuristic selection risks acting on the wrong account." },
+        { "id": "B", "text": "Pick the account created most recently.", "correct": false, "explanation": "A recency heuristic can select the wrong customer, leading to privacy and refund errors." },
+        { "id": "C", "text": "Proceed with whichever record appears first in the results.", "correct": false, "explanation": "Acting on an arbitrary match risks operating on the wrong account." },
+        { "id": "D", "text": "Merge the two accounts to remove the ambiguity.", "correct": false, "explanation": "Merging accounts is a destructive, unauthorized action; the agent should ask for disambiguation." }
+      ]
+    },
+    {
+      "id": "S1-D5-006",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Each `lookup_order` call returns 40+ fields but only 5 are relevant to support decisions. Over a long chat these accumulate and crowd the context. What's the best practice?",
+      "options": [
+        { "id": "A", "text": "Trim tool outputs to only the relevant fields before they accumulate.", "correct": true, "explanation": "Tool results consume tokens disproportionate to their relevance; trimming to return-relevant fields preserves context for what matters." },
+        { "id": "B", "text": "Always keep all 40+ returned fields in context in case they are needed later.", "correct": false, "explanation": "Retaining irrelevant fields wastes context and accelerates degradation." },
+        { "id": "C", "text": "Summarize the entire conversation after every order lookup.", "correct": false, "explanation": "Aggressive summarization risks dropping key transactional facts; targeted trimming is safer." },
+        { "id": "D", "text": "Switch to a larger-context model and keep everything.", "correct": false, "explanation": "A bigger window delays but doesn't solve context bloat from irrelevant fields; trimming is the right discipline." }
+      ]
+    },
+    {
+      "id": "S1-D5-007",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A multi-issue support session tracks several order IDs, amounts, and statuses. Where should this structured state live to remain reliable as the conversation grows?",
+      "options": [
+        { "id": "A", "text": "In a separate persisted \"case facts\" layer, distinct from the summarized chat history.", "correct": true, "explanation": "Persisting structured issue data in a dedicated context layer keeps critical facts intact even as conversational history is summarized." },
+        { "id": "B", "text": "Only in the natural-language summary of the conversation.", "correct": false, "explanation": "Summaries can condense or drop exact values; structured facts need a dedicated layer." },
+        { "id": "C", "text": "Nowhere — re-ask the customer each time.", "correct": false, "explanation": "Re-asking for known facts harms experience and isn't a state-management strategy." },
+        { "id": "D", "text": "Encoded into the system prompt at session start and never updated.", "correct": false, "explanation": "Case facts change during the session; a static prompt block can't track evolving state." }
+      ]
+    },
+    {
+      "id": "S1-D5-008",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "Why are self-reported confidence scores an unreliable basis for deciding when this agent should escalate?",
+      "options": [
+        { "id": "A", "text": "Self-reported confidence is poorly calibrated; it's confidently wrong on the hard cases.", "correct": true, "explanation": "Self-reported confidence doesn't track true case difficulty; the agent may be most confident where it's actually wrong, making it a bad escalation trigger." },
+        { "id": "B", "text": "Confidence scores always read 100%, so they carry no information.", "correct": false, "explanation": "Scores vary, but the real problem is poor calibration, not constant values." },
+        { "id": "C", "text": "The API forbids asking the model for a confidence score.", "correct": false, "explanation": "You can ask for a score; the issue is that it's unreliable, not prohibited." },
+        { "id": "D", "text": "Confidence scores are reliable and should be the primary escalation trigger.", "correct": false, "explanation": "This contradicts the known poor calibration of self-reported confidence." }
+      ]
+    },
+    {
+      "id": "S1-D5-009",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "A customer is clearly frustrated but the issue (reissuing a shipping label) is squarely within the agent's capability. What's the best approach?",
+      "options": [
+        { "id": "A", "text": "Acknowledge the frustration while resolving it, escalating only if the customer insists.", "correct": true, "explanation": "Frustration alone isn't an escalation trigger when the issue is solvable; acknowledge and resolve, escalating only if the customer insists." },
+        { "id": "B", "text": "Escalate immediately because the customer is upset.", "correct": false, "explanation": "Sentiment-based escalation wastes human capacity on resolvable issues." },
+        { "id": "C", "text": "Ignore the emotional cues entirely and respond mechanically.", "correct": false, "explanation": "Failing to acknowledge frustration harms experience even when resolving the issue." },
+        { "id": "D", "text": "Delay the response for a while, hoping the frustrated customer calms down on their own.", "correct": false, "explanation": "Stalling worsens the experience and resolves nothing." }
+      ]
+    },
+    {
+      "id": "S1-D5-010",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "On very long support chats, the agent reliably recalls facts from the start and end of the conversation but loses details mentioned in the middle. What phenomenon is this, and what's a sound mitigation?",
+      "options": [
+        { "id": "A", "text": "The \"lost in the middle\" effect; persist key facts and place critical info at the start/end.", "correct": true, "explanation": "Models process the beginning and end of long inputs more reliably than the middle; persisting key facts and positioning critical content mitigates the effect." },
+        { "id": "B", "text": "Token starvation; simply raise the `max_tokens` limit to give it more room.", "correct": false, "explanation": "`max_tokens` governs output length, not the positional recall issue." },
+        { "id": "C", "text": "A randomness problem; set the sampling temperature to 0 for more stable recall.", "correct": false, "explanation": "Temperature doesn't address positional information loss in long contexts." },
+        { "id": "D", "text": "Model corruption; restart the session from scratch even though history is lost.", "correct": false, "explanation": "It's a known positional effect, not corruption; discarding history loses needed facts." }
+      ]
+    },
+    {
+      "id": "S1-D5-011",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "Which of the following is the clearest example of an appropriate escalation trigger for this agent?",
+      "options": [
+        { "id": "A", "text": "The agent can't make meaningful progress after real attempts, or hits a policy gap.", "correct": true, "explanation": "Inability to progress and policy gaps/exceptions are appropriate triggers; escalation should reflect real blockers, not sentiment or self-confidence." },
+        { "id": "B", "text": "The customer's message is longer than three sentences.", "correct": false, "explanation": "Message length is unrelated to whether escalation is warranted." },
+        { "id": "C", "text": "The agent feels uncertain on a routine, resolvable request.", "correct": false, "explanation": "Self-reported uncertainty is poorly calibrated and not a reliable trigger." },
+        { "id": "D", "text": "Any customer request that happens to involve a refund, regardless of its size or policy fit.", "correct": false, "explanation": "Refunds within policy are exactly what the agent should resolve autonomously." }
+      ]
+    },
+    {
+      "id": "S1-D5-012",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "Why does the agent need the complete conversation history (including the persisted case-facts block) sent in each API request rather than relying on the model to \"remember\"?",
+      "options": [
+        { "id": "A", "text": "The model is stateless between calls, so coherence needs the history resent each request.", "correct": true, "explanation": "Each API call is independent; passing the prior history (plus persisted facts) is what maintains coherence — the model retains nothing on its own." },
+        { "id": "B", "text": "The API caches all prior turns automatically, so resending is optional.", "correct": false, "explanation": "There is no automatic server-side memory of your conversation; you must resend context." },
+        { "id": "C", "text": "Resending history is only needed when tools are used.", "correct": false, "explanation": "Statelessness applies regardless of tools; history is always needed for continuity." },
+        { "id": "D", "text": "The model remembers the last 10 turns indefinitely.", "correct": false, "explanation": "The model has no persistent memory across calls; that's why history is resent." }
+      ]
+    },
+    {
+      "id": "S1-D5-013",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.3",
+      "stem": "A backend tool the agent depends on returns a generic \"service unavailable\" for everything from auth failures to empty queries. How does this hurt the agent's recovery decisions?",
+      "options": [
+        { "id": "A", "text": "It hides the failure type, so the agent can't choose retry, re-auth, escalate, or proceed.", "correct": true, "explanation": "Generic statuses strip the context (failure type, attempted query, partial results) the agent needs to choose an intelligent recovery path." },
+        { "id": "B", "text": "It helps by simplifying error handling to a single branch.", "correct": false, "explanation": "A single opaque branch prevents correct, differentiated recovery." },
+        { "id": "C", "text": "It has no effect because the agent retries everything anyway.", "correct": false, "explanation": "Blind retrying is itself an anti-pattern, and the opacity makes it worse." },
+        { "id": "D", "text": "It improves security by hiding internals, enough to justify losing the recovery detail.", "correct": false, "explanation": "The agent is trusted and needs the detail; opacity harms reliability more than it helps security here." }
+      ]
+    },
+    {
+      "id": "S1-D5-014",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A teammate proposes summarizing the conversation aggressively every few turns to save tokens, including condensing refund amounts into phrases like \"a partial refund.\" What's the main risk?",
+      "options": [
+        { "id": "A", "text": "Summarization can condense precise numbers and dates into vague language, losing key facts.", "correct": true, "explanation": "Aggressive summarization risks discarding exact transactional values; key facts should be persisted outside the summary." },
+        { "id": "B", "text": "Summarization always increases overall token usage rather than reducing it.", "correct": false, "explanation": "Summarization reduces tokens; the risk is fact loss, not token growth." },
+        { "id": "C", "text": "Summarization makes the model slower per call.", "correct": false, "explanation": "The concern is information loss, not latency." },
+        { "id": "D", "text": "There is no risk; summaries always preserve all numeric values.", "correct": false, "explanation": "Summaries frequently drop precise values, which is exactly the risk." }
+      ]
+    },
+    {
+      "id": "S1-D2-015",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "You're documenting `escalate_to_human` so the model uses it correctly. Which description is most effective?",
+      "options": [
+        { "id": "A", "text": "One stating when to use it (human request, policy gap, no progress), when not, and its payload.", "correct": true, "explanation": "Effective descriptions specify purpose, precise use/when-not conditions, and expected inputs, so the model invokes the tool at the right moments with the right data." },
+        { "id": "B", "text": "A minimal one-liner that simply says the tool \"escalates the case to a human agent.\"", "correct": false, "explanation": "Too minimal — it doesn't tell the model when to use it versus resolve autonomously." },
+        { "id": "C", "text": "A description copied verbatim from the `process_refund` tool for consistency.", "correct": false, "explanation": "Mismatched/duplicated descriptions cause misrouting." },
+        { "id": "D", "text": "A note instructing the agent to invoke this tool whenever it feels at all unsure.", "correct": false, "explanation": "\"Whenever unsure\" leans on poorly calibrated self-confidence and would over-escalate." }
+      ]
+    },
+    {
+      "id": "S1-D2-016",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "After fetching a customer, the agent should always run `load_order_history` before any enrichment steps. On the first relevant turn, which configuration enforces calling that specific tool while leaving later turns flexible?",
+      "options": [
+        { "id": "A", "text": "Force `tool_choice` to that tool on the turn, then revert to `auto`.", "correct": true, "explanation": "Forcing a specific tool on the relevant turn guarantees it runs first; reverting to `auto` afterward restores normal model-driven selection." },
+        { "id": "B", "text": "Keep `tool_choice: auto` and hope the model happens to pick it first.", "correct": false, "explanation": "`auto` can't guarantee the specific tool runs first." },
+        { "id": "C", "text": "Use `none` so the model writes the history itself.", "correct": false, "explanation": "`none` forbids tool use; the model can't fabricate order history." },
+        { "id": "D", "text": "Remove all other tools permanently so only this one exists.", "correct": false, "explanation": "Stripping needed tools cripples later steps; force selection only for the relevant turn instead." }
+      ]
+    },
+    {
+      "id": "S1-D5-015",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.3",
+      "stem": "When a helper sub-call genuinely cannot resolve an error locally, what should it propagate so the main agent can recover intelligently?",
+      "options": [
+        { "id": "A", "text": "Structured context: failure type, what was attempted, partial results, and alternatives.", "correct": true, "explanation": "Structured error context (type, attempt, partial results, alternatives) lets the main agent choose retry, an alternative path, or partial completion." },
+        { "id": "B", "text": "A single boolean `failed: true` flag with no failure type, attempt detail, or partial results.", "correct": false, "explanation": "A bare boolean strips the context needed for intelligent recovery." },
+        { "id": "C", "text": "Nothing at all — return silently and let the main coordinator agent eventually time out.", "correct": false, "explanation": "Silent failure prevents any recovery and degrades reliability." },
+        { "id": "D", "text": "A success status carrying empty data so the workflow can continue unblocked.", "correct": false, "explanation": "Reporting success on failure hides the problem and risks incomplete handling." }
+      ]
+    },
+    {
+      "id": "S1-D1-024",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "An \"investigate why this customer was double-charged\" request is open-ended: each finding suggests the next check. Which decomposition strategy fits best?",
+      "options": [
+        { "id": "A", "text": "Adaptive decomposition that generates subtasks based on what each step discovers.", "correct": true, "explanation": "Open-ended investigations benefit from adaptive plans that spawn subtasks from intermediate findings rather than a rigid predetermined sequence." },
+        { "id": "B", "text": "A fixed five-step chain decided before any data is seen.", "correct": false, "explanation": "A rigid chain can't adapt to what the investigation uncovers." },
+        { "id": "C", "text": "No decomposition; answer in a single shot.", "correct": false, "explanation": "Single-shot handling tends to miss steps in a branching investigation." },
+        { "id": "D", "text": "Immediate escalation since double-charges are always human-only.", "correct": false, "explanation": "Many double-charge cases are diagnosable by the agent; escalate only if it hits a real blocker." }
+      ]
+    },
+    {
+      "id": "S1-D2-017",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "Which pairing of error type and `isRetryable` value is correct for this agent's tools?",
+      "options": [
+        { "id": "A", "text": "Backend timeout → retryable: true; refund-exceeds-policy → retryable: false.", "correct": true, "explanation": "Transient infrastructure errors are retryable; business-rule violations are not, and the flags should reflect that so the agent acts correctly." },
+        { "id": "B", "text": "Backend timeout → retryable: false; refund-exceeds-policy → retryable: true.", "correct": false, "explanation": "This inverts reality: timeouts are transient (retryable) and policy violations are permanent (not retryable)." },
+        { "id": "C", "text": "Both → retryable: true.", "correct": false, "explanation": "Retrying a policy violation is pointless and wasteful." },
+        { "id": "D", "text": "Both → retryable: false.", "correct": false, "explanation": "Marking a transient timeout non-retryable prevents a legitimate, often-successful retry." }
+      ]
+    },
+    {
+      "id": "S1-D1-025",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.5",
+      "stem": "Your team wants both: refunds over $500 are always blocked, AND every blocked attempt is recorded for audit with the attempted amount. What's the cleanest design?",
+      "options": [
+        { "id": "A", "text": "An interception hook that blocks the call, redirects to escalation, and logs the attempt.", "correct": true, "explanation": "A single interception hook can deterministically block the policy-violating call, redirect to the human workflow, and record the attempt for audit." },
+        { "id": "B", "text": "A system-prompt rule plus asking the model to log attempts itself.", "correct": false, "explanation": "Both the block and the logging would be probabilistic and unreliable for audit/compliance." },
+        { "id": "C", "text": "Allow the call but tell the customer it might be reversed later.", "correct": false, "explanation": "Allowing a policy-violating refund is exactly what must be prevented." },
+        { "id": "D", "text": "Lower the model's sampling temperature and hope it self-limits the refund amount.", "correct": false, "explanation": "Temperature can't enforce a hard threshold or guarantee logging." }
+      ]
+    },
+    {
+      "id": "S1-D5-016",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "Across a shift, the agent escalates 45% of tickets — far above target — mostly citing \"low confidence.\" Diagnosis shows many escalated cases were routine and resolvable. What's the best corrective action?",
+      "options": [
+        { "id": "A", "text": "Replace confidence thresholds with explicit criteria and examples of resolve-vs-escalate.", "correct": true, "explanation": "Poorly calibrated confidence drives over-escalation; explicit criteria with examples give clear, reliable decision boundaries." },
+        { "id": "B", "text": "Lower the confidence threshold further so the agent escalates even more of its cases.", "correct": false, "explanation": "That worsens over-escalation rather than fixing miscalibration." },
+        { "id": "C", "text": "Disable escalation entirely to force the agent to resolve every case autonomously.", "correct": false, "explanation": "Some cases genuinely need humans; removing escalation harms those." },
+        { "id": "D", "text": "Add sentiment analysis of the customer's tone as the new primary escalation trigger.", "correct": false, "explanation": "Sentiment doesn't track complexity and isn't a reliable trigger." }
+      ]
+    },
+    {
+      "id": "S1-D1-026",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Within one agentic loop turn, in what order do these steps occur?",
+      "options": [
+        { "id": "A", "text": "Send → inspect `stop_reason` → on `tool_use`, run tools and append results → repeat.", "correct": true, "explanation": "The canonical loop: request, inspect stop_reason, execute requested tools, append results, and re-invoke until `end_turn`." },
+        { "id": "B", "text": "Execute tools → send request → inspect text → stop.", "correct": false, "explanation": "Tools can't be executed before the model requests them; this ordering is backwards." },
+        { "id": "C", "text": "Send the request, then stop the loop immediately on receiving any response at all.", "correct": false, "explanation": "You must inspect stop_reason and continue while it is `tool_use`." },
+        { "id": "D", "text": "Append tool_result first → then ask the model what tools exist.", "correct": false, "explanation": "There's no result to append before the model requests a tool; the sequence is inverted." }
+      ]
+    },
+    {
+      "id": "S1-D2-018",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "Why does giving the support agent tools well outside its specialization (e.g., a code-deployment tool) tend to reduce reliability?",
+      "options": [
+        { "id": "A", "text": "Off-role tools add decision complexity and invite misuse, hurting selection of relevant tools.", "correct": true, "explanation": "Agents with tools outside their role tend to misuse them, and the extra options dilute selection accuracy for relevant tools." },
+        { "id": "B", "text": "Extra tools always improve reliability by giving more options.", "correct": false, "explanation": "More options increase decision complexity and misuse, not reliability." },
+        { "id": "C", "text": "The model ignores any tool it doesn't recognize, so there's no effect.", "correct": false, "explanation": "The model doesn't simply ignore extra tools; their presence affects selection." },
+        { "id": "D", "text": "It only matters for API cost considerations, not for tool-selection reliability.", "correct": false, "explanation": "The primary harm here is reduced selection reliability and potential misuse, not just cost." }
+      ]
+    },
+    {
+      "id": "S1-D5-017",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "To keep the persisted \"case facts\" block useful as a session evolves, how should it be maintained?",
+      "options": [
+        { "id": "A", "text": "Update it as facts are confirmed, keep it structured and current, and include it each prompt.", "correct": true, "explanation": "The case-facts block must be kept current and structured, and re-sent each turn, so evolving facts stay authoritative and protected from summarization." },
+        { "id": "B", "text": "Write the case-facts block once at session start and then never change it again.", "correct": false, "explanation": "Facts change during the session; a static block goes stale." },
+        { "id": "C", "text": "Rely on the model's own memory to retain the facts between separate API calls.", "correct": false, "explanation": "There is no cross-call model memory; it must be resent in context." },
+        { "id": "D", "text": "Let the facts be gradually absorbed into the rolling conversation summary over time.", "correct": false, "explanation": "Merging it into the summary reintroduces the fact-loss problem it was meant to prevent." }
+      ]
+    },
+    {
+      "id": "S1-D1-027",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Identity verification, order confirmation, and refund issuance must happen in order, but order confirmation legitimately fails sometimes (order not found). How should the workflow treat that failure within the prerequisite chain?",
+      "options": [
+        { "id": "A", "text": "Treat \"order not found\" as a normal clarify branch, not an error, and hold the refund gate.", "correct": true, "explanation": "A successful lookup with no order is a valid outcome that should branch to clarification, not be confused with a tool failure — and the refund gate stays closed." },
+        { "id": "B", "text": "Retry the order-confirmation lookup repeatedly until a matching order finally appears in the results.", "correct": false, "explanation": "Retrying won't conjure a nonexistent order; it wastes calls." },
+        { "id": "C", "text": "Skip the order-confirmation prerequisite and proceed to issue the refund anyway.", "correct": false, "explanation": "Bypassing the prerequisite defeats the compliance gate." },
+        { "id": "D", "text": "Escalate every single \"order not found\" result to a human agent immediately.", "correct": false, "explanation": "Often the customer simply needs to provide a correct order number; clarify before escalating." }
+      ]
+    },
+    {
+      "id": "S1-D2-019",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "Two tools, `analyze_account` and `analyze_customer`, have near-identical descriptions and the agent picks between them inconsistently. Beyond rewriting descriptions, what structural fix removes the ambiguity?",
+      "options": [
+        { "id": "A", "text": "Split them into purpose-specific tools with distinct input/output contracts.", "correct": true, "explanation": "Eliminating functional overlap by making each tool purpose-specific with clear contracts removes the root cause of misrouting." },
+        { "id": "B", "text": "Keep both names but add the word \"please\" to one description.", "correct": false, "explanation": "Cosmetic wording changes don't resolve genuine functional overlap." },
+        { "id": "C", "text": "Force `tool_choice` to one of them on every turn.", "correct": false, "explanation": "Forcing one tool every turn breaks cases that need the other." },
+        { "id": "D", "text": "Hide one tool from the model and call it manually from code on a guess.", "correct": false, "explanation": "Guessing in code bypasses the model's contextual selection and is brittle." }
+      ]
+    },
+    {
+      "id": "S1-D5-018",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "Which combination best reflects calibrated escalation behavior for this agent?",
+      "options": [
+        { "id": "A", "text": "Escalate at once on human requests and policy gaps; otherwise resolve, escalating when blocked.", "correct": true, "explanation": "Calibrated behavior honors explicit requests and policy gaps right away while autonomously resolving the rest, escalating only on genuine blockers." },
+        { "id": "B", "text": "Escalate based primarily on the customer's detected sentiment and emotional tone.", "correct": false, "explanation": "Sentiment is an unreliable proxy for case complexity." },
+        { "id": "C", "text": "Escalate automatically whenever the agent's self-reported confidence dips below 7 out of 10.", "correct": false, "explanation": "Self-confidence is poorly calibrated and drives over- or under-escalation." },
+        { "id": "D", "text": "Never escalate at all; always require the agent to attempt full autonomous resolution.", "correct": false, "explanation": "Some cases (explicit requests, policy gaps) require escalation; never escalating harms outcomes." }
+      ]
+    }
+  ]
+}
