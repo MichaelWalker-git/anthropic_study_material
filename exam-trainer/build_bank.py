@@ -1,15 +1,15 @@
 """
-Збирає єдиний банк питань з ДВОХ джерел у questions.json:
+Assembles a single question bank from TWO sources into questions.json:
 
-  1. guide_en.MD          -> 88 питань (через parse_guide.py)
-  2. mock-exam/public/bank -> 376 питань (TS-проєкт, яким поділились)
+  1. guide_en.MD          -> 88 questions (via parse_guide.py)
+  2. mock-exam/public/bank -> 376 questions (a shared TS project)
 
-Джерела майже не перетинаються (лише ~7 спільних), тож зливаємо обидва.
-Поле "source" дозволяє відрізнити походження. Дублі прибираємо за подібністю
-тексту (нормалізований stem), лишаючи багатший варіант (mock-exam має пояснення
-до КОЖНОГО варіанту, а не лише до правильного).
+The sources barely overlap (only ~7 in common), so we merge both. The "source"
+field lets us tell the origin apart. We remove duplicates by text similarity
+(normalized stem), keeping the richer variant (mock-exam has an explanation for
+EVERY option, not just the correct one).
 
-Запуск:
+Run:
     uv run python build_bank.py
 """
 
@@ -18,7 +18,7 @@ import re
 from difflib import SequenceMatcher
 from pathlib import Path
 
-import parse_guide  # переюзаємо наявний парсер гайда
+import parse_guide  # reuse the existing guide parser
 
 BASE_DIR = Path(__file__).resolve().parent
 MOCK_BANK_DIR = (
@@ -27,7 +27,7 @@ MOCK_BANK_DIR = (
 )
 OUTPUT_PATH = BASE_DIR / "questions.json"
 
-# S-коди mock-exam -> канонічні назви сценаріїв (узгоджені з нашими).
+# mock-exam S-codes -> canonical scenario names (aligned with ours).
 SCENARIO_NAMES = {
     "S1": "Customer Support Resolution Agent",
     "S2": "Code Generation with Claude Code",
@@ -51,8 +51,8 @@ def _similar(a: str, b: str) -> float:
     return 0.5 * jac + 0.5 * seq
 
 
-# Назви сценаріїв у гайді відрізняються регістром/словами від mock-exam —
-# зводимо до канонічних, щоб однакові сценарії групувались разом.
+# Scenario names in the guide differ in case/wording from mock-exam —
+# we normalize them to canonical names so identical scenarios group together.
 GUIDE_SCENARIO_ALIASES = {
     "Customer Support Agent": "Customer Support Resolution Agent",
     "Multi-agent Research System": "Multi-Agent Research System",
@@ -60,7 +60,7 @@ GUIDE_SCENARIO_ALIASES = {
 
 
 def load_guide_questions() -> list[dict]:
-    """88 питань з гайда, у нашому форматі (через наявний парсер)."""
+    """88 questions from the guide, in our format (via the existing parser)."""
     text = parse_guide.GUIDE_PATH.read_text(encoding="utf-8")
     out = []
     for block in parse_guide.split_question_blocks(text):
@@ -72,11 +72,11 @@ def load_guide_questions() -> list[dict]:
 
 
 def load_mock_questions() -> list[dict]:
-    """376 питань з mock-exam, приведені до нашого формату.
+    """376 questions from mock-exam, converted to our format.
 
-    Їхній варіант — список {id,text,correct,explanation}; наш — словник A-D +
-    correct-літера + why. Зберігаємо пояснення до кожного варіанту в полі
-    "explanations" (опційне, багатше за наш guide-формат).
+    Their variant is a list of {id,text,correct,explanation}; ours is a dict A-D +
+    correct letter + why. We keep the explanation for each option in the
+    "explanations" field (optional, richer than our guide format).
     """
     out = []
     for path in sorted(MOCK_BANK_DIR.glob("S*.json")):
@@ -84,18 +84,18 @@ def load_mock_questions() -> list[dict]:
         items = data if isinstance(data, list) else data.get("questions", data)
         for item in items:
             opts = item["options"]
-            letters = [o["id"] for o in opts]            # звичайно A-D
+            letters = [o["id"] for o in opts]            # usually A-D
             options = {o["id"]: o["text"] for o in opts}
             explanations = {o["id"]: o.get("explanation", "") for o in opts}
             correct = next(o["id"] for o in opts if o.get("correct"))
             out.append({
                 "scenario": SCENARIO_NAMES.get(item["scenario"], item["scenario"]),
-                "situation": None,                       # stem уже містить ситуацію
+                "situation": None,                       # stem already contains the situation
                 "prompt": item["stem"],
                 "options": options,
                 "correct": correct,
                 "why": explanations.get(correct, ""),
-                "explanations": explanations,            # пояснення до всіх варіантів
+                "explanations": explanations,            # explanations for all options
                 "domain": item.get("domain"),
                 "source": "mock-exam",
             })
@@ -103,10 +103,10 @@ def load_mock_questions() -> list[dict]:
 
 
 def merge(primary: list[dict], secondary: list[dict], threshold: float = 0.6) -> list[dict]:
-    """Зливає два списки, відкидаючи з secondary дублі вже наявних у primary.
+    """Merges two lists, dropping from secondary any duplicates already in primary.
 
-    primary — багатший mock-exam (його лишаємо повністю); з guide додаємо лише
-    те, чого ще немає (так зберігаємо пояснення-до-кожного-варіанту, де можливо).
+    primary is the richer mock-exam (we keep it entirely); from guide we add only
+    what isn't already present (this preserves per-option explanations where possible).
     """
     merged = list(primary)
     prim_texts = [(p.get("situation") or "") + " " + p["prompt"] for p in primary]

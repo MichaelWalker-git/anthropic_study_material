@@ -1,12 +1,12 @@
-// Браузерний драйвер для E2E-тесту навігації між питаннями.
-// Запускається з test_e2e_navigation.py; пише результат JSON у stdout.
+// Browser driver for the E2E navigation test between questions.
+// Launched from test_e2e_navigation.py; prints the result JSON to stdout.
 //
-// Перевіряє дві поведінки, які раніше були баговані:
-//   1) після "Назад" видно ОБРАНИЙ варіант (підсвічений);
-//   2) літери у тексті фідбеку збігаються з підсвіченими кнопками
-//      (бо варіанти перемішані — банкова літера != показана).
+// Checks two behaviors that were previously buggy:
+//   1) after "Back" the CHOSEN option is visible (highlighted);
+//   2) the letters in the feedback text match the highlighted buttons
+//      (because options are shuffled — the bank letter != the shown one).
 //
-// Аргументи: process.argv[2] = baseURL, process.argv[3] = шлях до puppeteer-core.
+// Arguments: process.argv[2] = baseURL, process.argv[3] = path to puppeteer-core.
 
 const baseURL = process.argv[2];
 const puppeteerPath = process.argv[3];
@@ -26,23 +26,23 @@ try {
   await page.click("#start");
   await page.waitForSelector("#quiz:not(.hidden) .option");
 
-  // Відповісти на Q1 другим варіантом (показана "B") — щоб упіймати неоригінальну літеру.
+  // Answer Q1 with the second option (shown "B") — to catch a non-original letter.
   const opts = await page.$$(".option");
   await opts[1].click();
   await page.click("#submit");
   await page.waitForSelector("#feedback:not(.hidden)");
 
-  // Q1 -> Q2 -> назад на Q1.
+  // Q1 -> Q2 -> back to Q1.
   await page.click("#next");
-  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("2 з"));
+  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("2 of"));
   await page.click("#prev");
-  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("1 з"));
+  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("1 of"));
 
   const r = await page.evaluate(() => {
     const sel = document.querySelector(".option.selected");
     const cor = document.querySelector(".option.correct");
     const fb = document.getElementById("feedback").textContent;
-    const m = fb.match(/правильна \(([A-D])\)/);
+    const m = fb.match(/correct one \(([A-D])\)/);
     const cells = [...document.querySelectorAll(".nav-cell")];
     return {
       selectedVisible: !!sel,
@@ -51,8 +51,8 @@ try {
       correctInText: m ? m[1] : null,
       feedbackVisible: !document.getElementById("feedback").classList.contains("hidden"),
       submitHidden: document.getElementById("submit").classList.contains("hidden"),
-      // Навігатор: q1 відповіли (тут поточне), має мати клас correct/wrong;
-      // перевіряємо, що cell #1 пофарбований і поточний.
+      // Navigator: q1 was answered (current here), should have class correct/wrong;
+      // we check that cell #1 is colored and current.
       navCellCount: cells.length,
       cell1Classes: cells[0] ? cells[0].className : null,
       cell1IsCurrent: cells[0] ? cells[0].classList.contains("nav-current") : null,
@@ -62,10 +62,10 @@ try {
     };
   });
 
-  // Клік по номеру 2 у навігаторі має перейти на питання 2.
+  // Clicking number 2 in the navigator should jump to question 2.
   const cells2 = await page.$$(".nav-cell");
   await cells2[1].click();
-  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("2 з"));
+  await page.waitForFunction(() => document.getElementById("progress-text").textContent.includes("2 of"));
   r.navClickWorks = true;
 
   r.ok = true;

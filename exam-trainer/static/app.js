@@ -1,21 +1,21 @@
-// Фронтенд тренажера. Навмисно простий vanilla JS — без фреймворків:
-// вікторина на 60 питань їх не потребує (той самий принцип "не ускладнюй там,
-// де достатньо простого", що й із відмовою від LLM у ядрі).
+// Trainer frontend. Deliberately plain vanilla JS — no frameworks:
+// a 60-question quiz doesn't need them (the same "don't overcomplicate
+// where simple is enough" principle as keeping the LLM out of the core).
 
 const state = {
   mode: "practice",
-  instantFeedback: true,  // показувати відповідь одразу (окремо від режиму)
-  questions: [],   // питання поточної сесії
-  index: 0,        // індекс поточного питання
-  maxReached: 0,   // найдальший досягнутий індекс (для навігатора: куди можна стрибати)
-  selected: null,  // обрана original_letter (для поточного, ще не звіреного)
-  // answers[i] = {selected, verdict} для кожного відповіданого питання.
-  // Індексуємо за позицією (а не push), щоб можна було повертатись назад і
-  // переглядати, не дублюючи записи.
+  instantFeedback: true,  // show answer immediately (independent of mode)
+  questions: [],   // questions of the current session
+  index: 0,        // index of the current question
+  maxReached: 0,   // furthest reached index (for the navigator: where you may jump)
+  selected: null,  // chosen original_letter (for the current, not-yet-graded one)
+  // answers[i] = {selected, verdict} for each answered question.
+  // We index by position (not push) so you can go back and review
+  // without duplicating records.
   answers: [],
 };
 
-// Зведення результатів для підсумку/діагнозу — лише відповіддані питання.
+// Results summary for the recap/diagnosis — answered questions only.
 function answeredResults() {
   return state.answers
     .map((a, i) => a && { ...a.verdict, chosen_letter: a.selected,
@@ -23,7 +23,7 @@ function answeredResults() {
     .filter(Boolean);
 }
 
-// Ключ для збереження незавершеної сесії в браузері (resume). Екзам не зберігаємо.
+// Key for storing an unfinished session in the browser (resume). We don't store the exam.
 const RESUME_KEY = "exam-trainer:session";
 
 const $ = (id) => document.getElementById(id);
@@ -37,7 +37,7 @@ async function api(path, opts) {
   return res.json();
 }
 
-// --- Налаштування сесії ---
+// --- Session setup ---
 async function initSetup() {
   const { scenarios, counts } = await api("/api/scenarios");
   const sel = $("scenario");
@@ -48,15 +48,15 @@ async function initSetup() {
     sel.appendChild(opt);
   }
 
-  // У exam-режимі фільтр за сценарієм ховаємо (іспит тягне з усіх), а фідбек
-  // за замовч. вимикаємо — але галочка лишається доступною, якщо хочеш екзам
-  // із миттєвими відповідями.
+  // In exam mode we hide the scenario filter (the exam draws from all), and
+  // feedback is off by default — but the checkbox stays available if you want
+  // an exam with instant answers.
   $("mode").addEventListener("change", (e) => {
     const isExam = e.target.value === "exam";
     $("scenario-row").classList.toggle("hidden", isExam);
     $("instant-feedback").checked = !isExam;
   });
-  $("instant-feedback").checked = true; // practice — дефолт
+  $("instant-feedback").checked = true; // practice — default
 
   showResumeOption();
   await refreshStats();
@@ -65,12 +65,12 @@ async function initSetup() {
 async function refreshStats() {
   const s = await api("/api/stats");
   if (!s.total) {
-    $("stats-summary").textContent = "Ще немає спроб.";
+    $("stats-summary").textContent = "No attempts yet.";
     return;
   }
   const pct = Math.round(s.accuracy * 100);
-  let txt = `Усього спроб: ${s.total} · точність ${pct}%`;
-  if (s.weakest_scenario) txt += ` · найслабша тема: ${s.weakest_scenario}`;
+  let txt = `Total attempts: ${s.total} · accuracy ${pct}%`;
+  if (s.weakest_scenario) txt += ` · weakest topic: ${s.weakest_scenario}`;
   $("stats-summary").textContent = txt;
 }
 
@@ -91,28 +91,28 @@ async function startSession() {
   renderQuestion();
 }
 
-// --- Рендер питання ---
-// Питання може бути в одному з двох станів:
-//   * нове (ще не відповіли) — можна вибирати й тиснути "Відповісти";
-//   * вже відповіли (є запис у state.answers[index]) — режим ПЕРЕГЛЯДУ:
-//     показуємо твій вибір, правильну відповідь і пояснення, без переграти.
+// --- Question render ---
+// A question can be in one of two states:
+//   * new (not yet answered) — you can pick and press "Answer";
+//   * already answered (there's a record in state.answers[index]) — REVIEW mode:
+//     we show your choice, the correct answer and the explanation, no replay.
 function renderQuestion() {
-  state.maxReached = Math.max(state.maxReached, state.index);  // куди дозволено стрибати
+  state.maxReached = Math.max(state.maxReached, state.index);  // where jumping is allowed
   const q = state.questions[state.index];
-  const prior = state.answers[state.index];  // запис, якщо вже відповідали
+  const prior = state.answers[state.index];  // record, if already answered
   state.selected = prior ? prior.selected : null;
   state.answered = !!prior;
 
-  $("progress-text").textContent = `Питання ${state.index + 1} з ${state.questions.length}`;
+  $("progress-text").textContent = `Question ${state.index + 1} of ${state.questions.length}`;
   $("scenario-tag").textContent = q.scenario;
   $("situation").textContent = q.situation || "";
   $("situation").classList.toggle("hidden", !q.situation);
   $("prompt").textContent = q.prompt;
 
-  // Повернення на вже відповіддане питання = режим ПЕРЕГЛЯДУ (read-only):
-  //   * твій вибір видно ЗАВЖДИ (це те, що ти питала);
-  //   * правильність + пояснення — якщо в цій сесії фідбек увімкнено.
-  // В екзамі без фідбеку бачиш лише свій вибір, без розкриття правильної.
+  // Returning to an already-answered question = REVIEW mode (read-only):
+  //   * your choice is ALWAYS visible (that's what you asked for);
+  //   * correctness + explanation — if feedback is enabled in this session.
+  // In an exam without feedback you see only your choice, no reveal of the correct one.
   const reviewing = !!prior;
   const showAnswer = prior && state.instantFeedback;
 
@@ -124,37 +124,37 @@ function renderQuestion() {
     btn.dataset.orig = opt.original_letter;
     btn.innerHTML = `<span class="letter">${opt.letter}</span> ${opt.text}`;
     if (reviewing) {
-      // Завжди показуємо обраний варіант.
+      // Always show the chosen option.
       if (opt.original_letter === prior.selected) btn.classList.add("selected");
-      // Правильність — лише якщо дозволено фідбек.
+      // Correctness — only if feedback is allowed.
       if (showAnswer) {
         if (opt.original_letter === prior.verdict.correct_letter) btn.classList.add("correct");
         else if (opt.original_letter === prior.selected) btn.classList.add("wrong");
       }
-      // У перегляді вибір не переграється (read-only).
+      // In review the choice can't be replayed (read-only).
     } else {
       btn.addEventListener("click", () => selectOption(btn, opt.original_letter));
     }
     box.appendChild(btn);
   }
 
-  // Кнопки навігації.
+  // Navigation buttons.
   $("prev").classList.toggle("hidden", state.index === 0);
   const hasNext = state.index + 1 < state.questions.length;
 
   if (reviewing) {
-    // Режим перегляду: submit прихований, "Далі" веде вперед по історії.
+    // Review mode: submit hidden, "Next" walks forward through history.
     $("submit").classList.add("hidden");
     $("next").classList.toggle("hidden", !hasNext);
     if (showAnswer) {
       revealFeedback(prior.verdict);
-      $("submit").classList.add("hidden");  // revealFeedback чіпає кнопки — фіксуємо
+      $("submit").classList.add("hidden");  // revealFeedback touches the buttons — fix them
       $("next").classList.toggle("hidden", !hasNext);
     } else {
-      // Екзам без фідбеку: показуємо лише напис "твоя відповідь: X", без оцінки.
+      // Exam without feedback: show only the "your answer: X" label, no grading.
       const fb = $("feedback");
       fb.className = "feedback";
-      fb.innerHTML = `<strong>Твоя відповідь: ${displayLetter(q, prior.selected)}</strong>`;
+      fb.innerHTML = `<strong>Your answer: ${displayLetter(q, prior.selected)}</strong>`;
       fb.classList.remove("hidden");
     }
   } else {
@@ -167,14 +167,14 @@ function renderQuestion() {
   renderNav();
 }
 
-// Навігатор питань унизу: номери з підсвіткою стану + перехід по кліку.
-// UX-принцип: НЕ розкривати правильність у exam-режимі (фідбек відкладено) —
-// там пройдене питання нейтральне ("answered"), а зелене/червоне лише коли
-// фідбек увімкнено. Інакше навігатор зливав би відповіді раніше часу.
+// Question navigator at the bottom: numbers with state highlighting + jump on click.
+// UX principle: do NOT reveal correctness in exam mode (feedback deferred) —
+// there a visited question is neutral ("answered"), and green/red only when
+// feedback is on. Otherwise the navigator would leak answers ahead of time.
 function renderNav() {
   const grid = $("nav-grid");
   grid.innerHTML = "";
-  const single = state.questions.length <= 1;       // згенероване одиночне — без сітки
+  const single = state.questions.length <= 1;       // a generated single one — no grid
   $("nav").classList.toggle("hidden", single);
   if (single) return;
 
@@ -188,15 +188,15 @@ function renderNav() {
       if (state.instantFeedback) {
         cell.classList.add(ans.verdict.is_correct ? "nav-correct" : "nav-wrong");
       } else {
-        cell.classList.add("nav-answered");        // exam: лише "відповіли", без оцінки
+        cell.classList.add("nav-answered");        // exam: only "answered", no grading
       }
     }
     if (i === state.index) cell.classList.add("nav-current");
 
-    // Перехід дозволяємо лише на вже ДОСЯГНУТІ питання (як на реальному іспиті:
-    // вперед "наосліп" не стрибаємо). Досягнуте = індекс <= найдальшого, де ми
-    // вже бували (maxReached), а не лише поточного — інакше, повернувшись назад,
-    // не змогли б повернутись уперед по навігатору.
+    // Allow jumping only to already-REACHED questions (like a real exam:
+    // we don't jump forward "blind"). Reached = index <= the furthest we've
+    // already been (maxReached), not just the current one — otherwise, after
+    // going back, we couldn't move forward again via the navigator.
     const reachable = i <= (state.maxReached ?? state.index);
     if (reachable && i !== state.index) {
       cell.addEventListener("click", () => { state.index = i; renderQuestion(); });
@@ -207,16 +207,16 @@ function renderNav() {
     grid.appendChild(cell);
   }
 
-  // Легенда під стан режиму.
+  // Legend for the mode's state.
   $("nav-legend").innerHTML = state.instantFeedback
-    ? '<span class="lg nav-correct"></span>вірно ' +
-      '<span class="lg nav-wrong"></span>хибно ' +
-      '<span class="lg nav-current"></span>поточне'
-    : '<span class="lg nav-answered"></span>відповіли ' +
-      '<span class="lg nav-current"></span>поточне';
+    ? '<span class="lg nav-correct"></span>correct ' +
+      '<span class="lg nav-wrong"></span>wrong ' +
+      '<span class="lg nav-current"></span>current'
+    : '<span class="lg nav-answered"></span>answered ' +
+      '<span class="lg nav-current"></span>current';
 }
 
-// Оригінальну (банкову) літеру переводимо в показану A-D (варіанти перемішані).
+// Translate the original (bank) letter into the displayed A-D (options are shuffled).
 function displayLetter(q, originalLetter) {
   const opt = q.options.find((o) => o.original_letter === originalLetter);
   return opt ? opt.letter : originalLetter;
@@ -230,21 +230,21 @@ function prevQuestion() {
 }
 
 function selectOption(btn, origLetter) {
-  if (state.answered) return; // після звірки вибір заморожено
+  if (state.answered) return; // after grading the choice is frozen
   state.selected = origLetter;
   document.querySelectorAll(".option").forEach((b) => b.classList.remove("selected"));
   btn.classList.add("selected");
   $("submit").disabled = false;
 }
 
-// --- Звірка ---
+// --- Grading ---
 async function submitAnswer() {
   if (state.selected == null) return;
   const q = state.questions[state.index];
 
   let verdict;
   if (q.id === -1 && state.generatedAnswer) {
-    // Згенероване питання немає в банку — звіряємо на клієнті, без логування.
+    // A generated question isn't in the bank — grade on the client, no logging.
     const correct = state.generatedAnswer.correct;
     verdict = {
       is_correct: state.selected === correct,
@@ -272,23 +272,23 @@ async function submitAnswer() {
 }
 
 function revealFeedback(verdict) {
-  // Підсвічуємо правильний і (якщо помилка) обраний варіант.
+  // Highlight the correct and (if wrong) the chosen option.
   document.querySelectorAll(".option").forEach((b) => {
     const orig = b.dataset.orig;
     if (orig === verdict.correct_letter) b.classList.add("correct");
     else if (orig === state.selected) b.classList.add("wrong");
   });
-  // У тексті показуємо ПЕРЕМІШАНІ літери (як на екрані), а не банкові — інакше
-  // "правильна (A)" може не збігатися з підсвіченою кнопкою A.
+  // In the text we show the SHUFFLED letters (as on screen), not the bank ones —
+  // otherwise "correct (A)" might not match the highlighted button A.
   const q = state.questions[state.index];
   const fb = $("feedback");
   fb.className = "feedback " + (verdict.is_correct ? "ok" : "bad");
-  let html = `<strong>${verdict.is_correct ? "Правильно ✓" : "Неправильно ✗"}</strong>`;
-  // Якщо помилка і є пояснення саме твого варіанту — показуємо чому він хибний.
+  let html = `<strong>${verdict.is_correct ? "Correct ✓" : "Wrong ✗"}</strong>`;
+  // If wrong and there's an explanation for your specific option — show why it's wrong.
   if (!verdict.is_correct && verdict.chosen_why) {
-    html += `<p><em>Чому твій вибір (${displayLetter(q, state.selected)}) хибний:</em> ${verdict.chosen_why}</p>`;
+    html += `<p><em>Why your choice (${displayLetter(q, state.selected)}) is wrong:</em> ${verdict.chosen_why}</p>`;
   }
-  html += `<p><em>Чому правильна (${displayLetter(q, verdict.correct_letter)}):</em> ${verdict.why}</p>`;
+  html += `<p><em>Why the correct one (${displayLetter(q, verdict.correct_letter)}) is right:</em> ${verdict.why}</p>`;
   fb.innerHTML = html;
   fb.classList.remove("hidden");
   $("submit").classList.add("hidden");
@@ -296,8 +296,8 @@ function revealFeedback(verdict) {
 }
 
 function advanceOrFinish() {
-  // Якщо фідбек показуємо — чекаємо на кнопку "Далі". Якщо ні (відкладений
-  // фідбек) — переходимо автоматично.
+  // If we show feedback — wait for the "Next" button. If not (deferred
+  // feedback) — advance automatically.
   if (!state.instantFeedback) {
     if (state.index + 1 < state.questions.length) {
       state.index += 1;
@@ -318,7 +318,7 @@ function nextQuestion() {
   }
 }
 
-// --- Підсумок ---
+// --- Recap ---
 function finish() {
   const results = answeredResults();
   const total = results.length;
@@ -336,22 +336,22 @@ function finish() {
     .map(([s, b]) => `<tr><td>${s}</td><td>${b.correct}/${b.total}</td>` +
       `<td>${Math.round((b.correct / b.total) * 100)}%</td></tr>`)
     .join("");
-  $("breakdown").innerHTML = `<table><thead><tr><th>Сценарій</th><th>Вірно</th><th>%</th></tr></thead><tbody>${rows}</tbody></table>`;
+  $("breakdown").innerHTML = `<table><thead><tr><th>Scenario</th><th>Correct</th><th>%</th></tr></thead><tbody>${rows}</tbody></table>`;
 
-  clearSession(); // сесія завершена — більше нема чого відновлювати
+  clearSession(); // session finished — nothing left to resume
   show("results");
   refreshStats();
 }
 
-// --- Добивання слабких місць (зважена вибірка за статистикою помилок) ---
-// Запускається з екрана результатів: тест дав дані -> тренуємо найгірше знане.
+// --- Drilling weak areas (weighted sampling by error statistics) ---
+// Launched from the results screen: the test gave data -> we train the worst-known.
 async function drillWeak() {
   const data = await api("/api/session", {
     method: "POST",
     body: JSON.stringify({ mode: "weak", count: 10 }),
   });
-  state.mode = "practice";          // тренування, не іспит
-  state.instantFeedback = true;     // показуємо фідбек одразу (інакше успадкує екзам)
+  state.mode = "practice";          // training, not an exam
+  state.instantFeedback = true;     // show feedback immediately (else it inherits exam)
   state.questions = data.questions;
   state.index = 0;
   state.answers = [];
@@ -360,12 +360,12 @@ async function drillWeak() {
   renderQuestion();
 }
 
-// --- Агент-діагност: аналізує помилки сесії й рекомендує тему ---
+// --- Diagnostician agent: analyzes the session's mistakes and recommends a topic ---
 async function diagnose() {
   const btn = $("diagnose");
   const box = $("diagnosis");
   btn.disabled = true;
-  btn.textContent = "Аналізую…";
+  btn.textContent = "Analyzing…";
   try {
     const answers = answeredResults().map((r) => ({
       question_id: r.question_id,
@@ -375,15 +375,15 @@ async function diagnose() {
       method: "POST",
       body: JSON.stringify({ answers }),
     });
-    let html = `<h3>Висновок</h3><p>${d.summary}</p>`;
+    let html = `<h3>Conclusion</h3><p>${d.summary}</p>`;
     if (d.misconceptions && d.misconceptions.length) {
       html += "<ul>" + d.misconceptions.map((m) => `<li>${m}</li>`).join("") + "</ul>";
     }
     if (d.recommended_scenario) {
-      html += `<p><strong>Рекомендація:</strong> ${d.recommendation}</p>`;
-      // Handoff до генератора: кнопка створює питання на рекомендовану тему.
+      html += `<p><strong>Recommendation:</strong> ${d.recommendation}</p>`;
+      // Handoff to the generator: the button creates a question on the recommended topic.
       html += `<button id="gen-recommended" class="secondary">` +
-        `✨ Згенерувати питання: ${d.recommended_scenario}</button>`;
+        `✨ Generate a question: ${d.recommended_scenario}</button>`;
     }
     box.innerHTML = html;
     box.classList.remove("hidden");
@@ -392,26 +392,26 @@ async function diagnose() {
         "click", () => generateQuestion(d.recommended_scenario));
     }
   } catch (e) {
-    box.innerHTML = `Не вдалося проаналізувати. Перевір Bedrock-ключ.<br>${e.message}`;
+    box.innerHTML = `Could not analyze. Check the Bedrock key.<br>${e.message}`;
     box.classList.remove("hidden");
   } finally {
     btn.disabled = false;
-    btn.textContent = "🧠 Розбір помилок (AI)";
+    btn.textContent = "🧠 Review mistakes (AI)";
   }
 }
 
-// --- Генерація свіжого питання через Sonnet ---
-// scenario передаємо явно (від діагноста або з результатів); null = найслабша тема.
+// --- Generating a fresh question via Sonnet ---
+// scenario is passed explicitly (from the diagnostician or the results); null = weakest topic.
 async function generateQuestion(scenario = null) {
   try {
     const q = await api("/api/generate", {
       method: "POST",
       body: JSON.stringify({ scenario }),
     });
-    // Згенероване питання — це міні-сесія practice з одного питання.
+    // A generated question is a one-question practice mini-session.
     state.mode = "practice";
     state.instantFeedback = true;
-    // У сервера id = -1; для grade воно не годиться, тож обробляємо локально.
+    // On the server id = -1; it's no good for grade, so we handle it locally.
     state.questions = [q];
     state.index = 0;
     state.answers = [];
@@ -419,14 +419,14 @@ async function generateQuestion(scenario = null) {
     show("quiz");
     renderQuestion();
   } catch (e) {
-    alert("Не вдалося згенерувати питання. Перевір Bedrock-ключ у learning/.env.\n" + e.message);
+    alert("Could not generate a question. Check the Bedrock key in learning/.env.\n" + e.message);
   }
 }
 
-// --- Збереження/відновлення сесії (localStorage, тільки не-екзам) ---
-// Екзам навмисно НЕ зберігаємо: він імітує реальний іспит, де паузи й
-// відновлення не передбачені. Згенеровані AI-питання теж не зберігаємо
-// (їх немає в банку, після перезавантаження сервер їх не віддасть).
+// --- Saving/restoring a session (localStorage, non-exam only) ---
+// We deliberately do NOT save the exam: it mimics a real exam, where pauses and
+// resuming aren't allowed. Generated AI questions aren't saved either
+// (they're not in the bank, and after a reload the server won't return them).
 function saveSession() {
   if (state.mode === "exam" || state.generatedAnswer) return;
   const snapshot = {
@@ -439,7 +439,7 @@ function saveSession() {
   };
   try {
     localStorage.setItem(RESUME_KEY, JSON.stringify(snapshot));
-  } catch (_) { /* приватний режим / переповнення — не критично */ }
+  } catch (_) { /* private mode / overflow — not critical */ }
 }
 
 function clearSession() {
@@ -461,7 +461,7 @@ function showResumeOption() {
     return;
   }
   $("resume-info").textContent =
-    `(питання ${saved.index + 1} з ${saved.questions.length})`;
+    `(question ${saved.index + 1} of ${saved.questions.length})`;
   row.classList.remove("hidden");
 }
 
@@ -486,7 +486,7 @@ function show(screen) {
   if (screen === "setup") showResumeOption();
 }
 
-// --- Прив'язка подій ---
+// --- Event binding ---
 $("start").addEventListener("click", startSession);
 $("submit").addEventListener("click", submitAnswer);
 $("next").addEventListener("click", nextQuestion);

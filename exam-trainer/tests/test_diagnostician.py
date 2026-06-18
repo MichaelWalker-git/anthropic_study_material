@@ -1,11 +1,12 @@
 """
-Агент-діагност (diagnostician.py) + endpoint /api/diagnose.
+Diagnostician agent (diagnostician.py) + the /api/diagnose endpoint.
 
-Та сама стратегія: мокаємо Bedrock, перевіряємо детерміновану обгортку:
-  * порожній вхід -> без виклику моделі;
-  * захист handoff: recommended_scenario мусить бути з відомого списку,
-    інакше фолбек на сценарій із найбільшою кількістю помилок;
-  * endpoint правильно ВІДНОВЛЮЄ тексти провалених питань і відсіює правильні.
+Same strategy: we mock Bedrock and verify the deterministic wrapper:
+  * empty input -> no model call;
+  * handoff guard: recommended_scenario must come from the known list,
+    otherwise fall back to the scenario with the most errors;
+  * the endpoint correctly RECONSTRUCTS the texts of failed questions and filters
+    out the correct ones.
 """
 
 import types
@@ -30,10 +31,10 @@ class _FakeClient:
 
 
 GOOD = {
-    "summary": "Учень плутає plan mode з direct execution.",
-    "misconceptions": ["Недооцінює планування для складних задач"],
+    "summary": "The learner confuses plan mode with direct execution.",
+    "misconceptions": ["Underestimates planning for complex tasks"],
     "recommended_scenario": "Code Generation with Claude Code",
-    "recommendation": "Зосередься на виборі plan mode.",
+    "recommendation": "Focus on choosing plan mode.",
 }
 
 WRONG_SAMPLE = [{
@@ -47,9 +48,9 @@ WRONG_SAMPLE = [{
 
 def test_empty_input_skips_model(app_module, monkeypatch):
     import diagnostician
-    # Якщо модель викличеться — впаде; перевіряємо, що НЕ викликається.
+    # If the model gets called it will fail; we verify it is NOT called.
     monkeypatch.setattr(diagnostician, "AnthropicBedrock",
-                        lambda: (_ for _ in ()).throw(AssertionError("не мало викликатись")))
+                        lambda: (_ for _ in ()).throw(AssertionError("should not have been called")))
     out = diagnostician.diagnose([], ["S"])
     assert out["recommended_scenario"] is None
     assert out["misconceptions"] == []
@@ -64,8 +65,8 @@ def test_diagnose_returns_structured(app_module, monkeypatch):
 
 
 def test_handoff_guard_falls_back_on_bad_scenario(app_module, monkeypatch):
-    """Якщо модель порекомендувала сценарій поза списком — фолбек на той,
-    де найбільше помилок (надійний handoff до генератора)."""
+    """If the model recommends a scenario outside the list, fall back to the one
+    with the most errors (reliable handoff to the generator)."""
     import diagnostician
     bad = {**GOOD, "recommended_scenario": "Hallucinated Scenario"}
     monkeypatch.setattr(diagnostician, "AnthropicBedrock", lambda: _FakeClient(bad))
@@ -74,7 +75,7 @@ def test_handoff_guard_falls_back_on_bad_scenario(app_module, monkeypatch):
 
 
 def test_diagnose_endpoint_reconstructs_and_filters(client, app_module, monkeypatch):
-    """Endpoint бере id+chosen, відновлює тексти, відсіює ПРАВИЛЬНІ відповіді."""
+    """The endpoint takes id+chosen, reconstructs texts, filters out CORRECT answers."""
     import diagnostician
     captured = {}
 
@@ -85,18 +86,18 @@ def test_diagnose_endpoint_reconstructs_and_filters(client, app_module, monkeypa
 
     monkeypatch.setattr(diagnostician, "diagnose", fake_diagnose)
 
-    # Візьмемо 2 реальні питання: одне відповімо правильно, друге — хибно.
+    # Take 2 real questions: answer one correctly, the other wrong.
     q_correct = app_module.QUESTIONS[0]
     q_wrong = app_module.QUESTIONS[1]
     wrong_letter = next(l for l in "ABCD" if l != q_wrong["correct"])
 
     r = client.post("/api/diagnose", json={"answers": [
-        {"question_id": q_correct["id"], "chosen": q_correct["correct"]},   # правильна — відсіється
-        {"question_id": q_wrong["id"], "chosen": wrong_letter},             # хибна — лишиться
-        {"question_id": 10**9, "chosen": "A"},                              # невідома — відсіється
+        {"question_id": q_correct["id"], "chosen": q_correct["correct"]},   # correct — filtered out
+        {"question_id": q_wrong["id"], "chosen": wrong_letter},             # wrong — kept
+        {"question_id": 10**9, "chosen": "A"},                              # unknown — filtered out
     ]})
     assert r.status_code == 200
-    assert len(captured["wrong"]) == 1, "має лишитись лише одне провалене питання"
+    assert len(captured["wrong"]) == 1, "only one failed question should remain"
     assert captured["wrong"][0]["id"] if "id" in captured["wrong"][0] else True
     assert captured["wrong"][0]["chosen"] == wrong_letter
 
@@ -105,7 +106,7 @@ def test_diagnose_endpoint_502_on_agent_error(client, monkeypatch):
     import diagnostician
     monkeypatch.setattr(diagnostician, "diagnose",
                         lambda *a, **k: (_ for _ in ()).throw(RuntimeError("boom")))
-    # Потрібне хоч одне хибне питання, щоб дійти до виклику агента.
+    # At least one wrong question is needed to reach the agent call.
     import app
     q = app.QUESTIONS[0]
     wrong = next(l for l in "ABCD" if l != q["correct"])

@@ -1,18 +1,20 @@
 """
-Агент-діагност — ДРУГИЙ LLM у проєкті (поряд із generator.py).
+Diagnostician agent — the SECOND LLM in the project (alongside generator.py).
 
-Навіщо окремий агент, а не функція в generator.py: це навмисний приклад
-multi-agent патерну зі structured handoff (той самий, що в Capital Group):
-  * діагност (цей файл) — аналізує твої помилки й пише висновок;
-  * генератор (generator.py) — створює питання на знайдену слабину.
-Кожен агент має ОДНУ відповідальність і власний scoped контекст. Handoff —
-структурований: діагност повертає поле recommended_scenario, яке фронтенд
-передає генератору.
+Why a separate agent rather than a function in generator.py: this is a deliberate
+example of a multi-agent pattern with a structured handoff (the same as in Capital
+Group):
+  * the diagnostician (this file) — analyzes your mistakes and writes a conclusion;
+  * the generator (generator.py) — creates a question on the identified weakness.
+Each agent has ONE responsibility and its own scoped context. The handoff is
+structured: the diagnostician returns a recommended_scenario field, which the
+frontend passes to the generator.
 
-Чому це справді задача для LLM (а не код): код може порахувати, ЯКІ питання ти
-провалила (точність по сценаріях — це вже робить /api/stats). Але сказати, ЧОМУ
-ти помиляєшся — який концепт ти системно плутаєш, який патерн хибного міркування
-повторюється — це семантичний аналіз тексту твоїх відповідей. Оце і є LLM-робота.
+Why this is genuinely an LLM task (and not code): code can count WHICH questions
+you failed (per-scenario accuracy — that's already done by /api/stats). But to say
+WHY you're getting it wrong — which concept you systematically confuse, which
+faulty-reasoning pattern recurs — is semantic analysis of the text of your answers.
+That is the LLM's job.
 """
 
 import json
@@ -26,11 +28,11 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR.parent / ".env")
 
-# Sonnet — діагноз вимагає тонкого розуміння концептів, не дешева класифікація.
+# Sonnet — diagnosis requires a nuanced understanding of concepts, not cheap classification.
 MODEL = "us.anthropic.claude-sonnet-4-6"
 
-# Структурований вихід: змушуємо модель повернути саме висновок + рекомендацію,
-# щоб handoff до генератора був надійним (recommended_scenario — машиночитане).
+# Structured output: we force the model to return exactly a conclusion + recommendation,
+# so the handoff to the generator is reliable (recommended_scenario is machine-readable).
 DIAGNOSIS_TOOL = {
     "name": "emit_diagnosis",
     "description": "Return a study diagnosis based on the learner's wrong answers.",
@@ -39,11 +41,11 @@ DIAGNOSIS_TOOL = {
         "properties": {
             "summary": {
                 "type": "string",
-                "description": "2-4 sentences: what conceptual patterns the learner is getting wrong. Write in Ukrainian; keep technical terms in English.",
+                "description": "2-4 sentences: what conceptual patterns the learner is getting wrong. Write in English.",
             },
             "misconceptions": {
                 "type": "array",
-                "description": "Specific recurring misconceptions, each one short sentence (Ukrainian).",
+                "description": "Specific recurring misconceptions, each one short sentence (English).",
                 "items": {"type": "string"},
             },
             "recommended_scenario": {
@@ -52,7 +54,7 @@ DIAGNOSIS_TOOL = {
             },
             "recommendation": {
                 "type": "string",
-                "description": "1-2 sentences (Ukrainian): why that scenario, what to focus on.",
+                "description": "1-2 sentences (English): why that scenario, what to focus on.",
             },
         },
         "required": ["summary", "misconceptions", "recommended_scenario", "recommendation"],
@@ -61,7 +63,7 @@ DIAGNOSIS_TOOL = {
 
 
 def _build_prompt(wrong: list[dict], scenarios: list[str]) -> str:
-    """Складає контекст: тексти провалених питань + правильні/обрані відповіді."""
+    """Assembles the context: text of failed questions + correct/chosen answers."""
     blocks = []
     for w in wrong:
         opts = "\n".join(f"  {l}) {t}" for l, t in w["options"].items())
@@ -83,19 +85,19 @@ def _build_prompt(wrong: list[dict], scenarios: list[str]) -> str:
         "Then recommend ONE scenario to drill next.\n\n"
         f"Available scenarios (use one verbatim for recommended_scenario): {scenarios}\n\n"
         f"=== WRONG ANSWERS ===\n{joined}\n=== END ===\n\n"
-        "Return your analysis via the emit_diagnosis tool. Write summary/recommendation "
-        "in Ukrainian; keep technical terms (plan mode, tool_use, MCP, etc.) in English."
+        "Return your analysis via the emit_diagnosis tool. Write the summary and "
+        "recommendation in English; keep technical terms (plan mode, tool_use, MCP, etc.) as-is."
     )
 
 
 def diagnose(wrong: list[dict], scenarios: list[str]) -> dict:
-    """Аналізує провалені питання й повертає висновок + рекомендований сценарій.
+    """Analyzes failed questions and returns a conclusion + recommended scenario.
 
-    wrong: список словників {scenario, situation, prompt, options, chosen, correct, why}.
+    wrong: list of dicts {scenario, situation, prompt, options, chosen, correct, why}.
     """
     if not wrong:
         return {
-            "summary": "У цій сесії немає помилок — діагностувати нічого. 🎉",
+            "summary": "No mistakes in this session — nothing to diagnose. 🎉",
             "misconceptions": [],
             "recommended_scenario": None,
             "recommendation": "",
@@ -114,9 +116,9 @@ def diagnose(wrong: list[dict], scenarios: list[str]) -> dict:
         raise RuntimeError("Diagnostician returned no structured output")
 
     result = dict(tool_use.input)
-    # Захист handoff: рекомендований сценарій має бути з відомого списку.
+    # Handoff guard: the recommended scenario must come from the known list.
     if result.get("recommended_scenario") not in scenarios:
-        # Фолбек — сценарій, де найбільше помилок у цій сесії.
+        # Fallback — the scenario with the most mistakes in this session.
         from collections import Counter
         result["recommended_scenario"] = Counter(w["scenario"] for w in wrong).most_common(1)[0][0]
     return result
@@ -125,7 +127,7 @@ def diagnose(wrong: list[dict], scenarios: list[str]) -> dict:
 if __name__ == "__main__":
     if not os.getenv("AWS_BEARER_TOKEN_BEDROCK") and not os.getenv("AWS_ACCESS_KEY_ID"):
         sys.exit("Set AWS_BEARER_TOKEN_BEDROCK (or AWS creds) — see learning/.env")
-    # Демо на синтетичному прикладі.
+    # Demo on a synthetic example.
     demo = [{
         "scenario": "Code Generation with Claude Code",
         "situation": "You need to restructure a monolith into microservices.",

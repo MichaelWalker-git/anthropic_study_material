@@ -1,13 +1,13 @@
 """
-Агент-генератор (generator.py).
+Generator agent (generator.py).
 
-Стратегія: НЕ ходимо в Bedrock у звичайних тестах. Натомість мокаємо
-AnthropicBedrock і перевіряємо ДЕТЕРМІНОВАНУ логіку навколо моделі:
-  * валідація структури (4 варіанти, рівно одна правильна, без витоку);
-  * ретрай на відхилену відповідь;
-  * мапінг tool_use -> наш формат;
-  * захист від невідомого сценарію.
-Живий end-to-end виклик — лише з --run-live.
+Strategy: do NOT hit Bedrock in regular tests. Instead we mock AnthropicBedrock
+and verify the DETERMINISTIC logic around the model:
+  * structure validation (4 options, exactly one correct, no leak);
+  * retry on a rejected response;
+  * tool_use -> our format mapping;
+  * guard against an unknown scenario.
+The live end-to-end call runs only with --run-live.
 """
 
 import types
@@ -15,16 +15,16 @@ import types
 import pytest
 
 
-# --- Хелпери для моку Bedrock ---
+# --- Helpers for mocking Bedrock ---
 
 def _fake_tool_use(payload):
-    """Імітує відповідь Messages API з одним tool_use блоком."""
+    """Mimics a Messages API response with a single tool_use block."""
     block = types.SimpleNamespace(type="tool_use", input=payload)
     return types.SimpleNamespace(content=[block])
 
 
 class _FakeClient:
-    """Підставний AnthropicBedrock: віддає заздалегідь задані відповіді по черзі."""
+    """Stub AnthropicBedrock: returns predefined responses in turn."""
     def __init__(self, payloads):
         self._payloads = list(payloads)
         self.calls = 0
@@ -50,11 +50,11 @@ VALID_PAYLOAD = {
 @pytest.fixture
 def gen(app_module, monkeypatch):
     import generator
-    # Сценарії беремо з реального банку (через questions.json генератора).
+    # Scenarios come from the real bank (via the generator's questions.json).
     return generator, monkeypatch
 
 
-# --- Валідація (чистий, без моку) ---
+# --- Validation (pure, no mock) ---
 
 def test_validate_accepts_good_question(gen):
     generator, _ = gen
@@ -65,10 +65,10 @@ def test_validate_accepts_good_question(gen):
 
 
 @pytest.mark.parametrize("bad,reason", [
-    ({"options": ["a", "b", "c"], "correct_index": 0, "prompt": "Why?"}, "3 варіанти"),
-    ({"options": ["a", "a", "b", "c"], "correct_index": 0, "prompt": "Why?"}, "дублі"),
-    ({"options": ["a", "b", "c", "d"], "correct_index": 9, "prompt": "Why?"}, "індекс поза 0-3"),
-    ({"options": ["a", "b", "c", "d"], "correct_index": 0, "prompt": "No question mark"}, "немає ?"),
+    ({"options": ["a", "b", "c"], "correct_index": 0, "prompt": "Why?"}, "3 options"),
+    ({"options": ["a", "a", "b", "c"], "correct_index": 0, "prompt": "Why?"}, "duplicates"),
+    ({"options": ["a", "b", "c", "d"], "correct_index": 9, "prompt": "Why?"}, "index out of 0-3"),
+    ({"options": ["a", "b", "c", "d"], "correct_index": 0, "prompt": "No question mark"}, "no ?"),
 ])
 def test_validate_rejects_bad(gen, bad, reason):
     generator, _ = gen
@@ -84,7 +84,7 @@ def test_validate_detects_answer_leak(gen):
     assert "leak" in generator._validate(bad).lower()
 
 
-# --- Логіка генерації з моком клієнта ---
+# --- Generation logic with a mocked client ---
 
 def test_generate_returns_bank_format(gen):
     generator, mp = gen
@@ -100,11 +100,11 @@ def test_generate_returns_bank_format(gen):
 def test_generate_retries_on_invalid_then_succeeds(gen):
     generator, mp = gen
     scenario = generator.valid_scenarios().pop()
-    bad = {**VALID_PAYLOAD, "options": ["a", "b", "c"]}  # лише 3 — відхилиться
+    bad = {**VALID_PAYLOAD, "options": ["a", "b", "c"]}  # only 3 — rejected
     client = _FakeClient([bad, VALID_PAYLOAD])
     mp.setattr(generator, "AnthropicBedrock", lambda: client)
     q = generator.generate_question(scenario, max_retries=1)
-    assert client.calls == 2, "має бути один ретрай після відхилення"
+    assert client.calls == 2, "there should be exactly one retry after rejection"
     assert q["correct"] == "A"
 
 
@@ -123,7 +123,7 @@ def test_generate_unknown_scenario_raises(gen):
         generator.generate_question("Totally Unknown Scenario")
 
 
-# --- Живий тест (опційно) ---
+# --- Live test (optional) ---
 
 @pytest.mark.live
 def test_generate_live(app_module):

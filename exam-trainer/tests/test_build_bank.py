@@ -1,8 +1,9 @@
 """
-Збірка банку (build_bank.py): парсинг, нормалізація, дедуплікація.
+Bank build (build_bank.py): parsing, normalization, deduplication.
 
-Це найбагатша на регресії частина (саме тут був баг розсинхрону назв сценаріїв
-та "Unknown scenario" у генераторі). Тестуємо чисті функції без I/O.
+This is the part richest in regressions (this is exactly where the scenario-name
+desync bug and the "Unknown scenario" generator bug lived). We test pure functions
+without I/O.
 """
 
 import pytest
@@ -19,7 +20,7 @@ def test_similar_unrelated_is_low():
 
 
 def test_guide_scenario_aliases_normalize():
-    """Назви з гайда зводяться до канонічних mock-exam (інакше дублі-сценарії)."""
+    """Guide names map to canonical mock-exam ones (otherwise duplicate scenarios)."""
     assert build_bank.GUIDE_SCENARIO_ALIASES["Customer Support Agent"] == \
         "Customer Support Resolution Agent"
     assert build_bank.GUIDE_SCENARIO_ALIASES["Multi-agent Research System"] == \
@@ -29,8 +30,8 @@ def test_guide_scenario_aliases_normalize():
 def test_merge_drops_near_duplicates():
     primary = [{"situation": None, "prompt": "What is the capital of France?"}]
     secondary = [
-        {"situation": None, "prompt": "What is the capital of France?"},   # дубль
-        {"situation": None, "prompt": "How do you configure an MCP server?"},  # новий
+        {"situation": None, "prompt": "What is the capital of France?"},   # duplicate
+        {"situation": None, "prompt": "How do you configure an MCP server?"},  # new
     ]
     merged, added = build_bank.merge(primary, secondary, threshold=0.6)
     assert added == 1
@@ -44,19 +45,20 @@ def test_merge_keeps_all_primary():
 
 
 def test_built_bank_scenarios_are_canonical():
-    """Обидва джерела дають канонічні назви — після злиття не буде дублів-
-    сценаріїв, що різняться лише регістром. Перевіряємо на рівні load-функцій
-    (саме там нормалізація), не запускаючи дорогий O(n*m) merge."""
+    """Both sources yield canonical names — after the merge there will be no
+    duplicate scenarios differing only by case. We check at the load-function
+    level (that's where normalization happens), without running the expensive
+    O(n*m) merge."""
     scenarios = {q["scenario"] for q in build_bank.load_mock_questions()}
     scenarios |= {q["scenario"] for q in build_bank.load_guide_questions()}
     assert len(scenarios) == len({s.lower() for s in scenarios}), \
-        f"є сценарії, що різняться лише регістром: {sorted(scenarios)}"
+        f"scenarios that differ only by case: {sorted(scenarios)}"
 
 
 def test_mock_questions_have_canonical_scenario_names():
-    """S-коди розгортаються в людські назви."""
+    """S-codes expand into human-readable names."""
     mock = build_bank.load_mock_questions()
     names = {q["scenario"] for q in mock}
     assert "Multi-Agent Research System" in names
     assert not any(n.startswith("S") and n[1:].isdigit() for n in names), \
-        "лишились нерозгорнуті S-коди"
+        "unexpanded S-codes remain"

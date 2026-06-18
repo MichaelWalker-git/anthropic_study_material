@@ -1,8 +1,8 @@
 """
-Контракт детермінованого ядра API: /scenarios, /session, /grade.
+Contract for the deterministic API core: /scenarios, /session, /grade.
 
-Це поведінкові тести на рівні HTTP — те, на що покладається фронтенд. Жодного
-LLM тут немає, тож вони швидкі й повністю детерміновані.
+These are behavioral tests at the HTTP level — what the frontend relies on. There
+is no LLM here, so they are fast and fully deterministic.
 """
 
 import pytest
@@ -46,7 +46,7 @@ def test_session_unknown_scenario_404(client):
 
 
 def test_session_count_clamped_to_pool(client, app_module):
-    """Запит на більше питань, ніж є у сценарії, обрізається до розміру пулу."""
+    """Requesting more questions than the scenario has is clamped to the pool size."""
     scenario = app_module.SCENARIOS[0]
     pool = sum(1 for q in app_module.QUESTIONS if q["scenario"] == scenario)
     body = client.post("/api/session",
@@ -55,21 +55,21 @@ def test_session_count_clamped_to_pool(client, app_module):
 
 
 def test_session_never_leaks_answer_key(client):
-    """КРИТИЧНО: public-питання НЕ містить correct/why/explanations.
+    """CRITICAL: a public question does NOT contain correct/why/explanations.
 
-    Якщо клієнт побачить правильну відповідь наперед — і practice, і exam
-    втрачають сенс. Це інваріант безпеки, не косметика.
+    If the client sees the correct answer up front, both practice and exam lose
+    their point. This is a security invariant, not cosmetics.
     """
     body = client.post("/api/session", json={"mode": "exam"}).json()
     forbidden = {"correct", "why", "explanations", "correct_letter"}
     for pq in body["questions"]:
-        assert not (forbidden & set(pq)), f"витік ключа у питанні {pq['id']}: {pq.keys()}"
+        assert not (forbidden & set(pq)), f"key leaked in question {pq['id']}: {pq.keys()}"
         for opt in pq["options"]:
-            assert "correct" not in opt, "варіант не має містити прапор correct"
+            assert "correct" not in opt, "an option must not contain the correct flag"
 
 
 def test_session_options_are_permutation(client):
-    """Кожне питання має рівно A-D, а original_letter — перестановка A-D."""
+    """Every question has exactly A-D, and original_letter is a permutation of A-D."""
     body = client.post("/api/session", json={"mode": "exam"}).json()
     for pq in body["questions"]:
         shown = [o["letter"] for o in pq["options"]]
@@ -79,14 +79,14 @@ def test_session_options_are_permutation(client):
 
 
 def test_shuffle_actually_varies_order(client, monkeypatch, app_module):
-    """Перемішування справді міняє позиції (не завжди A->A)."""
+    """Shuffling actually changes positions (not always A->A)."""
     import random
     random.seed(7)
     body = client.post("/api/session", json={"mode": "exam"}).json()
-    # Хоч в одному питанні показана літера має відрізнятись від оригінальної.
+    # In at least one question the shown letter should differ from the original.
     moved = any(o["letter"] != o["original_letter"]
                 for pq in body["questions"] for o in pq["options"])
-    assert moved, "перемішування не змінило жодного варіанту — підозріло"
+    assert moved, "shuffling changed no option at all — suspicious"
 
 
 # --- /api/grade ---
@@ -114,19 +114,19 @@ def test_grade_wrong_answer(client, app_module):
 
 
 def test_grade_wrong_on_mock_exam_returns_chosen_why(client, app_module):
-    """Для mock-exam питання хибний вибір повертає пояснення саме того варіанту."""
+    """For a mock-exam question, a wrong choice returns the explanation of that very option."""
     mock = next((q for q in app_module.QUESTIONS if q.get("source") == "mock-exam"), None)
     if mock is None:
-        pytest.skip("у банку немає mock-exam питань")
+        pytest.skip("no mock-exam questions in the bank")
     wrong = next(l for l in "ABCD" if l != mock["correct"])
     body = client.post("/api/grade", json={"question_id": mock["id"], "original_letter": wrong}).json()
-    assert body["chosen_why"], "очікували пояснення хибного варіанту"
+    assert body["chosen_why"], "expected an explanation of the wrong option"
 
 
 def test_grade_correct_has_no_chosen_why(client, app_module):
     mock = next((q for q in app_module.QUESTIONS if q.get("source") == "mock-exam"), None)
     if mock is None:
-        pytest.skip("немає mock-exam питань")
+        pytest.skip("no mock-exam questions")
     body = client.post("/api/grade",
                        json={"question_id": mock["id"], "original_letter": mock["correct"]}).json()
     assert body["chosen_why"] is None
