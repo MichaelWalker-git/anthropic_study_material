@@ -1,13 +1,14 @@
 """
-Спільна тестова інфраструктура.
+Shared test infrastructure.
 
-Головні принципи (як їх бачить Principal QA):
-1. ІЗОЛЯЦІЯ ПОБІЧНИХ ЕФЕКТІВ. Жоден тест не торкається справжнього attempts.jsonl —
-   кожен дістає свіжий тимчасовий файл через monkeypatch. Інакше тести залежали б
-   від порядку запуску й засмічували б реальну статистику користувача.
-2. ДЕТЕРМІНІЗМ. random сідаємо фікстурою, щоб перемішування/вибірка були відтворювані.
-3. LLM — ОКРЕМО. Тести агентів за замовчуванням НЕ ходять у Bedrock (мок). Живі
-   виклики — лише з прапором --run-live (коштують грошей, повільні, недетерміновані).
+Core principles (as a Principal QA would see them):
+1. SIDE-EFFECT ISOLATION. No test touches the real attempts.jsonl — each gets a
+   fresh temporary file via monkeypatch. Otherwise tests would depend on run
+   order and pollute the user's real statistics.
+2. DETERMINISM. We seed random in a fixture so shuffling/sampling are reproducible.
+3. LLM IS SEPARATE. Agent tests do NOT hit Bedrock by default (mocked). Live
+   calls happen only with the --run-live flag (they cost money, are slow, and
+   are non-deterministic).
 """
 
 import importlib
@@ -17,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-# Модулі застосунку лежать на рівень вище від tests/ — додаємо в path.
+# Application modules live one level above tests/ — add it to the path.
 APP_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(APP_DIR))
 
@@ -25,19 +26,19 @@ sys.path.insert(0, str(APP_DIR))
 def pytest_addoption(parser):
     parser.addoption(
         "--run-live", action="store_true", default=False,
-        help="Запускати тести, що реально звертаються до Bedrock (платно).",
+        help="Run tests that actually call Bedrock (costs money).",
     )
     parser.addoption(
         "--run-e2e", action="store_true", default=False,
-        help="Запускати браузерні E2E-тести (потрібен Chrome + Node/puppeteer).",
+        help="Run browser E2E tests (requires Chrome + Node/puppeteer).",
     )
 
 
 def pytest_collection_modifyitems(config, items):
-    """Пропускаємо marked-тести, якщо відповідний прапор не передано."""
+    """Skip marked tests when the corresponding flag was not passed."""
     gates = [
-        ("live", "--run-live", "потребує --run-live (реальний Bedrock-виклик)"),
-        ("e2e", "--run-e2e", "потребує --run-e2e (браузерний тест)"),
+        ("live", "--run-live", "requires --run-live (real Bedrock call)"),
+        ("e2e", "--run-e2e", "requires --run-e2e (browser test)"),
     ]
     for mark, flag, reason in gates:
         if config.getoption(flag):
@@ -50,10 +51,10 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture
 def app_module(tmp_path, monkeypatch):
-    """Свіжий імпорт app з ІЗОЛЬОВАНИМ attempts.jsonl у tmp.
+    """Fresh import of app with an ISOLATED attempts.jsonl in tmp.
 
-    Перезавантажуємо модуль, щоб глобальний ATTEMPTS_PATH перечитався, і одразу
-    патчимо його на тимчасовий — так лог кожного тесту окремий і порожній.
+    We reload the module so the global ATTEMPTS_PATH is re-read, then immediately
+    patch it to a temporary one — so each test's log is separate and empty.
     """
     import app
     importlib.reload(app)
@@ -63,24 +64,24 @@ def app_module(tmp_path, monkeypatch):
 
 @pytest.fixture
 def client(app_module):
-    """TestClient поверх ізольованого app."""
+    """TestClient on top of the isolated app."""
     from fastapi.testclient import TestClient
     return TestClient(app_module.app, raise_server_exceptions=False)
 
 
 @pytest.fixture(autouse=True)
 def seeded_random():
-    """Фіксуємо random для відтворюваності перемішувань і вибірок."""
+    """Fix random for reproducible shuffles and samples."""
     random.seed(1234)
     yield
 
 
 @pytest.fixture
 def answer_all(app_module):
-    """Хелпер: відповісти на список public-питань заданою стратегією.
+    """Helper: answer a list of public questions with a given strategy.
 
-    strategy(q_raw) -> original_letter. Повертає список вердиктів.
-    Використовує справжній /grade, тож пише в ізольований лог.
+    strategy(q_raw) -> original_letter. Returns a list of verdicts.
+    Uses the real /grade, so it writes to the isolated log.
     """
     from fastapi.testclient import TestClient
     cl = TestClient(app_module.app, raise_server_exceptions=False)

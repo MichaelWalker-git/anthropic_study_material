@@ -1,17 +1,18 @@
 """
-FastAPI-сервер тренажера для іспиту Claude Certified Architect — Foundations.
+FastAPI server for the Claude Certified Architect — Foundations exam trainer.
 
-Архітектурний принцип (нагадування): ядро вікторини — детерміноване. Сервер
-лише роздає питання з questions.json, перемішує їх, звіряє відповідь із полем
-"correct" і пише спробу в attempts.jsonl. Жодного LLM тут немає — модель
-з'являється тільки в окремому генераторі нових питань (generator.py).
+Architectural principle (reminder): the quiz core is deterministic. The server
+only serves questions from questions.json, shuffles them, checks the answer
+against the "correct" field, and writes the attempt to attempts.jsonl. There is
+no LLM here — the model only appears in the separate new-question generator
+(generator.py).
 
-Два режими (відрізняються ЛИШЕ моментом показу правильної відповіді):
-  * practice — фідбек одразу після кожного питання;
-  * exam     — відповіді ховаються до кінця сесії, потім — підсумковий бал.
+Two modes (differing ONLY in when the correct answer is revealed):
+  * practice — feedback immediately after each question;
+  * exam     — answers are hidden until the end of the session, then a final score.
 
-Перемішування варіантів: у банку правильна відповідь часто "A" (33/88), тож
-ми тасуємо порядок варіантів на кожне питання, щоб не можна було вгадати.
+Option shuffling: in the bank the correct answer is often "A" (33/88), so we
+shuffle the option order for every question to prevent guessing.
 """
 
 import json
@@ -26,34 +27,34 @@ from pydantic import BaseModel
 
 BASE_DIR = Path(__file__).resolve().parent
 QUESTIONS_PATH = BASE_DIR / "questions.json"
-# Лог спроб; можна перенаправити через env (зручно для тестів — щоб не чіпати
-# реальний attempts.jsonl користувача).
+# Attempt log; can be redirected via env (handy for tests — to avoid touching
+# the user's real attempts.jsonl).
 ATTEMPTS_PATH = Path(os.getenv("ATTEMPTS_PATH_OVERRIDE", BASE_DIR / "attempts.jsonl"))
 STATIC_DIR = BASE_DIR / "static"
 
-# Кількість питань у симуляції іспиту (реальний іспит — 60; банк має 88).
+# Number of questions in the exam simulation (the real exam has 60; the bank has 88).
 EXAM_QUESTION_COUNT = 60
 
 app = FastAPI(title="Exam Trainer")
 
-# Питання вантажимо один раз на старті — файл маленький, тримати в пам'яті дешево.
+# Load questions once at startup — the file is small, keeping it in memory is cheap.
 QUESTIONS: list[dict] = json.loads(QUESTIONS_PATH.read_text(encoding="utf-8"))
 QUESTIONS_BY_ID: dict[int, dict] = {q["id"]: q for q in QUESTIONS}
 SCENARIOS: list[str] = sorted({q["scenario"] for q in QUESTIONS})
 
 
 def public_question(q: dict, *, shuffle: bool) -> dict:
-    """Готує питання для фронтенду БЕЗ правильної відповіді й пояснення.
+    """Prepares a question for the frontend WITHOUT the correct answer or explanation.
 
-    Правильну відповідь ніколи не віддаємо клієнту наперед — інакше exam-режим
-    втрачає сенс, та й у practice її показуємо тільки після відповіді (окремим
-    запитом на /grade). Варіанти за потреби тасуємо.
+    We never hand the correct answer to the client up front — otherwise exam mode
+    loses its point, and even in practice we only show it after the answer (via a
+    separate request to /grade). Options are shuffled when needed.
     """
     letters = ["A", "B", "C", "D"]
     if shuffle:
         random.shuffle(letters)
-    # Перемальовуємо варіанти на нові позиції A-D, зберігаючи оригінальну літеру,
-    # щоб сервер міг звірити відповідь, не довіряючи клієнту.
+    # Remap the options to new positions A-D, keeping the original letter so the
+    # server can verify the answer without trusting the client.
     options = []
     for new_letter, orig_letter in zip(["A", "B", "C", "D"], letters):
         options.append({
@@ -71,44 +72,44 @@ def public_question(q: dict, *, shuffle: bool) -> dict:
 
 
 class GenerateRequest(BaseModel):
-    scenario: str | None = None     # None = взяти найслабшу тему зі статистики
+    scenario: str | None = None     # None = take the weakest topic from stats
 
 
 class AnswerRecord(BaseModel):
     question_id: int
-    chosen: str                     # original_letter обраного варіанту
+    chosen: str                     # original_letter of the chosen option
 
 
 class DiagnoseRequest(BaseModel):
-    answers: list[AnswerRecord]     # усі відповіді сесії (правильні відсіємо)
+    answers: list[AnswerRecord]     # all session answers (correct ones filtered out)
 
 
 class SessionRequest(BaseModel):
     mode: str = "practice"          # "practice" | "exam"
-    scenario: str | None = None     # фільтр (тільки practice); None = усі
-    count: int | None = None        # скільки питань; None = розумний дефолт
+    scenario: str | None = None     # filter (practice only); None = all
+    count: int | None = None        # how many questions; None = smart default
 
 
 class GradeRequest(BaseModel):
     question_id: int
-    original_letter: str            # оригінальна літера обраного варіанту
+    original_letter: str            # original letter of the chosen option
     mode: str = "practice"
 
 
 @app.get("/api/scenarios")
 def get_scenarios() -> dict:
-    """Список сценаріїв + кількість питань у кожному — для меню вибору."""
+    """List of scenarios + question count for each — for the selection menu."""
     counts = {s: sum(1 for q in QUESTIONS if q["scenario"] == s) for s in SCENARIOS}
     return {"scenarios": SCENARIOS, "counts": counts, "total": len(QUESTIONS)}
 
 
 @app.post("/api/session")
 def start_session(req: SessionRequest) -> dict:
-    """Формує набір питань для сесії (порядок і варіанти перемішані).
+    """Builds the set of questions for a session (order and options shuffled).
 
-    Режим "weak" — добивання слабких місць: зважена вибірка за статистикою
-    помилок з attempts.jsonl (детермінована логіка, без LLM). Зазвичай
-    запускається з екрана результатів після тесту.
+    The "weak" mode drills weak spots: a weighted sample based on error statistics
+    from attempts.jsonl (deterministic logic, no LLM). Usually launched from the
+    results screen after a test.
     """
     pool = QUESTIONS
     if req.scenario:
@@ -131,7 +132,7 @@ def start_session(req: SessionRequest) -> dict:
 
 
 def _question_accuracy() -> dict[int, dict[str, int]]:
-    """Точність по кожному question_id з логу: {id: {attempts, correct}}."""
+    """Accuracy per question_id from the log: {id: {attempts, correct}}."""
     acc: dict[int, dict[str, int]] = {}
     if not ATTEMPTS_PATH.exists():
         return acc
@@ -140,7 +141,7 @@ def _question_accuracy() -> dict[int, dict[str, int]]:
             continue
         rec = json.loads(line)
         qid = rec.get("question_id")
-        if qid is None or qid < 0:  # згенеровані питання (id=-1) ігноруємо
+        if qid is None or qid < 0:  # ignore generated questions (id=-1)
             continue
         b = acc.setdefault(qid, {"attempts": 0, "correct": 0})
         b["attempts"] += 1
@@ -149,25 +150,26 @@ def _question_accuracy() -> dict[int, dict[str, int]]:
 
 
 def _pick_weak(pool: list[dict], count: int) -> list[dict]:
-    """Зважена вибірка без повторів: пріоритет — питання з низькою точністю.
+    """Weighted sampling without replacement: prioritize low-accuracy questions.
 
-    Вага = (частка помилок) + базовий бонус. Непобачені питання (немає в логу)
-    отримують високу вагу — невідоме теж є слабким місцем, інакше тренажер
-    застрягне на кількох провалених і ніколи не покаже решту.
+    Weight = (error rate) + a base bonus. Unseen questions (not in the log) get a
+    high weight — the unknown is also a weak spot, otherwise the trainer would get
+    stuck on a few failed ones and never show the rest.
     """
     acc = _question_accuracy()
     weights = []
     for q in pool:
         stat = acc.get(q["id"])
         if stat is None or stat["attempts"] == 0:
-            w = 1.0  # ще не бачили — високий пріоритет
+            w = 1.0  # not seen yet — high priority
         else:
             error_rate = 1 - stat["correct"] / stat["attempts"]
-            w = 0.15 + error_rate  # базовий шанс + штраф за помилки
+            w = 0.15 + error_rate  # base chance + penalty for errors
         weights.append(w)
 
     count = max(1, min(count, len(pool)))
-    # Вибір без повторів пропорційно вазі (random.choices — з повторами, тому so):
+    # Sampling without replacement, proportional to weight (random.choices samples
+    # with replacement, hence the manual loop):
     chosen: list[dict] = []
     candidates = list(zip(pool, weights))
     for _ in range(count):
@@ -185,11 +187,11 @@ def _pick_weak(pool: list[dict], count: int) -> list[dict]:
 
 @app.post("/api/grade")
 def grade(req: GradeRequest) -> dict:
-    """Звіряє одну відповідь, логує спробу й повертає вердикт + пояснення.
+    """Checks one answer, logs the attempt, and returns the verdict + explanation.
 
-    Працює для обох режимів: practice показує результат фронтенду одразу, exam
-    накопичує їх і показує лише наприкінці — але логіка звірки та логування
-    однакова, відрізняється тільки поведінка UI.
+    Works for both modes: practice shows the result to the frontend immediately,
+    exam accumulates them and shows them only at the end — but the checking and
+    logging logic is the same, only the UI behavior differs.
     """
     q = QUESTIONS_BY_ID.get(req.question_id)
     if q is None:
@@ -200,8 +202,9 @@ def grade(req: GradeRequest) -> dict:
                  chosen=req.original_letter, correct=q["correct"],
                  is_correct=is_correct, mode=req.mode)
 
-    # Пояснення саме обраного варіанту — є лише в питаннях з mock-exam
-    # (поле "explanations" з поясненням до кожної опції). Для guide-питань None.
+    # Explanation for the specifically chosen option — only present in mock-exam
+    # questions (the "explanations" field with an explanation for each option).
+    # None for guide questions.
     chosen_why = None
     if not is_correct:
         chosen_why = (q.get("explanations") or {}).get(req.original_letter)
@@ -217,10 +220,11 @@ def grade(req: GradeRequest) -> dict:
 
 
 def _log_attempt(**fields) -> None:
-    """Дописує одну спробу в attempts.jsonl (append-only, JSON-native).
+    """Appends one attempt to attempts.jsonl (append-only, JSON-native).
 
-    Свідомо БЕЗ часу: Date/random у деяких середовищах недоступні, та й для
-    однокористувацького тренажера порядок рядків у файлі вже = хронологія.
+    Deliberately WITHOUT a timestamp: Date/random aren't available in some
+    environments, and for a single-user trainer the line order in the file already
+    equals the chronology.
     """
     with ATTEMPTS_PATH.open("a", encoding="utf-8") as f:
         f.write(json.dumps(fields, ensure_ascii=False) + "\n")
@@ -228,9 +232,10 @@ def _log_attempt(**fields) -> None:
 
 @app.get("/api/stats")
 def stats() -> dict:
-    """Агрегує attempts.jsonl у точність по сценаріях (для 'найслабшої теми').
+    """Aggregates attempts.jsonl into per-scenario accuracy (for the 'weakest topic').
 
-    Групування робимо в Python — на сотнях рядків це миттєво, і не тягне SQLite.
+    We do the grouping in Python — on hundreds of lines it's instant, and it doesn't
+    pull in SQLite.
     """
     if not ATTEMPTS_PATH.exists():
         return {"total": 0, "by_scenario": {}}
@@ -269,11 +274,11 @@ def stats() -> dict:
 
 @app.post("/api/generate")
 def generate(req: GenerateRequest) -> dict:
-    """Генерує НОВЕ питання через Sonnet (єдиний LLM-виклик у застосунку).
+    """Generates a NEW question via Sonnet (the only LLM call in the app).
 
-    Імпорт відкладено всередину функції: ядро вікторини має працювати навіть
-    без налаштованого Bedrock-ключа — модель потрібна тільки для цієї кнопки.
-    Якщо scenario не задано — беремо найслабшу тему з накопиченої статистики.
+    The import is deferred inside the function: the quiz core must work even
+    without a configured Bedrock key — the model is only needed for this button.
+    If scenario is not specified, we take the weakest topic from accumulated stats.
     """
     scenario = req.scenario
     if scenario is None:
@@ -283,11 +288,11 @@ def generate(req: GenerateRequest) -> dict:
     try:
         from generator import generate_question
         q = generate_question(scenario)
-    except Exception as exc:  # noqa: BLE001 — повертаємо причину фронтенду
+    except Exception as exc:  # noqa: BLE001 — return the reason to the frontend
         raise HTTPException(502, f"Generation failed: {exc}")
 
-    # Віддаємо у вигляді public_question + одразу answer key (це тренувальне
-    # питання поза банком; зберігати його в questions.json не обов'язково).
+    # Return it as a public_question + the answer key right away (this is a practice
+    # question outside the bank; storing it in questions.json is not required).
     pub = public_question({**q, "id": -1}, shuffle=True)
     pub["correct_original_letter"] = q["correct"]
     pub["why"] = q["why"]
@@ -296,16 +301,16 @@ def generate(req: GenerateRequest) -> dict:
 
 @app.post("/api/diagnose")
 def diagnose_endpoint(req: DiagnoseRequest) -> dict:
-    """Агент-діагност: аналізує помилки сесії й рекомендує тему (2-й LLM).
+    """Diagnostician agent: analyzes session mistakes and recommends a topic (2nd LLM).
 
-    Фронтенд шле лише id + обраний варіант; повні тексти провалених питань
-    відновлюємо тут із банку (клієнту їх віддавати наперед не можна).
+    The frontend sends only id + chosen option; we reconstruct the full text of the
+    failed questions here from the bank (they must not be handed to the client up front).
     """
     wrong = []
     for a in req.answers:
         q = QUESTIONS_BY_ID.get(a.question_id)
         if q is None or a.chosen == q["correct"]:
-            continue  # пропускаємо невідомі та правильні
+            continue  # skip unknown and correct ones
         wrong.append({
             "scenario": q["scenario"],
             "situation": q["situation"],
@@ -323,7 +328,7 @@ def diagnose_endpoint(req: DiagnoseRequest) -> dict:
         raise HTTPException(502, f"Diagnosis failed: {exc}")
 
 
-# --- Статика: фронтенд. Монтуємо в кінці, щоб не перекривати /api/*. ---
+# --- Static: the frontend. Mounted at the end so it doesn't shadow /api/*. ---
 @app.get("/")
 def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")

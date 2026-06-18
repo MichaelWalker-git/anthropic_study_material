@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,30 +12,30 @@
     <span class="sub">Claude Certified Architect — Foundations</span>
   </header>
 
-  <!-- Екран налаштування сесії -->
+  <!-- Session setup screen -->
   <section id="setup" class="card">
-    <h2>Нова сесія</h2>
-    <label>Режим
+    <h2>New session</h2>
+    <label>Mode
       <select id="mode">
-        <option value="practice">Practice — один сценарій</option>
-        <option value="exam">Exam — 60 питань з усіх</option>
+        <option value="practice">Practice — single scenario</option>
+        <option value="exam">Exam — 60 questions from all</option>
       </select>
     </label>
-    <label id="scenario-row">Сценарій
-      <select id="scenario"><option value="">Усі сценарії</option></select>
+    <label id="scenario-row">Scenario
+      <select id="scenario"><option value="">All scenarios</option></select>
     </label>
-    <label class="checkbox"><input type="checkbox" id="instant-feedback" /> Показувати відповідь одразу</label>
+    <label class="checkbox"><input type="checkbox" id="instant-feedback" /> Show answer immediately</label>
     <div class="actions">
-      <button id="start">Почати</button>
+      <button id="start">Start</button>
     </div>
     <div id="resume-row" class="muted hidden">
-      <button id="resume" class="secondary">↩ Продовжити збережену сесію</button>
+      <button id="resume" class="secondary">↩ Resume saved session</button>
       <span id="resume-info"></span>
     </div>
     <div id="stats-summary" class="muted"></div>
   </section>
 
-  <!-- Екран питання -->
+  <!-- Question screen -->
   <section id="quiz" class="card hidden">
     <div class="progress"><span id="progress-text"></span> · <span id="scenario-tag"></span></div>
     <p id="situation" class="situation"></p>
@@ -43,30 +43,30 @@
     <div id="options"></div>
     <div id="feedback" class="feedback hidden"></div>
     <div class="actions">
-      <button id="prev" class="secondary hidden">← Назад</button>
-      <button id="submit" disabled>Відповісти</button>
-      <button id="next" class="hidden">Далі →</button>
+      <button id="prev" class="secondary hidden">← Back</button>
+      <button id="submit" disabled>Answer</button>
+      <button id="next" class="hidden">Next →</button>
     </div>
 
-    <!-- Навігатор питань (унизу): номери з підсвіткою стану, клік = перехід -->
+    <!-- Question navigator (bottom): numbers with state highlighting, click = jump -->
     <nav id="nav" class="nav">
       <div class="nav-head">
-        <span>Питання</span>
+        <span>Questions</span>
         <span id="nav-legend" class="nav-legend"></span>
       </div>
       <div id="nav-grid" class="nav-grid"></div>
     </nav>
   </section>
 
-  <!-- Екран результатів -->
+  <!-- Results screen -->
   <section id="results" class="card hidden">
-    <h2>Результат</h2>
+    <h2>Result</h2>
     <div id="score"></div>
     <div id="breakdown"></div>
     <div class="actions">
-      <button id="diagnose" class="secondary">🧠 Розбір помилок (AI)</button>
-      <button id="drill-weak">🎯 Підтягнути слабкі місця</button>
-      <button id="restart" class="secondary">Нова сесія</button>
+      <button id="diagnose" class="secondary">🧠 Review mistakes (AI)</button>
+      <button id="drill-weak">🎯 Drill weak areas</button>
+      <button id="restart" class="secondary">New session</button>
     </div>
     <div id="diagnosis" class="diagnosis hidden"></div>
   </section>

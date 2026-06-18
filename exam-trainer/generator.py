@@ -1,20 +1,20 @@
 """
-Генератор НОВИХ екзаменаційних питань — єдине місце в проєкті, де працює LLM.
+Generator of NEW exam questions — the only place in the project where the LLM runs.
 
-Чому саме тут (і ніде більше): 88 питань банку — скінченні, їх можна просто
-завчити. Згенерувати свіже питання в тому ж стилі — це те, чого детермінований
-код зробити не може. Це справжня RAG-задача: модель читає релевантний шматок
-гайда і видає структурований MCQ.
+Why here (and nowhere else): the 88 bank questions are finite, you can just
+memorize them. Generating a fresh question in the same style is something that
+deterministic code cannot do. This is a genuine RAG task: the model reads a
+relevant chunk of the guide and emits a structured MCQ.
 
-Патерн "generate -> validate" (той самий, що в Capital Group pipeline):
-  1. Sonnet через Bedrock з ПРИМУСОВИМ tool_use — модель мусить повернути JSON
-     за схемою (stem, 4 варіанти, індекс правильного, пояснення).
-  2. Детермінована перевірка в коді: рівно 4 варіанти, рівно одна правильна,
-     відповідь не "протікає" в тексті питання, сценарій валідний.
-  3. Якщо перевірка не пройшла — один ретрай зі скаргою. Це не другий LLM-суддя:
-     структурні дефекти ловлять прості if-и, а не ще одна модель.
+The "generate -> validate" pattern (the same one as in the Capital Group pipeline):
+  1. Sonnet via Bedrock with FORCED tool_use — the model must return JSON
+     matching the schema (stem, 4 options, index of the correct one, explanation).
+  2. Deterministic validation in code: exactly 4 options, exactly one correct,
+     the answer does not "leak" into the question text, the scenario is valid.
+  3. If validation fails — one retry with a complaint. This is not a second LLM
+     judge: structural defects are caught by simple ifs, not another model.
 
-Запуск окремо (для дебагу):
+Run standalone (for debugging):
     uv run python generator.py "Multi-agent Research System"
 """
 
@@ -26,19 +26,19 @@ from pathlib import Path
 from anthropic import AnthropicBedrock
 from dotenv import load_dotenv
 
-# .env лежить на рівень вище (learning/.env) — спільний для всіх уроків.
+# .env sits one level up (learning/.env) — shared across all lessons.
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR.parent / ".env")
 
 QUESTIONS_PATH = BASE_DIR / "questions.json"
 
-# Sonnet — бо якість питання (рівно одна захищувано-правильна відповідь,
-# правдоподібні дистрактори) важливіша за ціну, а це кнопка on-demand.
+# Sonnet — because question quality (exactly one defensibly correct answer,
+# plausible distractors) matters more than cost, and this is an on-demand button.
 MODEL = "us.anthropic.claude-sonnet-4-6"
 
-# Сценарії та приклади-контекст беремо з ЗІБРАНОГО банку (questions.json), а не
-# з гайда: банк зливає кілька джерел, тож у ньому є всі сценарії (зокрема ті,
-# яких у guide_en.MD немає). Це усуває розсинхрон назв сценаріїв.
+# We take scenarios and example context from the ASSEMBLED bank (questions.json),
+# not from the guide: the bank merges several sources, so it has all scenarios
+# (including ones absent from guide_en.MD). This eliminates scenario-name drift.
 _BANK_CACHE: list[dict] | None = None
 
 
@@ -52,7 +52,7 @@ def _bank() -> list[dict]:
 def valid_scenarios() -> set[str]:
     return {q["scenario"] for q in _bank()}
 
-# JSON-схема інструмента: модель ЗОБОВ'ЯЗАНА повернути саме таку структуру.
+# Tool's JSON schema: the model is REQUIRED to return exactly this structure.
 QUESTION_TOOL = {
     "name": "emit_question",
     "description": "Return exactly one multiple-choice exam question in the required structure.",
@@ -90,11 +90,11 @@ QUESTION_TOOL = {
 }
 
 def _bank_excerpt(scenario: str, max_examples: int = 4) -> str:
-    """Формує приклади-контекст для RAG з реальних питань цього сценарію в банку.
+    """Builds RAG example context from real questions of this scenario in the bank.
 
-    Беремо кілька існуючих питань як зразок стилю/складності, щоб модель
-    відтворила формат. Приклади йдуть із зібраного banku, тож працюють для
-    БУДЬ-ЯКОГО сценарію, наявного в questions.json.
+    We take a few existing questions as a sample of style/difficulty so the model
+    reproduces the format. The examples come from the assembled bank, so they work
+    for ANY scenario present in questions.json.
     """
     examples = [q for q in _bank() if q["scenario"] == scenario][:max_examples]
     blocks = []
@@ -128,7 +128,7 @@ def _build_prompt(scenario: str, excerpt: str, complaint: str | None) -> str:
 
 
 def _validate(q: dict) -> str | None:
-    """Детермінована перевірка. Повертає текст скарги або None, якщо все гаразд."""
+    """Deterministic validation. Returns a complaint string, or None if all is fine."""
     opts = q.get("options", [])
     if len(opts) != 4:
         return f"expected 4 options, got {len(opts)}"
@@ -139,8 +139,8 @@ def _validate(q: dict) -> str | None:
         return "correct_index must be 0-3"
     if not q.get("prompt", "").strip().endswith("?"):
         return "prompt must end with a question mark"
-    # Перевірка на "протікання" відповіді: текст правильного варіанту не має
-    # дослівно зустрічатись у питанні.
+    # Answer "leak" check: the correct option's text must not appear verbatim
+    # in the question.
     correct_text = opts[idx].strip().lower()
     if correct_text and correct_text in q.get("prompt", "").lower():
         return "the correct answer text appears in the prompt (leak)"
@@ -148,7 +148,7 @@ def _validate(q: dict) -> str | None:
 
 
 def generate_question(scenario: str, max_retries: int = 1) -> dict:
-    """Генерує одне валідоване питання. Кидає RuntimeError, якщо не вдалось."""
+    """Generates one validated question. Raises RuntimeError if it fails."""
     if scenario not in valid_scenarios():
         raise ValueError(f"Unknown scenario: {scenario}")
 
@@ -172,7 +172,7 @@ def generate_question(scenario: str, max_retries: int = 1) -> dict:
         q = tool_use.input
         complaint = _validate(q)
         if complaint is None:
-            # Приводимо до того ж формату, що й банк (літери A-D).
+            # Convert to the same format as the bank (letters A-D).
             letters = ["A", "B", "C", "D"]
             return {
                 "scenario": scenario,

@@ -1,13 +1,13 @@
 """
-E2E браузерний тест навігації між питаннями (@e2e — лише з --run-e2e).
+E2E browser test of navigation between questions (@e2e — only with --run-e2e).
 
-Це вершина піраміди: дорогий, повільний, але єдиний, що перевіряє РЕАЛЬНУ
-поведінку фронтенду в браузері. Інструментальні/контрактні тести нижче не
-бачать DOM, тож саме сюди винесено перевірку фіксів навігації:
-  * після "Назад" видно обраний варіант;
-  * літери у фідбеку узгоджені з підсвіткою (варіанти перемішані).
+This is the top of the pyramid: expensive, slow, but the only one that checks the
+REAL frontend behavior in a browser. The instrumental/contract tests below don't
+see the DOM, so the navigation-fix checks are placed here:
+  * after "Back" the chosen option is visible;
+  * feedback letters are consistent with the highlight (options are shuffled).
 
-Потребує: Chrome у /Applications, Node, puppeteer-core (ставиться разово).
+Requires: Chrome in /Applications, Node, puppeteer-core (installed once).
 """
 
 import json
@@ -34,7 +34,7 @@ def _free_port() -> int:
 
 
 def _puppeteer_path() -> str | None:
-    """Шукає puppeteer-core; повертає шлях до ESM-входу або None."""
+    """Looks for puppeteer-core; returns the path to the ESM entry or None."""
     for base in [APP_DIR / "node_modules", Path("/tmp/node_modules")]:
         entry = base / "puppeteer-core" / "lib" / "esm" / "puppeteer" / "puppeteer-core.js"
         if entry.exists():
@@ -44,21 +44,21 @@ def _puppeteer_path() -> str | None:
 
 @pytest.fixture
 def server(tmp_path):
-    """Піднімає uvicorn з ІЗОЛЬОВАНИМ attempts.jsonl на вільному порту."""
+    """Starts uvicorn with an ISOLATED attempts.jsonl on a free port."""
     if not Path("/Applications/Google Chrome.app").exists():
-        pytest.skip("Chrome не знайдено")
+        pytest.skip("Chrome not found")
     if shutil.which("node") is None:
-        pytest.skip("Node не знайдено")
+        pytest.skip("Node not found")
 
     port = _free_port()
-    # КРИТИЧНО: передаємо override у середовище subprocess, інакше сервер пише
-    # в реальний attempts.jsonl користувача (саме цей баг тут і ховався).
+    # CRITICAL: pass the override into the subprocess environment, otherwise the
+    # server writes to the user's real attempts.jsonl (this is the bug that hid here).
     env = {**os.environ, "ATTEMPTS_PATH_OVERRIDE": str(tmp_path / "attempts.jsonl")}
     proc = subprocess.Popen(
         ["uv", "run", "uvicorn", "app:app", "--port", str(port)],
         cwd=APP_DIR, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
-    # Чекаємо готовності.
+    # Wait until ready.
     base = f"http://127.0.0.1:{port}/"
     import urllib.request
     for _ in range(50):
@@ -69,7 +69,7 @@ def server(tmp_path):
             time.sleep(0.2)
     else:
         proc.terminate()
-        pytest.fail("сервер не піднявся")
+        pytest.fail("server did not start")
     yield base
     proc.terminate()
     proc.wait(timeout=10)
@@ -78,7 +78,7 @@ def server(tmp_path):
 def test_back_navigation_shows_selection_and_consistent_letters(server):
     pup = _puppeteer_path()
     if pup is None:
-        pytest.skip("puppeteer-core не встановлено (npm i puppeteer-core)")
+        pytest.skip("puppeteer-core not installed (npm i puppeteer-core)")
 
     out = subprocess.run(
         ["node", str(DRIVER), server, pup],
@@ -88,19 +88,19 @@ def test_back_navigation_shows_selection_and_consistent_letters(server):
     result = json.loads(out.stdout.strip().splitlines()[-1])
     assert result["ok"], result.get("error")
 
-    # Фікс №1: після "Назад" обраний варіант видно.
-    assert result["selectedVisible"], "обраний варіант має бути підсвічений після 'Назад'"
+    # Fix #1: after "Back" the chosen option is visible.
+    assert result["selectedVisible"], "the chosen option should be highlighted after 'Back'"
     assert result["selectedLetter"] == "B"
     assert result["feedbackVisible"]
-    assert result["submitHidden"], "у режимі перегляду 'Відповісти' приховано"
+    assert result["submitHidden"], "in review mode 'Answer' is hidden"
 
-    # Фікс №2: літера у тексті фідбеку == підсвічена кнопка.
+    # Fix #2: the letter in the feedback text == the highlighted button.
     assert result["correctHighlighted"] == result["correctInText"], \
-        "літера правильної у тексті має збігатися з підсвіченою кнопкою"
+        "the correct letter in the text should match the highlighted button"
 
-    # Навігатор: сітка є, питання 1 пройдене (пофарбоване) і позначене поточним.
-    assert result["navCellCount"] > 1, "навігатор має показувати номери питань"
-    assert result["cell1Colored"], "пройдене питання в навігаторі має бути зелене/червоне"
-    assert result["cell1IsCurrent"], "поточне питання має бути позначене в навігаторі"
-    # Клік по номеру в навігаторі переходить на те питання.
+    # Navigator: the grid exists, question 1 is done (colored) and marked current.
+    assert result["navCellCount"] > 1, "the navigator should show question numbers"
+    assert result["cell1Colored"], "a completed question in the navigator should be green/red"
+    assert result["cell1IsCurrent"], "the current question should be marked in the navigator"
+    # Clicking a number in the navigator jumps to that question.
     assert result["navClickWorks"]

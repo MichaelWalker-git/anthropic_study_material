@@ -1,103 +1,106 @@
 # Exam Trainer
 
-Локальний тренажер для іспиту **Claude Certified Architect — Foundations**.
+A local trainer for the **Claude Certified Architect — Foundations** exam.
 
-## Що це
+## What this is
 
-Веб-застосунок для тренування на банку з **457 питань** (усі з правильними
-відповідями). Ядро вікторини — детерміноване (парсинг + звірка), без LLM. Єдиний
-LLM-виклик — кнопка «✨ Нове питання (AI)», що генерує свіже питання через
+A web application for practicing against a bank of **457 questions** (all with correct
+answers). The quiz core is deterministic (parsing + verification), no LLM. The only
+LLM call is the "✨ New question (AI)" button, which generates a fresh question via
 Sonnet (Bedrock).
 
-> **Джерела банку (збираються `build_bank.py`):**
-> 1. `mock-exam` (TS-проєкт у `anthropic_study_material/`) — 376 питань, 6
->    сценаріїв, з тегом домену й поясненням до КОЖНОГО варіанту.
-> 2. `guide_en.MD` — 88 питань (12 з `Examples` + 76 з `Practice Test`); після
->    дедуплікації додається 81 унікальне (7 збігаються з mock-exam).
+> **Bank sources (assembled by `build_bank.py`):**
+> 1. `mock-exam` (the TS project in `anthropic_study_material/`) — 376 questions, 6
+>    scenarios, with a domain tag and an explanation for EVERY option.
+> 2. `guide_en.MD` — 88 questions (12 from `Examples` + 76 from `Practice Test`); after
+>    deduplication, 81 unique ones are added (7 overlap with mock-exam).
 >
-> Скриншоти в `../../screens/` НЕ використовуються — це той самий guide-банк,
-> відрендерений в інтерфейсі іспиту, без правильних відповідей.
+> The screenshots in `../../screens/` are NOT used — they are the same guide bank
+> rendered in the exam UI, without correct answers.
 
-## Запуск
+## Running
 
 ```bash
 cd learning/exam-trainer
-uv sync                                       # один раз
-uv run python build_bank.py                   # обидва джерела -> questions.json (457 питань)
-uv run uvicorn app:app --reload --port 8000   # сервер
-# відкрий http://localhost:8000
+uv sync                                       # once
+uv run python build_bank.py                   # both sources -> questions.json (457 questions)
+uv run uvicorn app:app --reload --port 8000   # server
+# open http://localhost:8000
 ```
 
-Генерація питань потребує `AWS_BEARER_TOKEN_BEDROCK` у `learning/.env` (уже є).
-Решта (practice / exam / статистика) працює і без ключа.
+Question generation requires `AWS_BEARER_TOKEN_BEDROCK` in `learning/.env` (already
+present). Everything else (practice / exam / stats) works without a key.
 
-## Структура
+## Structure
 
-| Файл | Роль |
+| File | Role |
 |---|---|
-| `build_bank.py` | збирає `questions.json` з обох джерел (mock-exam + guide), дедуплікує |
-| `parse_guide.py` | парсер гайда (використовується `build_bank.py`) |
-| `app.py` | FastAPI-сервер: роздає питання, звіряє, логує спроби |
-| `generator.py` | агент-генератор: Sonnet створює нові питання (generate → validate) |
-| `diagnostician.py` | агент-діагност: Sonnet аналізує помилки сесії, рекомендує тему |
-| `static/` | тонкий vanilla-JS фронтенд (3 екрани: налаштування → питання → результат) |
-| `questions.json` | згенерований банк (не редагувати руками — перегенерувати парсером) |
-| `attempts.jsonl` | append-only лог спроб (видали файл, щоб скинути статистику) |
+| `build_bank.py` | assembles `questions.json` from both sources (mock-exam + guide), deduplicates |
+| `parse_guide.py` | guide parser (used by `build_bank.py`) |
+| `app.py` | FastAPI server: serves questions, grades, logs attempts |
+| `generator.py` | generator agent: Sonnet creates new questions (generate → validate) |
+| `diagnostician.py` | diagnostician agent: Sonnet analyzes session mistakes, recommends a topic |
+| `static/` | thin vanilla-JS frontend (3 screens: setup → question → result) |
+| `questions.json` | generated bank (do not edit by hand — regenerate with the parser) |
+| `attempts.jsonl` | append-only log of attempts (delete the file to reset stats) |
 
-## Тести
+## Tests
 
-Піраміда: швидке детерміноване ядро внизу, дорогі LLM/браузер — зверху, за прапором.
+Pyramid: a fast deterministic core at the bottom, expensive LLM/browser tests on top, behind a flag.
 
 ```bash
-uv run pytest                 # 61 детермінований тест, ~3с, без мережі й без LLM
-uv run pytest --run-live      # + 2 живі Bedrock-тести (генератор, діагност) — платно
-uv run pytest --run-e2e       # + браузерний тест навігації (Chrome + puppeteer-core)
+uv run pytest                 # 61 deterministic tests, ~3s, no network and no LLM
+uv run pytest --run-live      # + 2 live Bedrock tests (generator, diagnostician) — paid
+uv run pytest --run-e2e       # + browser navigation test (Chrome + puppeteer-core)
 ```
 
-| Файл | Що покриває |
+| File | What it covers |
 |---|---|
-| `test_bank_integrity.py` | інваріанти даних: 4 унікальні варіанти, рівно одна правильна, без витоку |
-| `test_api_core.py` | контракт /session, /grade; **ключ ніколи не тече клієнту**; перемішування |
-| `test_stats_and_weak.py` | агрегація точності, найслабша тема, зважена вибірка (статистичний тест) |
-| `test_generator.py` | валідація + ретрай (Bedrock замокано); `@live` — реальна генерація |
-| `test_diagnostician.py` | handoff-guard, відновлення провалених питань; `@live` — реальний діагноз |
-| `test_build_bank.py` | парсинг, нормалізація назв сценаріїв, дедуплікація |
-| `test_e2e_navigation.py` | `@e2e` — "Назад" показує вибір, узгодженість літер (реальний браузер) |
+| `test_bank_integrity.py` | data invariants: 4 unique options, exactly one correct, no leaks |
+| `test_api_core.py` | /session, /grade contract; **the key never leaks to the client**; shuffling |
+| `test_stats_and_weak.py` | accuracy aggregation, weakest topic, weighted sampling (statistical test) |
+| `test_generator.py` | validation + retry (Bedrock mocked); `@live` — real generation |
+| `test_diagnostician.py` | handoff guard, recovery of failed questions; `@live` — real diagnosis |
+| `test_build_bank.py` | parsing, scenario name normalization, deduplication |
+| `test_e2e_navigation.py` | `@e2e` — "Back" shows the selection, letter consistency (real browser) |
 
-Ізоляція: кожен тест дістає тимчасовий `attempts.jsonl` (через `ATTEMPTS_PATH_OVERRIDE`),
-тож реальна статистика ніколи не чіпається. `random` сідається для відтворюваності.
+Isolation: each test gets a temporary `attempts.jsonl` (via `ATTEMPTS_PATH_OVERRIDE`),
+so the real stats are never touched. `random` is seeded for reproducibility.
 
-Для E2E разово: `npm install puppeteer-core` у папці проєкту (або в `/tmp`).
+For E2E, once: `npm install puppeteer-core` in the project folder (or in `/tmp`).
 
-## Режими
+## Modes
 
-- **Practice** — один сценарій (або всі); за замовч. фідбек одразу.
-- **Exam** — 60 питань з усіх сценаріїв; за замовч. бал у кінці.
+- **Practice** — a single scenario (or all); feedback shown immediately by default.
+- **Exam** — 60 questions from all scenarios; score shown at the end by default.
 
-**Галочка «показувати відповідь одразу»** керує фідбеком ОКРЕМО від режиму — тож
-можна скласти екзам із миттєвими відповідями, або practice з відкладеними. Набір
-питань (екзам vs сценарій) і момент показу відповіді — це дві незалежні осі.
+**The "show answer immediately" checkbox** controls feedback SEPARATELY from the mode —
+so you can take an exam with instant answers, or practice with deferred ones. The
+question set (exam vs scenario) and the moment the answer is revealed are two
+independent axes.
 
-**Продовжити сесію:** не-екзам сесії зберігаються в браузері (`localStorage`),
-тож після перезавантаження на стартовому екрані з'являється кнопка «↩ Продовжити».
-Екзам навмисно НЕ зберігається (імітує реальний іспит без пауз).
+**Resume a session:** non-exam sessions are saved in the browser (`localStorage`),
+so after a reload an "↩ Resume" button appears on the start screen. Exams are
+deliberately NOT saved (this mimics a real exam without pauses).
 
-Варіанти перемішуються на кожне питання.
+Options are shuffled for each question.
 
-**Навігація:** кнопки «← Назад» / «Далі →» дозволяють повертатись на вже пройдені
-питання. У practice (фідбек одразу) перегляд показує твій вибір, правильну
-відповідь і пояснення. В exam перегляд дозволяє ЗМІНИТИ вибір, не розкриваючи
-правильність (як на реальному іспиті).
+**Navigation:** the "← Back" / "Next →" buttons let you return to questions you've
+already done. In practice (immediate feedback), the review shows your choice, the
+correct answer, and the explanation. In exam mode, the review lets you CHANGE your
+choice without revealing whether it's correct (as on a real exam).
 
-## Два агенти (multi-agent з handoff)
+## Two agents (multi-agent with handoff)
 
-На екрані результатів — приклад того самого патерну, що в Capital Group:
-кожен агент має одну відповідальність, передача даних структурована.
+On the results screen — an example of the same pattern used at Capital Group:
+each agent has a single responsibility, and the data handoff is structured.
 
-1. **🧠 Розбір помилок** (`diagnostician.py`) — Sonnet аналізує ПАТЕРН твоїх
-   помилок (які концепти системно плутаєш), пише висновок і рекомендує тему.
-2. **✨ Генерація** (`generator.py`) — Sonnet створює свіже питання. Handoff:
-   діагност рекомендує сценарій → кнопка генерує питання саме на нього.
+1. **🧠 Mistake review** (`diagnostician.py`) — Sonnet analyzes the PATTERN of your
+   mistakes (which concepts you systematically confuse), writes a conclusion, and
+   recommends a topic.
+2. **✨ Generation** (`generator.py`) — Sonnet creates a fresh question. Handoff:
+   the diagnostician recommends a scenario → the button generates a question
+   specifically for it.
 
-Межа дизайну: підбір слабких питань — це КОД (`weak`-режим, статистика). LLM
-застосовуємо лише там, де код не може: генерувати нове й діагностувати *чому*.
+Design boundary: selecting weak questions is CODE (the `weak` mode, statistics). We
+apply the LLM only where code cannot: generating something new and diagnosing *why*.

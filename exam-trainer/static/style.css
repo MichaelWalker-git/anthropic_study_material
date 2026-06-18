@@ -4,7 +4,7 @@
   --ink: #1a1a1a;
   --muted: #6b7280;
   --line: #e5e7eb;
-  --accent: #c15f3c;     /* теплий "anthropic"-помаранчевий */
+  --accent: #c15f3c;     /* warm "anthropic" orange */
   --ok: #15803d;
   --bad: #b91c1c;
 }
@@ -125,7 +125,7 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
 th { color: var(--muted); font-weight: 600; }
 
-/* --- Навігатор питань (унизу екрана питання) --- */
+/* --- Question navigator (bottom of the question screen) --- */
 .nav {
   margin-top: 22px;
   padding-top: 16px;
@@ -158,13 +158,13 @@ th { color: var(--muted); font-weight: 600; }
   cursor: pointer;
 }
 .nav-cell:hover:not(:disabled) { border-color: var(--accent); filter: none; }
-.nav-cell.nav-answered { background: #e7eaf0; border-color: #c7ccd6; }   /* exam: нейтрально */
+.nav-cell.nav-answered { background: #e7eaf0; border-color: #c7ccd6; }   /* exam: neutral */
 .nav-cell.nav-correct  { background: #ecfdf3; border-color: var(--ok); color: var(--ok); }
 .nav-cell.nav-wrong    { background: #fef2f2; border-color: var(--bad); color: var(--bad); }
 .nav-cell.nav-current  { outline: 2px solid var(--accent); outline-offset: 1px; }
 .nav-cell.nav-locked   { opacity: 0.4; cursor: not-allowed; }
 
-/* Легенда */
+/* Legend */
 .nav-legend { display: flex; align-items: center; gap: 6px; font-weight: 400; }
 .nav-legend .lg {
   display: inline-block; width: 12px; height: 12px; border-radius: 3px;

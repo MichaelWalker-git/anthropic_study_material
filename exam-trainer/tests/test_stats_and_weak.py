@@ -1,9 +1,9 @@
 """
-Статистика (/api/stats) і вибірка слабких місць (mode="weak").
+Statistics (/api/stats) and weak-spot sampling (mode="weak").
 
-Тут живуть тонкі баги: агрегація точності, визначення найслабшої теми,
-зважування вибірки, відсутність дублів. Перевіряємо і логіку, і РОЗПОДІЛ
-(статистичний тест на достатній вибірці).
+Subtle bugs live here: accuracy aggregation, weakest-topic detection, sample
+weighting, absence of duplicates. We check both the logic and the DISTRIBUTION
+(a statistical test over a large enough sample).
 """
 
 import json
@@ -12,7 +12,7 @@ import pytest
 
 
 def _seed_log(app_module, records):
-    """Записує сирі рядки спроб у ізольований attempts.jsonl."""
+    """Writes raw attempt lines into the isolated attempts.jsonl."""
     with app_module.ATTEMPTS_PATH.open("w", encoding="utf-8") as f:
         for r in records:
             f.write(json.dumps(r) + "\n")
@@ -65,7 +65,7 @@ def test_weak_session_returns_requested_count(client):
 def test_weak_session_no_duplicates(client):
     body = client.post("/api/session", json={"mode": "weak", "count": 15}).json()
     ids = [q["id"] for q in body["questions"]]
-    assert len(ids) == len(set(ids)), "у weak-сесії не має бути повторів"
+    assert len(ids) == len(set(ids)), "a weak session must have no repeats"
 
 
 def test_weak_count_clamped_to_pool(client, app_module):
@@ -77,7 +77,7 @@ def test_weak_count_clamped_to_pool(client, app_module):
 
 
 def test_question_accuracy_ignores_generated(app_module):
-    """Згенеровані питання (id<0) не потрапляють у статистику точності."""
+    """Generated questions (id<0) do not enter accuracy statistics."""
     _seed_log(app_module, [
         {"question_id": -1, "scenario": "Gen", "is_correct": False},
         {"question_id": 1, "scenario": "S", "is_correct": True},
@@ -88,12 +88,12 @@ def test_question_accuracy_ignores_generated(app_module):
 
 
 def test_weak_weighting_favors_failed_questions(client, app_module, monkeypatch):
-    """СТАТИСТИЧНИЙ тест: за багато прогонів провалені питання вибираються
-    частіше за стабільно правильні. Це суть фічі — перевіряємо розподіл,
-    а не одну вибірку.
+    """STATISTICAL test: over many runs, failed questions are picked more often
+    than consistently correct ones. This is the essence of the feature — we check
+    the distribution, not a single sample.
     """
     import random
-    # Беремо реальні id з одного сценарію, щоб пул був контрольований.
+    # Take real ids from a single scenario so the pool is controlled.
     scenario = app_module.SCENARIOS[0]
     ids = [q["id"] for q in app_module.QUESTIONS if q["scenario"] == scenario]
     failed_ids, passed_ids = set(ids[:3]), set(ids[3:6])
@@ -116,4 +116,4 @@ def test_weak_weighting_favors_failed_questions(client, app_module, monkeypatch)
             elif q["id"] in passed_ids: picks["passed"] += 1
 
     assert picks["failed"] > picks["passed"] * 2, \
-        f"провалені мають вибиратись помітно частіше: {dict(picks)}"
+        f"failed questions should be picked noticeably more often: {dict(picks)}"
