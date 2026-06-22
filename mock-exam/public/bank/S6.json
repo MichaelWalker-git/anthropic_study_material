@@ -2441,6 +2441,336 @@
           "explanation": "Neither figure is unreliable; they differ in certainty type, which attribution captures."
         }
       ]
+    },
+    {
+      "id": "S6-D4-046",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "You need every extraction to return JSON matching your schema exactly — no malformed JSON, no missing or extra fields — on every request. Which API mechanism guarantees this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Define a tool whose schema is the output structure and force it with `tool_choice: { type: \"tool\", name: \"extract_data\" }`.",
+          "correct": true,
+          "explanation": "Forced tool_choice makes Claude produce output matching the tool's schema every time; the API validates structure, eliminating malformed JSON and missing/extra fields."
+        },
+        {
+          "id": "B",
+          "text": "Prompt the model to 'always respond in valid JSON' and parse the text.",
+          "correct": false,
+          "explanation": "Prompt-based JSON has no schema enforcement and risks malformed or incomplete output; it is for prototyping only."
+        },
+        {
+          "id": "C",
+          "text": "Use `tool_choice: auto` so the model decides when to structure output.",
+          "correct": false,
+          "explanation": "`auto` lets the model return plain text instead of the tool call, so structure is not guaranteed."
+        },
+        {
+          "id": "D",
+          "text": "Set the sampling temperature to 0 so the JSON the model produces becomes fully deterministic across repeated requests.",
+          "correct": false,
+          "explanation": "Temperature 0 reduces variability but does not enforce a schema; structure can still be wrong."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-047",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Your extraction schema marks `manufacturer` as a required string. For documents that genuinely omit the manufacturer, the model invents a plausible-sounding company name rather than leaving it blank. What schema change prevents this fabrication?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Make `manufacturer` nullable/optional so the model can return null when the data is absent.",
+          "correct": true,
+          "explanation": "Required fields force the model to fabricate when data is missing. Making the field nullable/optional gives it permission to return null instead of inventing a value."
+        },
+        {
+          "id": "B",
+          "text": "Keep it required but add 'do not guess' to the prompt.",
+          "correct": false,
+          "explanation": "A required field still pressures the model to satisfy the schema; the structural fix is to allow null."
+        },
+        {
+          "id": "C",
+          "text": "Set temperature to 0 to stop the model from inventing values.",
+          "correct": false,
+          "explanation": "Temperature does not address the schema pressure that causes fabrication for required-but-absent fields."
+        },
+        {
+          "id": "D",
+          "text": "Switch the extraction step to a larger, more capable model tier in the expectation that it will improve overall field accuracy.",
+          "correct": false,
+          "explanation": "Fabrication here stems from a required field with no data, not model capability; allowing null is the fix."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-048",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "About 12% of extractions fail Pydantic validation with errors like \"expected float for quantity, got '2 to 3'.\" Re-sending the identical request reproduces the same failure. What recovers these cases most effectively?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Send a follow-up that includes the original request, the failed output, and the specific validation error, asking the model to correct it.",
+          "correct": true,
+          "explanation": "Retry-with-error-feedback shows the model exactly what it produced and what was wrong, so it can fix the specific field — unlike an unchanged resend, which repeats the failure."
+        },
+        {
+          "id": "B",
+          "text": "Resend the request unchanged but with a larger model tier.",
+          "correct": false,
+          "explanation": "Without the error context the model has no reason to change a deterministic mistake; the fix is targeted feedback."
+        },
+        {
+          "id": "C",
+          "text": "Set the sampling temperature to 0 to make the output formatting consistent and eliminate variability between requests.",
+          "correct": false,
+          "explanation": "The failure is a value-type ambiguity ('2 to 3'), not randomness; temperature 0 will not resolve it."
+        },
+        {
+          "id": "D",
+          "text": "Pre-process every source document to standardize all numeric formats first.",
+          "correct": false,
+          "explanation": "Blanket preprocessing is costly and brittle for an edge case better handled by retry-with-error-feedback on the failing 12%."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-049",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "The `materials` field is extracted inconsistently — \"cotton blend\" one time, \"Cotton/Polyester mix\" another, sometimes omitted though clearly present. The schema is well defined. What most improves consistency?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add 2–3 few-shot examples showing complete input-output pairs with a standardized materials format.",
+          "correct": true,
+          "explanation": "When instructions alone yield inconsistent output, few-shot examples demonstrate the exact expected format, and the model generalizes it — directly improving consistency."
+        },
+        {
+          "id": "B",
+          "text": "Set temperature to 0 to eliminate randomness.",
+          "correct": false,
+          "explanation": "The inconsistency is about format/normalization the model hasn't been shown, not randomness; examples fix it."
+        },
+        {
+          "id": "C",
+          "text": "Make `materials` required to force a value.",
+          "correct": false,
+          "explanation": "Requiring it can cause fabrication when absent and does not standardize the format when present."
+        },
+        {
+          "id": "D",
+          "text": "Switch to a more capable model tier, since inconsistent extraction of this field suggests insufficient model capability.",
+          "correct": false,
+          "explanation": "Inconsistent formatting is addressed by showing examples, not by escalating model capability."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-050",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "After 3 months of 100% human review, extractions with model confidence above 90% show 97% accuracy overall. Before automating that band, what validation step is most critical?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Analyze accuracy by document type and field to confirm high-confidence extractions are consistent across segments, not just in aggregate.",
+          "correct": true,
+          "explanation": "Aggregate accuracy can mask a segment performing far worse. Stratified per-type/per-field analysis verifies the band is uniformly reliable before removing review."
+        },
+        {
+          "id": "B",
+          "text": "Confirm 97% aggregate accuracy meets downstream requirements.",
+          "correct": false,
+          "explanation": "Checking only the aggregate is the trap — it can hide a weak document type or field within the band."
+        },
+        {
+          "id": "C",
+          "text": "Compare accuracy at 85%, 90%, and 95% thresholds to pick a cutoff.",
+          "correct": false,
+          "explanation": "Threshold tuning without stratification still risks a hidden weak segment inside whichever band is chosen."
+        },
+        {
+          "id": "D",
+          "text": "Run a pilot routing 25% of high-confidence extractions directly to downstream systems and monitor incoming error reports.",
+          "correct": false,
+          "explanation": "A blind pilot can ship errors from a weak segment; the critical pre-deployment step is stratified accuracy analysis."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-030",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Extractions below 85% confidence already route to humans. An audit finds 12% of high-confidence (>85%) extractions also contain errors — plausible-but-wrong values from comparison tables, appendices, and ambiguous phrasing. You need a sustainable way to catch these and measure improvement over time. What is most effective?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use stratified random sampling to review a set percentage of high-confidence extractions weekly, enabling error-rate measurement and pattern detection.",
+          "correct": true,
+          "explanation": "Stratified sampling of the high-confidence band gives an ongoing, measurable error rate and surfaces new failure patterns over time — sustainable, unlike one-off fixes."
+        },
+        {
+          "id": "B",
+          "text": "Lower the threshold from 85% to 70% to route more to humans.",
+          "correct": false,
+          "explanation": "Lowering the threshold floods reviewers and still does not measure or target the high-confidence error patterns."
+        },
+        {
+          "id": "C",
+          "text": "Re-extract each high-confidence document and flag disagreements.",
+          "correct": false,
+          "explanation": "Double extraction catches some inconsistencies but does not provide a measured error rate or detect novel patterns systematically, and doubles cost."
+        },
+        {
+          "id": "D",
+          "text": "Add heuristic rules that flag any document containing comparison tables or appendices for review, regardless of its confidence score.",
+          "correct": false,
+          "explanation": "Static heuristics catch known triggers but miss novel patterns and provide no ongoing measurement of the true error rate."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-051",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Contracts often include amendments — an original clause says \"30-day payment terms\" while Amendment 1 changes it to \"45 days.\" The model inconsistently extracts one value or the other with no indication of which applies. What most improves accuracy for amended documents?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Redesign the schema so amended fields capture multiple values, each with its source location and effective date.",
+          "correct": true,
+          "explanation": "Modeling amended fields as multiple values with provenance and effective dates lets the system represent both the original and the amendment and determine which applies — addressing the root ambiguity."
+        },
+        {
+          "id": "B",
+          "text": "Instruct the model to always take the most recent amendment and ignore originals.",
+          "correct": false,
+          "explanation": "A blanket 'latest wins' rule loses provenance and breaks when an amendment does not actually supersede a given clause."
+        },
+        {
+          "id": "C",
+          "text": "Post-process with pattern matching to detect amendments and flag for manual review.",
+          "correct": false,
+          "explanation": "Flagging everything with amendments pushes volume to humans rather than extracting the values correctly with structure."
+        },
+        {
+          "id": "D",
+          "text": "Pre-process each contract to strip out superseded sections before extraction so only the currently effective terms remain.",
+          "correct": false,
+          "explanation": "Removing 'superseded' text requires correctly identifying it first and discards information; capturing both values with dates is more robust."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-052",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "After adding strict tool schemas, JSON syntax errors are gone, but 5% of extractions return empty arrays or null for required `citations` and `methodology` even though the information is present — just in varied forms (inline citations vs. bibliographies, methodology sections vs. text embedded in the introduction). What is most effective?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add few-shot examples from documents with varied structures, showing how to find citations and methodology across different section types.",
+          "correct": true,
+          "explanation": "The model is missing information presented in formats it hasn't been shown. Few-shot examples covering those structural variations teach it to locate the data reliably."
+        },
+        {
+          "id": "B",
+          "text": "Make the `citations` and `methodology` fields optional in the schema and flag any incomplete records for manual review afterward.",
+          "correct": false,
+          "explanation": "The data is present, so making fields optional just lets the model skip extractable information rather than learning to find it."
+        },
+        {
+          "id": "C",
+          "text": "Build a regex post-processor to scan documents and fill empty fields.",
+          "correct": false,
+          "explanation": "Regex over varied citation and methodology formats is brittle; teaching extraction via examples generalizes better."
+        },
+        {
+          "id": "D",
+          "text": "Add retry logic that re-sends when required fields are empty.",
+          "correct": false,
+          "explanation": "Re-sending the same prompt that already missed the varied formats tends to reproduce the miss; the fix is examples of those formats."
+        }
+      ]
+    },
+    {
+      "id": "S6-D4-053",
+      "scenario": "S6",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "A review-extraction schema has rating (1–5 int), pros (string array), cons (string array), and overall_sentiment (enum: positive/negative/mixed). For brief reviews like \"Great product!\" the model fabricates specific pros/cons, and for sarcastic ones it picks a sentiment arbitrarily because no option fits. Which schema change addresses both?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Make pros and cons optional, and add \"unclear\" (and a neutral option) to the sentiment enum.",
+          "correct": true,
+          "explanation": "Optional pros/cons let the model omit details not stated instead of fabricating, and adding 'unclear'/neutral to the enum gives a valid choice for ambiguous or sarcastic sentiment."
+        },
+        {
+          "id": "B",
+          "text": "Add a 0.0–1.0 confidence field per value and filter low-confidence outputs.",
+          "correct": false,
+          "explanation": "Confidence scoring adds machinery but does not stop fabrication or give sentiment a valid ambiguous option at the schema level."
+        },
+        {
+          "id": "C",
+          "text": "Set temperature to 0 so the model stops guessing.",
+          "correct": false,
+          "explanation": "Temperature 0 does not create permission to omit pros/cons or an enum value for ambiguity; the schema must change."
+        },
+        {
+          "id": "D",
+          "text": "Require pros and cons so the model always provides them.",
+          "correct": false,
+          "explanation": "Requiring them worsens the fabrication problem for brief reviews where no pros/cons are stated."
+        }
+      ]
+    },
+    {
+      "id": "S6-D5-031",
+      "scenario": "S6",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "You extract structured fields from very long documents in a single pass, and the model increasingly misses details near the end as the document grows. What strategy best mitigates this attention dilution?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Process the document in per-section passes, then run a cross-section integration pass to combine the results.",
+          "correct": true,
+          "explanation": "Per-segment passes plus a cross-segment integration pass is the documented mitigation for attention dilution — each pass handles a manageable chunk and a final pass synthesizes."
+        },
+        {
+          "id": "B",
+          "text": "Increase max_tokens so the whole document and output fit.",
+          "correct": false,
+          "explanation": "Fitting more text does not fix attention dilution across a long single pass; splitting into focused passes does."
+        },
+        {
+          "id": "C",
+          "text": "Ask the model to summarize the full document first and then extract the structured fields from that condensed summary.",
+          "correct": false,
+          "explanation": "Summarizing first loses the specific details extraction needs; per-section passes preserve them."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature to make the single pass more thorough.",
+          "correct": false,
+          "explanation": "Temperature does not increase coverage of a long input; the fix is per-section processing plus integration."
+        }
+      ]
     }
   ]
 }

@@ -2507,6 +2507,336 @@
           "explanation": "Auto-approving sensitive operations removes the human-in-the-loop control the guidance specifically recommends."
         }
       ]
+    },
+    {
+      "id": "S1-D1-033",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.1",
+      "stem": "Your support agent's loop sometimes terminates after Claude returns a message like \"I've finished looking into the refund\" even though it has not yet called `process_refund`. The loop currently ends when the latest response contains any text block. What is the correct termination signal to use instead?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Continue looping until `stop_reason` is `end_turn`, and keep iterating while it is `tool_use`.",
+          "correct": true,
+          "explanation": "`stop_reason` is the deterministic, unambiguous termination signal: `tool_use` means keep going, `end_turn` means stop. Text content is unreliable because Claude can emit text alongside tool_use blocks."
+        },
+        {
+          "id": "B",
+          "text": "Parse the assistant's natural-language text for completion phrases like \"finished\" or \"done\".",
+          "correct": false,
+          "explanation": "Parsing natural language is a known anti-pattern — Claude may say \"finished step 1\" while still intending to continue, so it is ambiguous."
+        },
+        {
+          "id": "C",
+          "text": "Terminate as soon as `content[0].type` is `text` rather than `tool_use`.",
+          "correct": false,
+          "explanation": "Claude can return a text block alongside a tool_use block in the same response, so inspecting only the first content block misses pending tool calls."
+        },
+        {
+          "id": "D",
+          "text": "Cap the loop at a fixed maximum number of iterations and stop when it is reached.",
+          "correct": false,
+          "explanation": "Iteration caps are acceptable only as a runaway safety net, never as the primary stopping mechanism — they cut off useful work or waste iterations."
+        }
+      ]
+    },
+    {
+      "id": "S1-D1-034",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "When the agent escalates a billing dispute to a human, reviewers complain they receive only a vague one-line summary and have to reconstruct the whole case themselves. You want to standardize what every escalation hands off. Which structured handoff format best fits this requirement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Customer ID, a factual summary of what happened, the root cause, and the recommended action.",
+          "correct": true,
+          "explanation": "This is the exam's tested human-in-the-loop handoff format: who is affected, what happened (factual, not interpretive), why it happened, and what the agent suggests — everything the human needs to act."
+        },
+        {
+          "id": "B",
+          "text": "The full verbatim conversation transcript so the reviewer has complete information.",
+          "correct": false,
+          "explanation": "Dumping the raw transcript forces the reviewer to reconstruct the case manually — the opposite of a structured handoff that distills the essentials."
+        },
+        {
+          "id": "C",
+          "text": "Only the recommended action, so the reviewer can decide quickly without bias.",
+          "correct": false,
+          "explanation": "Omitting the customer, what happened, and root cause leaves the reviewer unable to validate the recommendation."
+        },
+        {
+          "id": "D",
+          "text": "The agent's confidence score and the tools it called during the session.",
+          "correct": false,
+          "explanation": "Internal telemetry does not constitute a case handoff; the human needs the factual situation and recommendation, not tool traces."
+        }
+      ]
+    },
+    {
+      "id": "S1-D5-022",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.2",
+      "stem": "A customer writes: \"My order never arrived and I want this sorted today.\" The agent has the customer record but there are three open orders on the account and the message does not say which one. The agent must avoid refunding the wrong order. What should it do?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ask the customer a targeted clarifying question to identify which of the three orders they mean.",
+          "correct": true,
+          "explanation": "With genuine ambiguity and a high-cost action (a refund), resolving the ambiguity by asking a focused question is correct before taking irreversible action."
+        },
+        {
+          "id": "B",
+          "text": "Refund the most recent order, since that is the one most likely being referenced.",
+          "correct": false,
+          "explanation": "Guessing on a financial action when the request is ambiguous risks refunding the wrong order — exactly the failure to avoid."
+        },
+        {
+          "id": "C",
+          "text": "Refund all three open orders to be safe and reconcile later.",
+          "correct": false,
+          "explanation": "Over-refunding causes financial loss and is plainly wrong when only one order is in question."
+        },
+        {
+          "id": "D",
+          "text": "Escalate to a human immediately because the request is ambiguous.",
+          "correct": false,
+          "explanation": "Escalation is premature; a single clarifying question resolves this routine ambiguity without human intervention, preserving first-contact resolution."
+        }
+      ]
+    },
+    {
+      "id": "S1-D2-024",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "The `lookup_order` tool returns a generic string \"Error\" both when an order genuinely does not exist and when the orders database times out. The agent treats both cases identically and tells customers \"no order found.\" How should the tool's responses be redesigned?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Return structured error metadata with an error category and retryable flag, and a distinct valid-empty result for no match.",
+          "correct": true,
+          "explanation": "A timeout is an access failure (retryable/escalate) while a genuine no-match is a valid empty result to accept. Structured metadata with category and isRetryable lets the agent distinguish them."
+        },
+        {
+          "id": "B",
+          "text": "Always retry the call three times before returning anything to the agent.",
+          "correct": false,
+          "explanation": "Blind retries waste time on genuine no-match cases and still hide the distinction the agent needs to behave correctly."
+        },
+        {
+          "id": "C",
+          "text": "Keep returning the same generic \"Error\" string to the agent but also append it to a server-side log file for engineers to inspect later.",
+          "correct": false,
+          "explanation": "Logging does not help the agent at runtime; it still cannot tell a timeout from a legitimate empty result."
+        },
+        {
+          "id": "D",
+          "text": "Treat any empty response as a failure and escalate every such case to a human.",
+          "correct": false,
+          "explanation": "A valid empty result (order truly absent) is the answer, not an error — escalating all of them floods humans and defeats automation."
+        }
+      ]
+    },
+    {
+      "id": "S1-D2-025",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "Over time the support agent has accumulated 14 MCP tools. Logs show rising tool-selection errors — it calls `get_invoice` when it should call `get_order`, and `escalate_to_human` when a refund would resolve the issue. What is the most effective structural fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Scope each agent to 4–5 tools and sharpen the descriptions that distinguish overlapping tools.",
+          "correct": true,
+          "explanation": "Selection errors rise as the tool count grows; the guidance is to scope to 4–5 tools per agent and improve descriptions so overlapping tools are clearly differentiated."
+        },
+        {
+          "id": "B",
+          "text": "Keep all 14 tools but lower the temperature so selections are more deterministic.",
+          "correct": false,
+          "explanation": "Temperature does not address the root cause — too many overlapping tools with weak descriptions — and selection ambiguity remains."
+        },
+        {
+          "id": "C",
+          "text": "Concatenate the 14 tools into one mega-tool that takes an `action` parameter.",
+          "correct": false,
+          "explanation": "Collapsing distinct operations into one overloaded tool obscures intent and makes schema validation and error handling worse, not better."
+        },
+        {
+          "id": "D",
+          "text": "Add a system-prompt paragraph listing all 14 tools and when to use each.",
+          "correct": false,
+          "explanation": "A long prompt list is probabilistic and brittle; the documented first fixes are scoping the tool set and improving descriptions."
+        }
+      ]
+    },
+    {
+      "id": "S1-D5-023",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.1",
+      "stem": "A complex dispute has run for 40 turns. The agent begins re-asking for the customer's order number and contradicts an address correction it confirmed earlier. The critical facts (customer ID, order number, corrected postcode, refund-approved status) keep getting lost. What is the most reliable fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Maintain a persistent facts block with the key details and carry it forward verbatim each turn.",
+          "correct": true,
+          "explanation": "Repetition and contradiction signal context pressure. Extracting concrete facts into a structured block copied forward verbatim prevents loss — unlike progressive summarization, which drops specific details."
+        },
+        {
+          "id": "B",
+          "text": "Ask the model to summarize the conversation so far and continue from the summary.",
+          "correct": false,
+          "explanation": "Progressive summarization is the classic trap — each pass loses names, numbers, and exact values like the postcode."
+        },
+        {
+          "id": "C",
+          "text": "Increase the max_tokens limit so more of the history fits in each response.",
+          "correct": false,
+          "explanation": "max_tokens governs output length, not context retention; it does nothing to preserve the lost facts."
+        },
+        {
+          "id": "D",
+          "text": "Start a fresh session and ask the customer to restate all their details.",
+          "correct": false,
+          "explanation": "Forcing the customer to repeat everything harms the experience and is unnecessary when a persistent facts block preserves state."
+        }
+      ]
+    },
+    {
+      "id": "S1-D1-035",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Compliance requires that `process_refund` can never run before the customer's identity is verified by `get_customer`. The team has tried strongly worded system-prompt instructions, but audits still find rare violations. What guarantees the rule is never bypassed?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A PreToolUse hook that blocks `process_refund` unless a verified customer ID is present.",
+          "correct": true,
+          "explanation": "Hooks are deterministic code-level enforcement that cannot be bypassed by model reasoning or prompt injection — required when the rule must hold every time."
+        },
+        {
+          "id": "B",
+          "text": "Add few-shot examples showing identity verification always preceding refunds.",
+          "correct": false,
+          "explanation": "Few-shot examples raise compliance probabilistically but cannot guarantee it for a financial control."
+        },
+        {
+          "id": "C",
+          "text": "Restate the rule more forcefully and in capital letters in the system prompt.",
+          "correct": false,
+          "explanation": "Prompt instructions remain probabilistic regardless of emphasis; audits already show rare violations."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature to make the agent follow instructions more consistently.",
+          "correct": false,
+          "explanation": "Temperature tweaks do not provide a hard guarantee; the requirement is deterministic enforcement via a hook."
+        }
+      ]
+    },
+    {
+      "id": "S1-D2-026",
+      "scenario": "S1",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "Your team wants the support agent to read and update tickets in Zendesk, a widely used platform. An engineer proposes writing a custom MCP server from scratch that wraps Zendesk's REST API. What is the recommended first approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Adopt an existing community Zendesk MCP server and only build custom if it falls short.",
+          "correct": true,
+          "explanation": "The rule is to use community MCP servers first and build custom only when no community server meets your requirements — Zendesk is a common, well-served integration."
+        },
+        {
+          "id": "B",
+          "text": "Build the custom server immediately so it fits the team's exact workflow.",
+          "correct": false,
+          "explanation": "Building custom first ignores the guidance to check community servers, incurring needless maintenance for a standard integration."
+        },
+        {
+          "id": "C",
+          "text": "Skip MCP and have the agent call Zendesk via Bash `curl` with inline auth headers.",
+          "correct": false,
+          "explanation": "Ad hoc curl calls bypass discoverable tool interfaces and structured error handling that an MCP server provides."
+        },
+        {
+          "id": "D",
+          "text": "Export tickets to local files nightly and have the agent read those files.",
+          "correct": false,
+          "explanation": "Static exports are stale and read-only; the agent needs live read/update access through tool interfaces."
+        }
+      ]
+    },
+    {
+      "id": "S1-D5-024",
+      "scenario": "S1",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "Management wants to auto-resolve cases without human review when the agent is confident, but keep a safety net. Audit data shows resolutions with confidence above 0.9 are 98% accurate overall. Before turning off review for that band, what is the most critical validation step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Break down accuracy by case type to confirm the high-confidence band performs consistently, not just in aggregate.",
+          "correct": true,
+          "explanation": "Aggregate accuracy can mask a category with much lower accuracy. Stratified per-type analysis verifies consistency before removing the human safety net."
+        },
+        {
+          "id": "B",
+          "text": "Confirm 98% aggregate accuracy clears the bar required by downstream systems.",
+          "correct": false,
+          "explanation": "Checking only the aggregate is exactly the trap — it can hide a weak category within the band."
+        },
+        {
+          "id": "C",
+          "text": "Raise the confidence threshold to 0.95 to be extra cautious.",
+          "correct": false,
+          "explanation": "Adjusting the cutoff without per-type analysis still risks a hidden weak category and reduces automation arbitrarily."
+        },
+        {
+          "id": "D",
+          "text": "Keep routing every case through human review for another full week and recompute the single overall accuracy number afterward.",
+          "correct": false,
+          "explanation": "More aggregate data does not surface category-level weakness; stratification does."
+        }
+      ]
+    },
+    {
+      "id": "S1-D1-036",
+      "scenario": "S1",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "A customer reports \"a few problems with my recent experience\" without specifics. The agent cannot tell upfront whether this is one issue or several spanning billing, delivery, and account access. How should it decompose the work?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Let the agent dynamically generate subtasks as it uncovers each distinct issue during the conversation.",
+          "correct": true,
+          "explanation": "When the decomposition cannot be predicted upfront, dynamic adaptive decomposition — deciding the breakdown at runtime as issues emerge — is the right pattern."
+        },
+        {
+          "id": "B",
+          "text": "Define a fixed sequence covering billing, then delivery, then account access for every case.",
+          "correct": false,
+          "explanation": "A fixed sequence suits predictable tasks; here the issues are unknown, so a rigid plan wastes effort and may miss the actual problems."
+        },
+        {
+          "id": "C",
+          "text": "Spawn parallel subagents for billing, delivery, and account access regardless of relevance.",
+          "correct": false,
+          "explanation": "Fanning out to all domains before knowing which apply burns resources on irrelevant investigations."
+        },
+        {
+          "id": "D",
+          "text": "Escalate to a human because the request is too vague to handle.",
+          "correct": false,
+          "explanation": "Vagueness alone does not warrant escalation; the agent can adaptively clarify and decompose to resolve it."
+        }
+      ]
     }
   ]
 }

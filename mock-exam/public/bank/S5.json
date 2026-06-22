@@ -2441,6 +2441,336 @@
           "explanation": "A second instance adds API usage; its advantage is unbiased review, not lower cost."
         }
       ]
+    },
+    {
+      "id": "S5-D3-037",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your GitHub Action runs `claude \"Review this PR for security issues\"` and the job hangs until it times out. The logs show Claude waiting for input that never arrives. What is the fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add the `-p` (print) flag so Claude Code runs non-interactively, processes the prompt, prints to stdout, and exits.",
+          "correct": true,
+          "explanation": "Without `-p`, Claude Code stays in interactive mode and waits for keyboard input the CI runner never provides. `-p` switches it to non-interactive print mode for pipelines."
+        },
+        {
+          "id": "B",
+          "text": "Set the environment variable `CLAUDE_HEADLESS=true`.",
+          "correct": false,
+          "explanation": "There is no such environment variable; the documented mechanism for non-interactive runs is the `-p` flag."
+        },
+        {
+          "id": "C",
+          "text": "Add a `--batch` flag to the invocation.",
+          "correct": false,
+          "explanation": "`--batch` is not a Claude Code flag; this is a distractor. The correct flag is `-p`."
+        },
+        {
+          "id": "D",
+          "text": "Redirect the job's standard input from `/dev/null` so Claude Code stops waiting on the interactive input prompt.",
+          "correct": false,
+          "explanation": "Redirecting stdin does not properly switch Claude Code out of interactive mode; `-p` is the intended fix."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-038",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Your CI must post review findings as inline PR comments at exact file/line positions, so the output has to be machine-parseable and conform to a fixed structure. Which combination of flags achieves this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pass `--output-format json` together with `--json-schema` to force JSON that conforms to your defined structure.",
+          "correct": true,
+          "explanation": "`--output-format json` forces JSON instead of prose, and `--json-schema` enforces the specific structure, so downstream automation can parse findings and post them at the right file/line."
+        },
+        {
+          "id": "B",
+          "text": "Prompt Claude to return the findings as a markdown list and parse that text with a regular expression in a downstream step.",
+          "correct": false,
+          "explanation": "Markdown parsing is brittle and unenforced; schema-validated JSON is the reliable, tested approach for CI."
+        },
+        {
+          "id": "C",
+          "text": "`--output-format text` plus a downstream NLP step to extract fields.",
+          "correct": false,
+          "explanation": "Text output defeats machine-parseability; the point is to force structured JSON via the schema flags."
+        },
+        {
+          "id": "D",
+          "text": "Use the `-c` flag to continue the previous conversation's formatting.",
+          "correct": false,
+          "explanation": "`-c` resumes the most recent conversation; it has nothing to do with enforcing parseable output structure."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-039",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.1",
+      "stem": "Your review prompt says: \"Only flag critical issues that would definitely cause production failures. Ignore minor concerns and anything you're uncertain about.\" Real logic bugs the model investigated are going unreported. Output must stay structured and tagged for downstream filtering. Which change fixes the cause while preserving structure?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Have the model report all findings with a confidence level and severity tag, deferring filtering to a downstream step.",
+          "correct": true,
+          "explanation": "The suppression is caused by instructing the model to withhold uncertain findings. Reporting everything with confidence and severity tags removes the cause and keeps structured output for downstream filtering."
+        },
+        {
+          "id": "B",
+          "text": "Remove all severity instructions and let the model use default judgment.",
+          "correct": false,
+          "explanation": "Dropping severity entirely loses the tags downstream filtering needs; the fix keeps tagging while removing the suppression instruction."
+        },
+        {
+          "id": "C",
+          "text": "Add a second pass using the same prompt to catch what the first missed.",
+          "correct": false,
+          "explanation": "Re-running the same suppressive prompt reproduces the same omission; the prompt's instruction is the root cause."
+        },
+        {
+          "id": "D",
+          "text": "Enable extended thinking and have the model reason step by step about every code change before producing its review.",
+          "correct": false,
+          "explanation": "Better reasoning still obeys the instruction to suppress uncertain findings; the cause is the instruction, not insufficient reasoning."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-040",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "About 35% of flagged findings are false positives in consistent patterns: style nits contradicting team conventions, security warnings safe in your context, and performance tips that hurt your use case. You want the model to generalize its judgment to novel patterns. What works best?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Include few-shot examples of annotated code distinguishing acceptable patterns from genuine issues in each category.",
+          "correct": true,
+          "explanation": "Few-shot examples teach the model to generalize the distinction to unseen code, unlike a fixed list — they demonstrate the reasoning behind acceptable-vs-genuine in each category."
+        },
+        {
+          "id": "B",
+          "text": "Add system-prompt instructions telling the model to \"be conservative\" and to \"only flag issues that are definitely real.\"",
+          "correct": false,
+          "explanation": "Vague conservatism suppresses real bugs and does not teach the model which specific patterns are acceptable."
+        },
+        {
+          "id": "C",
+          "text": "Write an exhaustive specification of every pattern not to flag and paste it all in.",
+          "correct": false,
+          "explanation": "An exhaustive spec cannot cover novel patterns and bloats context; examples generalize better than enumerations."
+        },
+        {
+          "id": "D",
+          "text": "Post-process with keyword filters removing findings containing 'convention' or 'trade-off'.",
+          "correct": false,
+          "explanation": "Keyword filtering is brittle and cannot generalize judgment; it also silently drops legitimate findings sharing those words."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-041",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.5",
+      "stem": "A pipeline step summarizes ~200 commits at the end of each weekly release. Each commit is a separate Sonnet-tier Messages API call. Results are not needed until the next morning (~12h latency is fine). You must cut per-token cost while keeping the same model and prompts. What satisfies all constraints?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Submit the 200 requests to the Message Batches API with unique custom_ids and collect results when the batch ends — a 50% token discount.",
+          "correct": true,
+          "explanation": "Batch API gives a 50% discount on input and output tokens with up to 24h latency, which the 12h window tolerates, and it keeps the same model and prompts."
+        },
+        {
+          "id": "B",
+          "text": "Write an exhaustive specification enumerating every pattern that must not be flagged and paste the whole document into the prompt.",
+          "correct": false,
+          "explanation": "Changing model tier violates the 'same model' constraint and may alter output quality."
+        },
+        {
+          "id": "C",
+          "text": "Fire the 200 requests in parallel over many connections, since concurrency lowers the per-token price.",
+          "correct": false,
+          "explanation": "Concurrency improves throughput but does not change the per-token price; only the Batch API offers the discount."
+        },
+        {
+          "id": "D",
+          "text": "Concatenate all 200 commits into one request and return all summaries together.",
+          "correct": false,
+          "explanation": "Stuffing everything into one call risks quality loss and token limits and does not reduce per-token cost the way Batch does."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-039",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Large PRs trigger long agentic loops costing $8–12 and taking over 20 minutes. You need each invocation to abort once it hits a fixed iteration count and a fixed dollar amount, enforced by Claude Code itself rather than the job runner. Which change does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Add `--max-turns 10 --max-budget-usd 2.00` to the `claude -p` invocation.",
+          "correct": true,
+          "explanation": "These flags cap iterations and spend inside Claude Code itself, enforcing both per-invocation limits directly rather than relying on the surrounding runner."
+        },
+        {
+          "id": "B",
+          "text": "Set `timeout-minutes: 5` on the GitHub Actions step and watch costs in the Console.",
+          "correct": false,
+          "explanation": "A job-runner timeout is enforced by the runner, not Claude Code, and the Console dashboard does not enforce a per-run dollar cap."
+        },
+        {
+          "id": "C",
+          "text": "Set `--permission-mode dontAsk` to auto-deny tool permissions.",
+          "correct": false,
+          "explanation": "Permission mode controls tool approvals, not iteration or budget caps."
+        },
+        {
+          "id": "D",
+          "text": "Switch `--model` to a cheaper model so each iteration costs less.",
+          "correct": false,
+          "explanation": "A cheaper model reduces per-call cost but does not impose a hard turn or dollar ceiling on the invocation."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-040",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "The review consistently flags patterns your team uses on purpose — force-unwraps in test files, large coordinator classes per your architecture, and imports of internal modules marked deprecated in the public SDK. You want to stop these findings from being generated by supplying conventions as persistent context on every review. What do you do?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Document the accepted patterns and intentional conventions in the project's CLAUDE.md so they reach the model on every review.",
+          "correct": true,
+          "explanation": "CLAUDE.md supplies persistent project context to every CI-invoked review, preventing the model from flagging intentional conventions in the first place."
+        },
+        {
+          "id": "B",
+          "text": "Build post-processing keyword filters to suppress findings mentioning 'force unwrap' or 'deprecated import'.",
+          "correct": false,
+          "explanation": "Keyword suppression is brittle, hides genuine instances, and does not prevent the model from generating the findings."
+        },
+        {
+          "id": "C",
+          "text": "Have developers add inline suppress-comments and strip those lines before review.",
+          "correct": false,
+          "explanation": "Per-line suppression is manual and incomplete and removes context the reviewer may need; persistent conventions in CLAUDE.md is the targeted fix."
+        },
+        {
+          "id": "D",
+          "text": "Send only changed lines with no surrounding file context.",
+          "correct": false,
+          "explanation": "Stripping context degrades review quality and still does not encode the team's intentional conventions."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-042",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.6",
+      "stem": "Your test-generation step produces 55% low-value tests: trivial 'does not throw' assertions, duplicates of existing coverage, and tests ignoring your fixture conventions. You want to reduce low-value generation at the source. What is most effective?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Document testing standards in CLAUDE.md: valuable-test criteria, available fixtures, and examples separating meaningful from trivial tests.",
+          "correct": true,
+          "explanation": "Providing standards, fixtures, and calibration examples as persistent context shapes generation up front, raising quality at the source rather than filtering after the fact."
+        },
+        {
+          "id": "B",
+          "text": "Add a second Claude call that scores each generated test against quality criteria and filters out the low scorers before presenting them.",
+          "correct": false,
+          "explanation": "Post-generation scoring filters output but does not stop low-value tests from being generated, and adds cost."
+        },
+        {
+          "id": "C",
+          "text": "Filter out any generated test that doesn't increase line coverage.",
+          "correct": false,
+          "explanation": "Coverage deltas miss quality issues (a coverage-adding test can still be trivial) and only filter after generation."
+        },
+        {
+          "id": "D",
+          "text": "Disable generation in directories with historically low acceptance.",
+          "correct": false,
+          "explanation": "Restricting where generation runs avoids the problem rather than improving quality where it matters."
+        }
+      ]
+    },
+    {
+      "id": "S5-D3-041",
+      "scenario": "S5",
+      "domain": "D3",
+      "task_statement": "3.6",
+      "stem": "Review CI jobs spend 18 seconds initializing due to auto-discovery of hooks, MCP servers, plugins, skills, and nested CLAUDE.md files across the monorepo. You need faster startup while still enforcing the team standards documented in the root CLAUDE.md. What is most effective?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Run `--bare` to skip auto-discovery and pass `--append-system-prompt-file ./CLAUDE.md` to load the standards explicitly.",
+          "correct": true,
+          "explanation": "`--bare` skips the expensive auto-discovery, and appending the standards file keeps the default tool/safety guidance while explicitly loading the team's rules — fast and correct."
+        },
+        {
+          "id": "B",
+          "text": "Replace the whole prompt with `--system-prompt-file ./CLAUDE.md`.",
+          "correct": false,
+          "explanation": "`--system-prompt` replaces the entire default prompt, discarding tool guidance and safety instructions the review still needs."
+        },
+        {
+          "id": "C",
+          "text": "Keep default init and add `--exclude-dynamic-system-prompt-sections`.",
+          "correct": false,
+          "explanation": "That does not skip the auto-discovery causing the 18s delay; `--bare` is the mechanism that skips hooks/MCP/skills/plugins/memory."
+        },
+        {
+          "id": "D",
+          "text": "Run `--bare` mode and inline every review criterion directly in the `-p` prompt argument, referencing no external files at all.",
+          "correct": false,
+          "explanation": "Inlining everything is brittle and unmaintainable; appending the existing CLAUDE.md file is cleaner and keeps a single source of truth."
+        }
+      ]
+    },
+    {
+      "id": "S5-D4-043",
+      "scenario": "S5",
+      "domain": "D4",
+      "task_statement": "4.2",
+      "stem": "Your review calls a `report_findings` tool returning a JSON array. On a 30+ file PR the response hits `max_tokens` and truncates mid-JSON, breaking your parser. Besides splitting the work, which single-call change most directly prevents truncation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Increase `max_tokens` toward the model's maximum and instruct concise descriptions (e.g. under 50 words each).",
+          "correct": true,
+          "explanation": "Truncation means the output exceeded the token budget; raising `max_tokens` and trimming each finding's length keeps the full JSON within the limit in a single call."
+        },
+        {
+          "id": "B",
+          "text": "Switch from tool_use to asking for a markdown list.",
+          "correct": false,
+          "explanation": "Markdown can truncate just as easily and loses schema enforcement; it does not address the token budget."
+        },
+        {
+          "id": "C",
+          "text": "Add retry logic that detects the truncated JSON and re-sends the request asking only for critical and high severity findings.",
+          "correct": false,
+          "explanation": "Dropping severities loses findings and is a workaround; the direct fix is enough token budget plus concise output."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature so the model writes less.",
+          "correct": false,
+          "explanation": "Temperature affects randomness, not output length, and will not prevent hitting the token cap."
+        }
+      ]
     }
   ]
 }

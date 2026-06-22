@@ -2639,6 +2639,336 @@
           "explanation": "Effort level tunes reasoning depth and doesn't restore dropped skill content to the context."
         }
       ]
+    },
+    {
+      "id": "S2-D3-058",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "Your monorepo has a root `CLAUDE.md` with general style rules. The `services/payments/` directory has stricter conventions that should apply only to files there. Where should the payments-specific conventions live so they take precedence for those files without polluting the rest of the repo?",
+      "options": [
+        {
+          "id": "A",
+          "text": "In a `CLAUDE.md` inside `services/payments/`, which overrides the root file for files in that directory.",
+          "correct": true,
+          "explanation": "More specific scopes override broader ones: a directory-level CLAUDE.md applies to that directory and below and takes precedence over the project-root file for those files."
+        },
+        {
+          "id": "B",
+          "text": "Append the payments rules to the root `CLAUDE.md` with a note that they apply to payments.",
+          "correct": false,
+          "explanation": "Putting path-specific rules in the root file consumes context everywhere and relies on the model honoring a prose scope note rather than real scoping."
+        },
+        {
+          "id": "C",
+          "text": "In `~/.claude/CLAUDE.md` so the rules are always loaded.",
+          "correct": false,
+          "explanation": "User-global config is the lowest priority and is not committed or shared with the team; it cannot scope to a directory."
+        },
+        {
+          "id": "D",
+          "text": "In a personal slash command the payments team runs manually.",
+          "correct": false,
+          "explanation": "A command is an invoked prompt template, not always-on scoped context; conventions should load automatically for the directory."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-059",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.3",
+      "stem": "You want a rule that says \"always validate auth tokens before processing\" to load only when Claude Code edits files under `src/api/**` or `src/middleware/**`, and stay out of context otherwise. What mechanism does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A file in `.claude/rules/` with a `paths` frontmatter listing those globs.",
+          "correct": true,
+          "explanation": "Files in `.claude/rules/` use YAML frontmatter with a `paths` field; the rule loads only when Claude operates on matching files, keeping it out of context otherwise."
+        },
+        {
+          "id": "B",
+          "text": "A paragraph in the root `CLAUDE.md` describing when the rule applies.",
+          "correct": false,
+          "explanation": "The root CLAUDE.md loads project-wide regardless of path, so it cannot conditionally scope by glob and wastes context."
+        },
+        {
+          "id": "C",
+          "text": "A PreToolUse hook that injects the rule text when paths match.",
+          "correct": false,
+          "explanation": "Hooks enforce or block actions deterministically; they are not the mechanism for conditionally loading convention text — `.claude/rules/` with paths is."
+        },
+        {
+          "id": "D",
+          "text": "A skill with `allowed-tools` restricted to the API directories.",
+          "correct": false,
+          "explanation": "Skills are capability modules with tool restrictions and forked context, not path-conditional convention loaders."
+        }
+      ]
+    },
+    {
+      "id": "S2-D5-019",
+      "scenario": "S2",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "Claude Code has read 9 large files while tracing a bug across a service. Its latest suggestions reference \"a typical repository pattern\" instead of the actual `OrderRepository` and `PaymentGateway` classes it read earlier, and it repeats a question you already answered. What is the best next move?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Write the key findings to a scratchpad file, then continue with that as a compact reference for the rest of the trace.",
+          "correct": true,
+          "explanation": "Generic references and repetition signal context degradation. A scratchpad file persists concrete findings externally so they survive the pressure and can be reloaded compactly."
+        },
+        {
+          "id": "B",
+          "text": "Keep going and add more detail to each prompt to compensate.",
+          "correct": false,
+          "explanation": "Adding more prompt text increases context pressure; it does not recover the specific facts already slipping away."
+        },
+        {
+          "id": "C",
+          "text": "Ask the model to produce a running summary of everything it has read so far and then proceed using only that condensed summary.",
+          "correct": false,
+          "explanation": "Progressive summarization loses specific class names and details — the very things already being dropped."
+        },
+        {
+          "id": "D",
+          "text": "Increase the model's context window setting in the config.",
+          "correct": false,
+          "explanation": "There is no such per-task setting that recovers degraded context; external persistence via a scratchpad is the documented strategy."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-060",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "An engineer asks Claude Code to \"rework how we do background jobs\" — there are several viable approaches (queue-based, cron-based, event-driven), each with significant migration consequences. Should the engineer use plan mode or direct execution, and why?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plan mode, because the task is complex with multiple valid approaches and high cost if the wrong one is chosen.",
+          "correct": true,
+          "explanation": "Plan mode is the signal-match: complex task, multiple valid approaches, high consequences of a wrong approach — it forces Claude to outline the approach before acting."
+        },
+        {
+          "id": "B",
+          "text": "Direct execution, because the engineer should see working code fast and iterate.",
+          "correct": false,
+          "explanation": "Direct execution suits clear, well-defined scope; jumping straight to code on an ambiguous, high-stakes redesign risks an expensive wrong turn."
+        },
+        {
+          "id": "C",
+          "text": "Direct execution with the `-p` non-interactive flag, so the change runs quickly without prompting for any confirmation.",
+          "correct": false,
+          "explanation": "`-p` is non-interactive mode for CI/CD, irrelevant to this interactive design decision and does not address the need to plan first."
+        },
+        {
+          "id": "D",
+          "text": "Plan mode only after the code is written, to review it.",
+          "correct": false,
+          "explanation": "Plan mode is for deciding the approach before acting; reviewing afterward is a separate concern and misuses the mode."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-061",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.2",
+      "stem": "The team repeatedly types the same long prompt to scaffold a new service (create directories, boilerplate, tests) and wants to invoke it as `/newservice payments` with the name substituted in. What should they create?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A project command in `.claude/commands/` that is a prompt template using an `$ARGUMENTS` placeholder.",
+          "correct": true,
+          "explanation": "Commands are invoked with `/` and are prompt templates that can include `$ARGUMENTS`; placing it in `.claude/commands/` shares it with the team."
+        },
+        {
+          "id": "B",
+          "text": "A skill in `.claude/skills/` with `context: fork`.",
+          "correct": false,
+          "explanation": "Skills are capability modules with tool restrictions and isolated context — heavier than needed for a parameterized prompt template, which is exactly what a command is."
+        },
+        {
+          "id": "C",
+          "text": "A rule file in `.claude/rules/` with the scaffold steps.",
+          "correct": false,
+          "explanation": "Rules conditionally load conventions by path; they are not invokable templates that accept an argument."
+        },
+        {
+          "id": "D",
+          "text": "Add a section to the project root `CLAUDE.md` describing the scaffold steps so they are loaded as context on every session.",
+          "correct": false,
+          "explanation": "CLAUDE.md provides always-on context, not an on-demand command with argument substitution."
+        }
+      ]
+    },
+    {
+      "id": "S2-D4-006",
+      "scenario": "S2",
+      "domain": "D4",
+      "task_statement": "4.4",
+      "stem": "You describe in prose how to migrate a function's return type to a `Result` wrapper, but Claude Code applies the transformation differently each run — sometimes wrapping errors, sometimes not. What should you try first to make the transformation consistent?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Provide 2–3 concrete before/after input-output examples of the exact transformation.",
+          "correct": true,
+          "explanation": "When prose is interpreted inconsistently, concrete input/output examples are the documented first technique — the model generalizes the pattern reliably, eliminating interpretation ambiguity."
+        },
+        {
+          "id": "B",
+          "text": "Rewrite the prose with more precise technical terminology.",
+          "correct": false,
+          "explanation": "More precise prose still relies on interpretation; the fix for inconsistent interpretation is examples, not better prose."
+        },
+        {
+          "id": "C",
+          "text": "Use the interview pattern and have Claude ask clarifying questions first.",
+          "correct": false,
+          "explanation": "The interview pattern is for unfamiliar domains where you might miss requirements — here you know the exact transformation, so examples fit, not interviews."
+        },
+        {
+          "id": "D",
+          "text": "Lower the temperature to make outputs deterministic.",
+          "correct": false,
+          "explanation": "Temperature does not establish the intended pattern; the model still has to infer the transformation from ambiguous prose."
+        }
+      ]
+    },
+    {
+      "id": "S2-D5-020",
+      "scenario": "S2",
+      "domain": "D5",
+      "task_statement": "5.4",
+      "stem": "Claude Code just generated a sizable authentication module in this session. You now want it to review that module for security gaps and edge cases. Why is reviewing in the same session weaker, and what should you do?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It retains the reasoning that justified the code and is biased to confirm it — run the review in a separate, independent session.",
+          "correct": true,
+          "explanation": "A model cannot effectively review its own output in the same session; it retains prior justification. An independent instance sees only the code, not the reasoning, and evaluates it on its merits."
+        },
+        {
+          "id": "B",
+          "text": "Same-session review is fine as long as you ask it to be critical.",
+          "correct": false,
+          "explanation": "Asking it to be critical does not remove the reasoning bias built up while writing the code."
+        },
+        {
+          "id": "C",
+          "text": "Enable extended thinking in the same session so it reconsiders its choices.",
+          "correct": false,
+          "explanation": "Extended thinking still operates within the biased context that produced the code; the fix is an independent session."
+        },
+        {
+          "id": "D",
+          "text": "Re-run the exact same generation prompt two or three times and manually diff the resulting outputs to spot any inconsistencies.",
+          "correct": false,
+          "explanation": "Re-prompting in the same session reproduces the same bias rather than providing an independent perspective."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-062",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.5",
+      "stem": "Code review surfaced three changes that interact: error responses must include an error code, the logger must emit that code in structured form, and the client SDK types must reflect the new field. How should you deliver this feedback to Claude Code?",
+      "options": [
+        {
+          "id": "A",
+          "text": "In a single message listing all three changes, since they interact and must be reconciled together.",
+          "correct": true,
+          "explanation": "When fixes interact, batching them in one message lets the model see all constraints simultaneously and produce a coherent change across the error shape, logging, and types."
+        },
+        {
+          "id": "B",
+          "text": "Sequentially — fix the error code, then logging, then types in separate turns.",
+          "correct": false,
+          "explanation": "Sequencing interdependent fixes risks each fix conflicting with the next because the model cannot see all constraints at once."
+        },
+        {
+          "id": "C",
+          "text": "Only mention the error code change and let the model infer the rest.",
+          "correct": false,
+          "explanation": "Leaving the dependent changes implicit invites incomplete or inconsistent results across the three touch points."
+        },
+        {
+          "id": "D",
+          "text": "Open three separate independent sessions, one per change, so each fix is reasoned about in complete isolation from the others.",
+          "correct": false,
+          "explanation": "Splitting interdependent changes across isolated sessions removes the shared context needed to keep them consistent."
+        }
+      ]
+    },
+    {
+      "id": "S2-D3-063",
+      "scenario": "S2",
+      "domain": "D3",
+      "task_statement": "3.5",
+      "stem": "An engineer must build a caching layer but has little expertise in caching and worries about missing important considerations like invalidation and consistency. Which Claude Code technique best fits this situation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Use the interview pattern: ask Claude to pose questions about requirements and edge cases before implementing.",
+          "correct": true,
+          "explanation": "The interview pattern suits unfamiliar domains — Claude surfaces considerations (invalidation, TTL, consistency, failure modes) the developer might overlook before any code is written."
+        },
+        {
+          "id": "B",
+          "text": "Provide 2–3 input/output examples of the cache behavior.",
+          "correct": false,
+          "explanation": "Examples are for when you already know the exact transformation; here the engineer does not yet know the requirements, so interviewing fits."
+        },
+        {
+          "id": "C",
+          "text": "Write the tests first and iterate on failures.",
+          "correct": false,
+          "explanation": "Test-driven iteration helps with complex transformations but presumes the engineer can specify the expected behavior, which is the very gap here."
+        },
+        {
+          "id": "D",
+          "text": "Ask for a single one-line prompt and accept the very first output the model produces without any follow-up questions.",
+          "correct": false,
+          "explanation": "A terse prompt in an unfamiliar domain guarantees missed considerations — the opposite of surfacing them via an interview."
+        }
+      ]
+    },
+    {
+      "id": "S2-D4-007",
+      "scenario": "S2",
+      "domain": "D4",
+      "task_statement": "4.3",
+      "stem": "You ask Claude Code to write a JSON-schema migration and its first output fails your validator: a field that should preserve `null` is being converted to an empty string. What is the most effective way to get a correct fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Send back the original request, the failed output, and the specific validation error describing the null-vs-empty-string mismatch.",
+          "correct": true,
+          "explanation": "The retry-with-error-feedback pattern returns original prompt + failed output + the specific error so the model can correct precisely — never just \"try again.\""
+        },
+        {
+          "id": "B",
+          "text": "Reply \"that's wrong, try again\" and let it regenerate.",
+          "correct": false,
+          "explanation": "A vague retry gives the model nothing specific to correct and often reproduces the same mistake."
+        },
+        {
+          "id": "C",
+          "text": "Switch to a larger, more capable model tier and resend the original request unchanged, expecting better adherence to the schema.",
+          "correct": false,
+          "explanation": "Escalating model tier without feedback wastes cost; the model still does not know what was wrong."
+        },
+        {
+          "id": "D",
+          "text": "Make the field optional in the schema so the failure disappears.",
+          "correct": false,
+          "explanation": "Relaxing the schema masks the real requirement (preserve null), changing behavior rather than fixing the transformation."
+        }
+      ]
     }
   ]
 }

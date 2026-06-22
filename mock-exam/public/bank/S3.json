@@ -2375,6 +2375,336 @@
           "explanation": "Forking is unrelated; resume needs the matching cwd and an existing file on the host."
         }
       ]
+    },
+    {
+      "id": "S3-D1-035",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "Your coordinator must produce a cited report from three independent sources. Searching source A, source B, and source C share no state and can run at once; synthesis must wait for all three. Which orchestration pattern fits the search phase?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Parallel fan-out/fan-in, because the three searches are independent and latency matters.",
+          "correct": true,
+          "explanation": "Parallel is correct when subtasks are independent and share no state; fanning out the three searches and fanning in for synthesis minimizes latency."
+        },
+        {
+          "id": "B",
+          "text": "Sequential, running A then B then C so each can use the previous result.",
+          "correct": false,
+          "explanation": "Sequential is for when each step needs the previous step's output; these searches are independent, so sequencing wastes time."
+        },
+        {
+          "id": "C",
+          "text": "Dynamic adaptive, letting the model decide the decomposition at runtime.",
+          "correct": false,
+          "explanation": "Dynamic adaptive suits tasks whose decomposition is unknown upfront; here the three independent searches are already known."
+        },
+        {
+          "id": "D",
+          "text": "Pipeline, passing each search's output as the next search's input.",
+          "correct": false,
+          "explanation": "A pipeline chains stages where one's output feeds the next; these searches have no such dependency."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-036",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "The coordinator delegates document analysis to a specialist subagent via the Task tool. Engineers assume the subagent automatically sees the coordinator's earlier conversation. Reports come back missing context the coordinator had. What is the underlying constraint?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Subagents do not share memory; all needed context must be passed explicitly in the task definition.",
+          "correct": true,
+          "explanation": "Subagents run in their own context with no shared memory — context must be passed explicitly through the task definition or handoff payload, not inherited implicitly."
+        },
+        {
+          "id": "B",
+          "text": "Subagents inherit the full coordinator history but truncate it to save tokens.",
+          "correct": false,
+          "explanation": "There is no implicit inheritance to truncate; subagents start without the coordinator's conversation."
+        },
+        {
+          "id": "C",
+          "text": "The Task tool shares memory only for the first delegation, then drops it.",
+          "correct": false,
+          "explanation": "No delegation shares memory implicitly; the constraint is uniform — context must be passed explicitly every time."
+        },
+        {
+          "id": "D",
+          "text": "Escalate the request to a human agent immediately because it is too vague for the agent to decompose or handle on its own.",
+          "correct": false,
+          "explanation": "Memory sharing is not a function of model choice; subagents never share the coordinator's context implicitly."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-021",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "The synthesis subagent assembles the final report from many findings, but inline citations placed in the body text by upstream agents keep disappearing after synthesis. How should claims and sources be represented so attribution survives?",
+      "options": [
+        {
+          "id": "A",
+          "text": "As structured claim-source mappings (claim, source, url, date) that travel as data through synthesis.",
+          "correct": true,
+          "explanation": "Structured claim-source mappings survive synthesis because they are carried as data; inline links in prose are lost during summarization/synthesis."
+        },
+        {
+          "id": "B",
+          "text": "As inline markdown links embedded in each sentence of the findings.",
+          "correct": false,
+          "explanation": "Inline links do not survive synthesis — they are exactly what is being lost — and are recommended only for quick prototyping."
+        },
+        {
+          "id": "C",
+          "text": "As a single appended bibliography with no link to specific claims.",
+          "correct": false,
+          "explanation": "A detached bibliography breaks the claim-to-source link, so the report cannot show which source supports which claim."
+        },
+        {
+          "id": "D",
+          "text": "By instructing the synthesis agent to re-find citations after writing the report.",
+          "correct": false,
+          "explanation": "Re-deriving citations post hoc is error-prone and unnecessary when structured mappings preserve attribution end to end."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-022",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.6",
+      "stem": "Two sources conflict: Anthropic docs dated 2024-03-15 say the context window is 200K tokens; a blog post dated 2023-11-20 says 100K. How should the research system represent this in the report?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Present both claims annotated with their source and date, noting the docs are newer and authoritative.",
+          "correct": true,
+          "explanation": "For conflicting sources, annotate both with provenance and dates rather than silently averaging or picking one — here the resolution notes the newer authoritative source while preserving both."
+        },
+        {
+          "id": "B",
+          "text": "Average the two figures and report 150K tokens.",
+          "correct": false,
+          "explanation": "Never average conflicting claims; that fabricates a value neither source supports."
+        },
+        {
+          "id": "C",
+          "text": "Silently drop the older blog figure and report only the 200K value, since the newer documentation is clearly more authoritative.",
+          "correct": false,
+          "explanation": "Silently picking one source hides the conflict and its provenance from the consumer."
+        },
+        {
+          "id": "D",
+          "text": "Report only that sources disagree, without the figures, sources, or dates.",
+          "correct": false,
+          "explanation": "Omitting the actual values and provenance gives the consumer nothing to evaluate; the point is to surface both with metadata."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-019",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.2",
+      "stem": "The web-search subagent runs a query that legitimately returns zero results, and separately sometimes hits a 429 rate limit. Currently both outcomes are reported to the coordinator as \"search failed.\" How should these be handled distinctly?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Treat zero results as a valid empty result to accept, and the 429 as an access failure to wait and retry per Retry-After.",
+          "correct": true,
+          "explanation": "Zero results is a valid empty result (the absence of data is the answer); a 429 is an access failure that should wait and retry respecting Retry-After. Conflating them is the trap."
+        },
+        {
+          "id": "B",
+          "text": "Treat both as failures and retry each up to three times.",
+          "correct": false,
+          "explanation": "Retrying a legitimately empty search wastes calls and still never returns data; the empty result should simply be accepted."
+        },
+        {
+          "id": "C",
+          "text": "Treat both as valid empty results and move on.",
+          "correct": false,
+          "explanation": "A 429 is an access failure — moving on silently drops data that a retry would have retrieved."
+        },
+        {
+          "id": "D",
+          "text": "Escalate both the empty search and the rate-limited request to a human researcher so a person decides how to proceed.",
+          "correct": false,
+          "explanation": "Neither case needs a human: empty results are accepted and rate limits are handled by waiting and retrying."
+        }
+      ]
+    },
+    {
+      "id": "S3-D2-020",
+      "scenario": "S3",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "You are designing the AgentDefinition for the document-analysis specialist. To minimize tool-selection errors while keeping it capable, how should its tool set be scoped?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Restrict it to the 4–5 tools it actually needs for document analysis via allowedTools.",
+          "correct": true,
+          "explanation": "Specialists should be scoped to 4–5 tools maximum; focused tool sets reduce selection errors and align with least privilege."
+        },
+        {
+          "id": "B",
+          "text": "Give it access to every tool the coordinator has, for flexibility.",
+          "correct": false,
+          "explanation": "Broad tool access raises selection errors and violates least privilege — the opposite of a focused specialist."
+        },
+        {
+          "id": "C",
+          "text": "Give it exactly one tool and route everything else back to the coordinator.",
+          "correct": false,
+          "explanation": "Over-constraining to a single tool cripples the specialist; the guidance is 4–5 focused tools, not one."
+        },
+        {
+          "id": "D",
+          "text": "Let it discover and enable tools dynamically at runtime as needed.",
+          "correct": false,
+          "explanation": "Runtime tool sprawl reintroduces the selection-error problem; the definition should scope a small fixed set."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-037",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.2",
+      "stem": "A stakeholder asks why the team uses one coordinator plus several scoped specialists instead of a single large agent with all tools and all instructions. What is the strongest architectural justification?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Focused tool sets reduce selection errors, smaller per-agent context improves accuracy, and specialists can be scaled and tested independently.",
+          "correct": true,
+          "explanation": "These are the documented reasons to prefer specialists over one large agent: fewer selection errors, better accuracy from smaller context, and independent scaling/testing."
+        },
+        {
+          "id": "B",
+          "text": "A single agent cannot call more than five tools in total in the Agent SDK, so the work must be split across several agents.",
+          "correct": false,
+          "explanation": "The 4–5 tools guidance is a design recommendation per agent to reduce errors, not a hard SDK cap that forces multiple agents."
+        },
+        {
+          "id": "C",
+          "text": "Multiple agents automatically share memory, which a single agent cannot do.",
+          "correct": false,
+          "explanation": "Subagents do not share memory; this is false and is actually a constraint to manage, not a benefit."
+        },
+        {
+          "id": "D",
+          "text": "Specialists eliminate the need for any coordinator or result aggregation.",
+          "correct": false,
+          "explanation": "The coordinator is still required for decomposition, sequencing, and aggregation; specialists do not remove that role."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-023",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.3",
+      "stem": "The document-analysis subagent fails partway: it retrieved metadata for 8 of 12 documents, retried twice, tried a fallback endpoint, then gave up. It returns \"analysis failed\" to the coordinator. Why is this propagation inadequate and what should it return?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It should return structured error context: failure type, the partial results, what recovery was attempted, and a suggested next action.",
+          "correct": true,
+          "explanation": "Generic error messages give the next agent nothing to work with. Structured error context (failure type, partial results, alternatives tried, suggested action) enables intelligent recovery."
+        },
+        {
+          "id": "B",
+          "text": "It is adequate as written; the coordinator should simply discard the partial work and restart the entire document analysis from scratch.",
+          "correct": false,
+          "explanation": "Discarding the 8 successful retrievals and restarting wastes work; the partial results should be propagated."
+        },
+        {
+          "id": "C",
+          "text": "It should return only the suggested action to keep the message short.",
+          "correct": false,
+          "explanation": "Omitting failure type and partial results strips the context the coordinator needs to recover intelligently."
+        },
+        {
+          "id": "D",
+          "text": "It should silently return the 8 documents as if the task fully succeeded.",
+          "correct": false,
+          "explanation": "Silently swallowing the partial failure hides that 4 documents are missing, corrupting downstream synthesis."
+        }
+      ]
+    },
+    {
+      "id": "S3-D1-038",
+      "scenario": "S3",
+      "domain": "D1",
+      "task_statement": "1.4",
+      "stem": "Control transfers from the search agent to the synthesis agent via a handoff. The synthesis agent then produces a report that ignores constraints the search agent had been told about. What is the most likely cause?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The handoff payload did not carry those constraints, and the receiving agent does not inherit the sender's conversation history.",
+          "correct": true,
+          "explanation": "A receiving agent does not inherit the sending agent's history; anything it must honor has to be included explicitly in the handoff payload."
+        },
+        {
+          "id": "B",
+          "text": "Handoffs always silently lose the first half of the payload by design, so constraints placed early are dropped before arrival.",
+          "correct": false,
+          "explanation": "There is no such truncation rule; the issue is that history is not inherited and must be passed explicitly."
+        },
+        {
+          "id": "C",
+          "text": "The synthesis agent overrode the constraints because it had higher priority.",
+          "correct": false,
+          "explanation": "Agents do not have priority levels that override constraints; the constraints simply were not in its context."
+        },
+        {
+          "id": "D",
+          "text": "Constraints can only be enforced by lowering temperature on the synthesis agent.",
+          "correct": false,
+          "explanation": "Temperature is unrelated; the fix is to include the constraints in the handoff payload."
+        }
+      ]
+    },
+    {
+      "id": "S3-D5-024",
+      "scenario": "S3",
+      "domain": "D5",
+      "task_statement": "5.5",
+      "stem": "The synthesis agent should hand a report to a human editor when it is not confident enough to finalize. The team needs a consistent rule for when that handoff happens. Which policy is appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Escalate when confidence falls below the defined threshold or after repeated failures, using the structured handoff format.",
+          "correct": true,
+          "explanation": "Escalate on low confidence (below threshold) or repeated failures, and hand off with the structured format so the human has the customer/case, summary, root cause, and recommendation."
+        },
+        {
+          "id": "B",
+          "text": "Escalate every report to a human to be safe.",
+          "correct": false,
+          "explanation": "Escalating everything defeats the system's purpose and overwhelms editors; escalation should be confidence- and failure-triggered."
+        },
+        {
+          "id": "C",
+          "text": "Never escalate anything; always finalize the report and rely on downstream editors to catch any problems after the fact.",
+          "correct": false,
+          "explanation": "Never escalating ships low-confidence reports as final, the failure mode the policy is meant to prevent."
+        },
+        {
+          "id": "D",
+          "text": "Escalate only when the report exceeds a certain length.",
+          "correct": false,
+          "explanation": "Length is not a confidence signal; escalation should hinge on confidence and repeated failures."
+        }
+      ]
     }
   ]
 }

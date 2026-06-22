@@ -2375,6 +2375,336 @@
           "explanation": "Removing memory does not encourage tool use; a system-prompt nudge does."
         }
       ]
+    },
+    {
+      "id": "S4-D2-032",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "An engineer needs to find every file in a large monorepo whose contents call the deprecated function `legacyParse(` so they can plan a migration. Which built-in tool is the right choice?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Grep, to search file contents for the `legacyParse(` pattern across the repo.",
+          "correct": true,
+          "explanation": "Grep searches file contents by pattern — the right tool for locating occurrences of a function call across many files."
+        },
+        {
+          "id": "B",
+          "text": "Glob, with a pattern like `**/*legacy*` to find files by name.",
+          "correct": false,
+          "explanation": "Glob finds files by name/path, but the call sites are not necessarily in files named 'legacy'; content search is needed."
+        },
+        {
+          "id": "C",
+          "text": "Read, opening each file and scanning for the call.",
+          "correct": false,
+          "explanation": "Reading every file individually is far less efficient than a content search; Read is for known specific files."
+        },
+        {
+          "id": "D",
+          "text": "Bash, running `ls -R` and eyeballing the output.",
+          "correct": false,
+          "explanation": "Listing files does not search their contents; a specialized content-search tool (Grep) is preferred over ad hoc Bash here."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-033",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.5",
+      "stem": "An engineer wants to locate all TypeScript test files in the repo, which follow the naming convention `*.test.ts`, before running a coverage pass. Which built-in tool is most appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Glob, with a pattern like `**/*.test.ts` to find files by their naming convention.",
+          "correct": true,
+          "explanation": "Glob finds files by name/path pattern — exactly right for discovering files matching a naming convention like `*.test.ts`."
+        },
+        {
+          "id": "B",
+          "text": "Grep, to search contents for the word 'test'.",
+          "correct": false,
+          "explanation": "Grep searches contents, which would match unrelated occurrences of 'test' and miss the goal of finding files by name."
+        },
+        {
+          "id": "C",
+          "text": "Read, opening the test directory's index file first and then following it to each individual test module in turn.",
+          "correct": false,
+          "explanation": "Read targets a known file; it does not discover files by pattern across the tree."
+        },
+        {
+          "id": "D",
+          "text": "Bash, running a custom `find` with `sed` post-processing.",
+          "correct": false,
+          "explanation": "A specialized file-discovery tool (Glob) is preferred over ad hoc Bash for tasks it handles directly."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-034",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.1",
+      "stem": "You added an MCP server exposing `analyze_dependencies`, but the agent keeps using Grep to find imports even when asked about dependencies. The MCP tool's description reads only \"Analyzes dependency graph.\" What is the most effective fix?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Expand the description to detail what it builds and returns, e.g. \"Builds a dependency graph of direct imports, transitive deps, and cycles.\"",
+          "correct": true,
+          "explanation": "Tool descriptions are the primary selection signal. When Claude misselects, the first fix is a richer description detailing capabilities and outputs so the model prefers it over Grep."
+        },
+        {
+          "id": "B",
+          "text": "Remove Grep from the agent so it is forced to use the MCP tool.",
+          "correct": false,
+          "explanation": "Removing useful built-ins is a heavy-handed move; the documented first step is improving the description, not pruning tools."
+        },
+        {
+          "id": "C",
+          "text": "Split `analyze_dependencies` into three smaller tools immediately.",
+          "correct": false,
+          "explanation": "Consolidation/splitting comes after improving descriptions and examples — never the first step for misselection."
+        },
+        {
+          "id": "D",
+          "text": "Add a system-prompt routing rule stating that all dependency-related questions must be sent to the MCP tool rather than Grep.",
+          "correct": false,
+          "explanation": "Prompt routing is probabilistic and secondary; the primary lever is the tool description itself."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-018",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.6",
+      "stem": "An engineer asks the agent to investigate why one API endpoint intermittently returns 500s in a 200-file codebase, with no idea which components are involved. How should the agent decompose the investigation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Dynamically generate investigation subtasks based on what it finds at each step, adapting as the error path emerges.",
+          "correct": true,
+          "explanation": "When the decomposition is unknown upfront, dynamic adaptive decomposition lets the agent follow the evidence, generating subtasks as it learns the error path."
+        },
+        {
+          "id": "B",
+          "text": "Fix a rigid step sequence (grep, read handlers, check queries, examine middleware) and run it regardless of findings.",
+          "correct": false,
+          "explanation": "A fixed sequence ignores intermediate findings and is brittle for an unknown error path; dynamic adaptation fits better."
+        },
+        {
+          "id": "C",
+          "text": "Produce a complete plan mapping all code paths before reading any file.",
+          "correct": false,
+          "explanation": "Planning every path upfront in an unfamiliar 200-file codebase is impractical and wasteful before exploration reveals the relevant components."
+        },
+        {
+          "id": "D",
+          "text": "Launch parallel agents on all four layers at once and merge results.",
+          "correct": false,
+          "explanation": "Fanning out to all layers before knowing which is implicated burns effort; the path should be discovered adaptively."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-019",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.3",
+      "stem": "The agent has read 8 of 45 files while mapping untested code in a legacy payments module and is already forgetting earlier patterns before locating all the test files. What approach best completes the investigation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Spawn subagents for focused questions (find all payment test files, trace the refund flow) while the main agent coordinates and keeps the high-level picture.",
+          "correct": true,
+          "explanation": "Delegating focused sub-investigations to subagents keeps each context small and lets the coordinator preserve overall understanding — the right move when one context is degrading under load."
+        },
+        {
+          "id": "B",
+          "text": "Keep reading all 45 files within the single conversation to build a complete function inventory before writing anything down or delegating.",
+          "correct": false,
+          "explanation": "Cramming all files into one degrading context worsens attention dilution and loss of earlier detail."
+        },
+        {
+          "id": "C",
+          "text": "Switch entirely to Grep and stop reading whole files to save context, searching only for specific function names from here on.",
+          "correct": false,
+          "explanation": "Abandoning reading loses the structural understanding needed to trace flows; the issue is context strategy, not tool choice."
+        },
+        {
+          "id": "D",
+          "text": "Summarize findings, then `/clear` and rely solely on the summary.",
+          "correct": false,
+          "explanation": "A lossy summary as the sole reference drops specific details; subagents plus a coordinator preserve fidelity better."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-025",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.1",
+      "stem": "A new engineer keeps having to re-explain the project's build commands, directory layout, and naming conventions to Claude Code at the start of every session. What is the right way to make this context available automatically on every run?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Document it in the project's `CLAUDE.md` so Claude Code loads it as context every session.",
+          "correct": true,
+          "explanation": "CLAUDE.md provides persistent project context that Claude Code reads automatically each session — the right home for build commands, layout, and conventions."
+        },
+        {
+          "id": "B",
+          "text": "Paste the context into the first message of each session manually.",
+          "correct": false,
+          "explanation": "Manual pasting is exactly the repetition CLAUDE.md eliminates and is error-prone."
+        },
+        {
+          "id": "C",
+          "text": "Put it in a personal slash command the engineer must remember to run.",
+          "correct": false,
+          "explanation": "A command requires explicit invocation; project context should load automatically via CLAUDE.md."
+        },
+        {
+          "id": "D",
+          "text": "Store the project context inside a PreToolUse hook that injects it whenever a tool is about to run during the session.",
+          "correct": false,
+          "explanation": "Hooks enforce or validate tool calls; they are not the mechanism for supplying always-on project context."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-035",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.4",
+      "stem": "The agent needs to cross-reference code changes with the team's Jira tickets during reviews — currently done by copy-pasting ticket text into the conversation. The team wants the agent to access standard Jira ticket data directly. What is the most effective approach?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Integrate an existing Jira MCP server that exposes tickets, comments, and metadata through discoverable tool interfaces.",
+          "correct": true,
+          "explanation": "Jira is a common integration; adopting an existing community MCP server gives the agent live, discoverable access to ticket data without bespoke maintenance."
+        },
+        {
+          "id": "B",
+          "text": "Build a custom MCP server from scratch wrapping Jira's API.",
+          "correct": false,
+          "explanation": "Custom-building is the last resort; you check for a community server first, and Jira is well served."
+        },
+        {
+          "id": "C",
+          "text": "Use Bash `curl` against Jira's REST API with inline auth and JSON parsing each time.",
+          "correct": false,
+          "explanation": "Ad hoc curl bypasses structured, discoverable tool interfaces and robust error handling that an MCP server provides."
+        },
+        {
+          "id": "D",
+          "text": "Export the tickets to markdown files in the repository on a nightly schedule and have the agent read those files during review.",
+          "correct": false,
+          "explanation": "Static exports go stale immediately and cannot reflect recent comments or status changes the review needs."
+        }
+      ]
+    },
+    {
+      "id": "S4-D3-026",
+      "scenario": "S4",
+      "domain": "D3",
+      "task_statement": "3.4",
+      "stem": "An engineer asks Claude Code to rename a single private helper function and update its three call sites in one file — a small, unambiguous change. Which working mode is appropriate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Direct execution, because the scope is clear and well-defined with no ambiguity about approach.",
+          "correct": true,
+          "explanation": "Direct execution fits clear, well-scoped tasks with one obvious approach; plan mode would add overhead with no benefit."
+        },
+        {
+          "id": "B",
+          "text": "Plan mode, to outline the rename before doing it.",
+          "correct": false,
+          "explanation": "Plan mode is for complex tasks with multiple approaches or high consequences; a trivial local rename does not need it."
+        },
+        {
+          "id": "C",
+          "text": "The `-p` flag, to run it non-interactively.",
+          "correct": false,
+          "explanation": "`-p` is for CI/CD non-interactive runs, not the deciding factor for an interactive one-line rename."
+        },
+        {
+          "id": "D",
+          "text": "Run an independent review session to evaluate the rename before any of the call sites are actually modified in the file.",
+          "correct": false,
+          "explanation": "Independent review applies to evaluating generated code, not to executing a trivial, unambiguous edit."
+        }
+      ]
+    },
+    {
+      "id": "S4-D1-020",
+      "scenario": "S4",
+      "domain": "D1",
+      "task_statement": "1.7",
+      "stem": "An engineer resumes yesterday's investigation session by ID. Version control shows 3 of the 12 files the agent had read were changed overnight by a teammate's merge. What approach best balances efficiency and accuracy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Resume the session and tell the agent exactly which 3 files changed so it re-reads only those.",
+          "correct": true,
+          "explanation": "Resuming preserves accumulated context (efficiency) while informing the agent of the 3 changed files triggers targeted re-analysis (accuracy) — the best balance."
+        },
+        {
+          "id": "B",
+          "text": "Resume without mentioning the changes.",
+          "correct": false,
+          "explanation": "Leaving the agent unaware lets it reason from stale content for the modified files, risking wrong conclusions."
+        },
+        {
+          "id": "C",
+          "text": "Resume the saved session and immediately have the agent re-read all twelve previously analyzed files before continuing the work.",
+          "correct": false,
+          "explanation": "Re-reading everything wastes effort on the 9 unchanged files; only the 3 changed ones need re-analysis."
+        },
+        {
+          "id": "D",
+          "text": "Discard the session and start fresh.",
+          "correct": false,
+          "explanation": "Starting over throws away an hour of valid context for the 9 unchanged files — needlessly inefficient."
+        }
+      ]
+    },
+    {
+      "id": "S4-D2-036",
+      "scenario": "S4",
+      "domain": "D2",
+      "task_statement": "2.3",
+      "stem": "You configured three MCP servers for the agent — git, Jira, and docs search. A user asks it to \"create a branch for JIRA-123 and add documentation links to the ticket.\" How does the agent access tools spanning these servers?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Tools from all configured MCP servers are discovered at connection time and available simultaneously.",
+          "correct": true,
+          "explanation": "All configured servers' tools are discovered when connections are established and are available to the agent at once; it can mix git, Jira, and docs tools in one task."
+        },
+        {
+          "id": "B",
+          "text": "You must pick one server per turn; the agent can use only that server's tools at a time.",
+          "correct": false,
+          "explanation": "There is no one-server-per-turn restriction; tools across servers are concurrently available."
+        },
+        {
+          "id": "C",
+          "text": "The agent loads only the single most relevant server's tools per request.",
+          "correct": false,
+          "explanation": "The agent does not restrict itself to one server; this task explicitly spans git, Jira, and docs simultaneously."
+        },
+        {
+          "id": "D",
+          "text": "The agent queries servers sequentially to discover which owns each tool by name prefix.",
+          "correct": false,
+          "explanation": "Discovery happens at connection time, not via sequential per-call probing; tools are already known and available."
+        }
+      ]
     }
   ]
 }
